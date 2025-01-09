@@ -1,0 +1,25 @@
+.testimonial-card {
+    width: 300px;
+    padding: 20px;
+    background-color: #ffeef0; /* Light pink background */
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    position: relative;
+  }
+  
+  .testimonial-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .testimonial-message {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  

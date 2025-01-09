@@ -1,0 +1,17 @@
+.Testimonials {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .heading{
+    padding-bottom: 10px;
+  }
+  
+  .review {
+    display: flex;
+    gap: 40px;
+    justify-content: space-around;
+  }

@@ -1,0 +1,50 @@
+.people {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .people-circle {
+    position: relative; /* To position the title within the circle */
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 2px solid black;
+    transition: transform 0.3s ease; /* Smooth scaling effect */
+  }
+  
+  .people-circle:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+  }
+  
+  .circle-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease; /* Smooth opacity transition */
+  }
+  
+  .people-circle:hover .circle-image {
+    opacity: 0.5; /* Reduce opacity on hover */
+  }
+  
+  .people-circle::after {
+    content: attr(data-title); /* Use the title dynamically from the HTML attribute */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0; /* Hidden by default */
+    pointer-events: none; /* Disable interaction with the title */
+    transition: opacity 0.3s ease; /* Smooth fade-in transition */
+  }
+  
+  .people-circle:hover::after {
+    opacity: 1; /* Show the title on hover */
+  }
+  

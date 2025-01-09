@@ -1,0 +1,17 @@
+.BestSeller {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.heading{
+    padding-bottom: 10px;
+}
+
+.Product{
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+}

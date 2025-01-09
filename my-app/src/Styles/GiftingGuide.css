@@ -1,0 +1,19 @@
+.GiftingGuide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .heading{
+    padding-bottom: 10px;
+  }
+  
+  .People {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 40px;
+    justify-content: center;
+  }
+  

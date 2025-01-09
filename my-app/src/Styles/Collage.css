@@ -1,0 +1,17 @@
+.Collage{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;   
+}
+
+.heading{
+    padding-bottom: 10px;
+}
+
+.pictures{
+    background-color: bisque;
+    height: 300px;
+    width: 100%;
+}
