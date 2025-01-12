@@ -22,4 +22,17 @@
     margin-bottom: 20px;
   }
   
+  @media (max-width: 1024px) {
+    .testimonial-card{
+      width: 100%;
+    }
+
+    .testimonial-name h3{
+      font-size: medium;
+    }
+
+    .testimonial-message p{
+      font-size: x-small;
+    }
+  }
   

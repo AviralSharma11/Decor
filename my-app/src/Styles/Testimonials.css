@@ -12,6 +12,16 @@
   
   .review {
     display: flex;
-    gap: 40px;
+    gap: 30px;
     justify-content: space-around;
+  }
+
+  @media (max-width: 1024px) {
+    .review{
+      flex-direction: column;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
   }

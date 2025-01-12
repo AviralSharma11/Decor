@@ -1,6 +1,6 @@
 .social-media-badges {
     position: fixed;
-    top: 50%;
+    bottom: 0 ;
     right: 10px;
     transform: translateY(-50%);
     display: flex;
@@ -34,16 +34,10 @@
   }
   
   .whatsapp-badge {
-    background-color: #25d366; /* WhatsApp green */
+    background-color: white; 
   }
   
   .instagram-badge {
-    background: linear-gradient(
-      45deg,
-      #f58529,
-      #dd2a7b,
-      #8134af,
-      #515bd4
-    ); /* Instagram gradient */
+    background-color: white;
   }
   

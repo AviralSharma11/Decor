@@ -5,6 +5,7 @@ import BestSeller from './Components/BestSeller';
 import Collage from './Components/Collage';
 import Testimonials from './Components/Testimonials';
 import SocialMediaBadges from './Components/SocialMediaBadges';
+import Footer from './Components/Footer';
 
 
 function Home() {
@@ -17,6 +18,7 @@ function Home() {
      <Collage />
      <SocialMediaBadges />
      <Testimonials />
+     <Footer />
     </div>
   );
 }
