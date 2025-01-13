@@ -3,15 +3,15 @@ import "../Styles/Header.css";
 
 const Header = () => {
   const [isHidden, setIsHidden] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // For the hamburger menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   let lastScrollY = 0;
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
-        setIsHidden(true); // Scrolling down
+        setIsHidden(true);
       } else {
-        setIsHidden(false); // Scrolling up
+        setIsHidden(false);
       }
       lastScrollY = window.scrollY;
     };
@@ -24,37 +24,48 @@ const Header = () => {
   }, []);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    const newMenuState = !isMenuOpen;
+    setIsMenuOpen(newMenuState);
+    document.body.style.overflowY = newMenuState ? "hidden" : "auto";
   };
 
   return (
     <header className={`header ${isHidden ? "hidden" : ""}`}>
       <div className="header-container">
-        <div className="logo">
-          <h1>TITLE</h1>
-          <span className="subtitle">Sub Title</span>
-        </div>
-        <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
-          <ul className="nav-links">
-            <li>Customised</li>
-            <li>Wood</li>
-            <li>Acrylic</li>
-            <li>Aviral</li>
-            <li>Sharma</li>
-          </ul>
-        </nav>
         <div className="hamburger" onClick={toggleMenu}>
           <span className="line"></span>
           <span className="line"></span>
           <span className="line"></span>
         </div>
+        <div className="logo">
+          <h1>TITLE</h1>
+          <span className="subtitle">Sub Title</span>
+        </div>
+        <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
+          <div className="hamburgerContent">
+            <ul className="nav-links content">
+              <li>Customised</li>
+              <li>Wood</li>
+              <li>Acrylic</li>
+              <li>Aviral</li>
+              <li>Sharma</li>
+            </ul>
+            <div className="profileViewer show">
+              <svg xmlns="http://www.w3.org/2000/svg"  height= "33" fill="currentColor" className="bi bi-person content" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+              </svg> 
+              <span >Log In</span>           
+            </div>
+          </div>
+        </nav>
+
         <div className="icons-grid">
           <div className="icons search">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
             </svg>
           </div>
-          <div className="icons profile">
+          <div className="icons profile hidden ">
             <svg xmlns="http://www.w3.org/2000/svg"  height= "33" fill="currentColor" className="bi bi-person" viewBox="0 0 16 16">
               <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
             </svg>

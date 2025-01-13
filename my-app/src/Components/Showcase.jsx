@@ -7,12 +7,15 @@ const Showcase = () => {
       <div className="image-grid">
         <div className="image-item  ">
           <img src="/Images/download.jpeg" alt="img 1" />
+          <span className="hiddentext">Rafael Nadal : Spanish Bull</span>
         </div>
         <div className="image-item">
           <img src="/Images/download1.jpeg" alt="img 2" />
+          <span className="hiddentext">Kevin De Bryune Let him talk</span>
         </div>
         <div className="image-item">
           <img src="/Images/download1.jpeg" alt="img 3" />
+          <span className="hiddentext">KDB : Ginger Mastero</span>
         </div>
         <div className="image-item hidden">
           <img src="/Images/download.jpeg" alt="img 4" />

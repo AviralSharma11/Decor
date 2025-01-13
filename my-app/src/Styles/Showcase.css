@@ -12,11 +12,31 @@
   margin-bottom: 20px;
 }
 
+.image-item {
+  position: relative;
+  display: inline-block; /* Ensures the image and text are treated as a block */
+}
+
 .image-item img {
-  width: 100%;
+  display: block; /* Ensures no space below the image */
+  width: 100%; /* Adjust as needed */
   height: auto;
   border-radius: 8px;
 }
+
+.hiddentext {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  color: white; /* Make text visible over the image */
+  font-size: 1.5rem; /* Adjust font size as needed */
+  text-align: center;
+  padding: 0.5rem; /* Optional: Add padding around the text */
+  border-radius: 0.25rem; /* Optional: Rounded corners for the background */
+}
+
 
 .text-section h2 {
   font-size: 24px;
@@ -31,6 +51,13 @@
   color: #555;
   text-transform: uppercase;
   margin: 0;
+}
+
+.hiddentext{
+  display: none;
+  color: white;
+  font-weight: 500;
+  font-size: larger;
 }
 
 /* Media Query */
@@ -48,6 +75,9 @@
     border-radius: 0px;
   }
 
+  .hiddentext{
+    display: flex;
+  }
   /* Optionally hide the 4th image */
   .hidden {
     display: none;
