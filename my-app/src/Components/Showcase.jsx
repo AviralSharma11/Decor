@@ -6,19 +6,19 @@ const Showcase = () => {
     <section className="showcase">
       <div className="image-grid">
         <div className="image-item  ">
-          <img src="/Images/download.jpeg" alt="img 1" />
+          <img src="/Images/LoveTokens1.jpg" alt="img 1" />
           <span className="hiddentext">Rafael Nadal : Spanish Bull</span>
         </div>
         <div className="image-item">
-          <img src="/Images/download1.jpeg" alt="img 2" />
+          <img src="/Images/BirdNestLight.jpg" alt="img 2" />
           <span className="hiddentext">Kevin De Bryune Let him talk</span>
         </div>
         <div className="image-item">
-          <img src="/Images/download1.jpeg" alt="img 3" />
+          <img src="/Images/WoodEngrave.jpg" alt="img 3" />
           <span className="hiddentext">KDB : Ginger Mastero</span>
         </div>
         <div className="image-item hidden">
-          <img src="/Images/download.jpeg" alt="img 4" />
+          <img src="/Images/LampCover.jpg" alt="img 4" />
         </div>
       </div>
       <div className="text-section hidden">

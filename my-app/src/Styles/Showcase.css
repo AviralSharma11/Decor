@@ -70,9 +70,16 @@
     grid-template-columns: repeat(1, 1fr); /* Display 3 columns */
   }
   
+  .image-item{
+    width:100%;
+    aspect-ratio: 5/3;
+  }
+
   .image-item img{
-    height: 60vh;
+    height: 100%;
+    width: 100%;
     border-radius: 0px;
+    object-fit: cover;
   }
 
   .hiddentext{
