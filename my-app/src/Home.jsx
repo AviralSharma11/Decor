@@ -6,6 +6,7 @@ import Collage from './Components/Collage';
 import Testimonials from './Components/Testimonials';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
+import "./Home.css";
 
 
 function Home() {

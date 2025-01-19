@@ -1,6 +1,6 @@
 const itemsbs =[
     {
-        imageSrc: "Images/download.jpeg",
+        imageSrc: "Images/Bestseller1.jpg",
         isOnSale: true,
         title: "The Northern Star",
         rating: 4.5,
@@ -9,7 +9,7 @@ const itemsbs =[
         discountedPrice: 1699.0,
     },
     {
-        imageSrc: "Images/download.jpeg",
+        imageSrc: "Images/Bestseller2.jpg",
         isOnSale: true,
         title: "The Northern Star",
         rating: 4.5,
@@ -18,7 +18,7 @@ const itemsbs =[
         discountedPrice: 1699.0,
     },
     {
-        imageSrc: "Images/download.jpeg",
+        imageSrc: "Images/Bestseller3.jpg",
         isOnSale: true,
         title: "The Northern Star",
         rating: 4.5,
@@ -27,7 +27,7 @@ const itemsbs =[
         discountedPrice: 1699.0,
     },
     {
-        imageSrc: "Images/download.jpeg",
+        imageSrc: "Images/Bestseller4.jpg",
         isOnSale: true,
         title: "The Northern Star",
         rating: 4.5,

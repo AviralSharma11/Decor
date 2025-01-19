@@ -1,51 +1,51 @@
 const colpics = [
         {
-            src: "Images/download1.jpeg",
-            width: 4 ,
-            height:3
+            src: "Images/col1.jpg",
+            width: 3 ,
+            height:4
         },
         {
-            src: "Images/download1.jpeg",
-            width: 2,
-            height: 4
+            src: "Images/col2.jpg",
+            width: 1,
+            height: 1
         },
         {
-            src: "Images/download1.jpeg",
+            src: "Images/col3.jpg",
             width: 4,
             height: 4
         },
         {
-            src: "Images/download1.jpeg",
+            src: "Images/col4.jpg",
             width: 1 ,
             height: 1
         },
         {
-            src: "Images/joker.jpg",
+            src: "Images/col5.jpg",
             width: 2,
-            height: 3
+            height: 2
         },
         {
-            src: "Images/joker.jpg",
+            src: "Images/col6.jpg",
             width: 3,
             height: 4
         },
         {
-            src: "Images/joker.jpg",
-            width: 4,
+            src: "Images/col7.jpg",
+            width: 2,
             height: 3
         },
         {
-            src: "Images/download.jpeg",
-            width:3 ,
+            src: "Images/col8.jpg",
+            width:2 ,
             height:2
         },
         {
-            src: "Images/download.jpeg",
-            width: 4,
+            src: "Images/col9.jpg",
+            width: 2,
             height:3
         },
         {
-            src: "Images/download.jpeg",
+            src: "Images/col10.jpg",
             width: 2,
             height: 2
         },
