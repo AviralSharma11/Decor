@@ -1,0 +1,35 @@
+.Home {
+    position: relative;
+  }
+  
+  .parallax1 {
+    height: 500px; /* Adjust height as needed */
+    background-image: url('../public/Images/par1.jpg'); /* Update the path */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .parallax2{
+    height: 500px; /* Adjust height as needed */
+    background-image: url('../public/Images/par2.jpg'); /* Update the path */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .parallax3{
+    height: 500px; /* Adjust height as needed */
+    background-image: url('../public/Images/par3.jpg'); /* Update the path */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  .content-section {
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for contrast */
+    text-align: center;
+  }

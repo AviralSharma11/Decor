@@ -8,18 +8,26 @@ import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";
 
-
 function Home() {
   return (
     <div className="Home">
-     <Header/>
-     <Showcase />
-     <GiftingGuide />
-     <BestSeller />
-     <Collage />
-     <SocialMediaBadges />
-     <Testimonials />
-     <Footer />
+      <Header />
+        <Showcase />
+        <div className="parallax1"></div> {/* Parallax background section */}
+        <div className="content-section">
+        <GiftingGuide />
+      </div>
+      <div className="parallax2"></div> {/* Add another parallax section if needed */}
+      <div className="content-section">
+        <BestSeller />
+      </div>
+      <div className="parallax3"></div> {/* Add another parallax section if needed */}
+      <div className="content-section">
+        <Collage />
+        <SocialMediaBadges />
+        <Testimonials />
+        <Footer />
+      </div>
     </div>
   );
 }
