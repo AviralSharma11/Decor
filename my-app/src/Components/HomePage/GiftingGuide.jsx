@@ -1,7 +1,7 @@
 import React from "react";
-import "../Styles/GiftingGuide.css";
+import "../../Styles/HomePage/GiftingGuide.css";
 import People from "./People";
-import peopleData from "../List/peopledata";
+import peopleData from "../../List/peopledata";
 
 export default function GiftingGuide(){
     return (

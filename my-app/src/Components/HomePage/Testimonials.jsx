@@ -1,6 +1,6 @@
 import React from "react";
-import "../Styles/Testimonials.css";
-import testimony from "../List/testimony";
+import "../../Styles/HomePage/Testimonials.css";
+import testimony from "../../List/testimony";
 import TestimonialCard from "./TestimonialCard";
 
 export default function Testimonials(){

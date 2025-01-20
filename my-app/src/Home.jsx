@@ -1,9 +1,9 @@
 import Header from './Components/Header';
-import Showcase from './Components/Showcase';
-import GiftingGuide from './Components/GiftingGuide';
-import BestSeller from './Components/BestSeller';
-import Collage from './Components/Collage';
-import Testimonials from './Components/Testimonials';
+import Showcase from './Components/HomePage/Showcase';
+import GiftingGuide from './Components/HomePage/GiftingGuide';
+import BestSeller from './Components/HomePage/BestSeller';
+import Collage from './Components/HomePage/Collage';
+import Testimonials from './Components/HomePage/Testimonials';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";

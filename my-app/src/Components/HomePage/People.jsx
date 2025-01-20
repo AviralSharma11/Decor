@@ -1,5 +1,5 @@
 import React from "react";
-import "../Styles/People.css"; 
+import "../../Styles/HomePage/People.css"; 
 
 
 const People = ({ imageSrc, title}) => {

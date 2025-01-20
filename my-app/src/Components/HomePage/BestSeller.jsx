@@ -1,7 +1,7 @@
 import React from "react";
-import "../Styles/BestSeller.css";
+import "../../Styles/HomePage/BestSeller.css";
 import ProductCard from "./ProductCard";
-import itemsbs from "../List/itemsbs";
+import itemsbs from "../../List/itemsbs";
 
 export default function BestSeller(){
     return(

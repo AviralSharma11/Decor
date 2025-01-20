@@ -1,6 +1,6 @@
 import React from "react";
-import "../Styles/Collage.css";
-import colpics from "../List/colpics";
+import "../../Styles/HomePage/Collage.css";
+import colpics from "../../List/colpics";
 import Gallery from "react-photo-gallery";
 
 export default function Collage() {
