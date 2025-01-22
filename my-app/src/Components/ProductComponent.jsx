@@ -1,7 +1,9 @@
 import React from 'react';
 import "../Styles/ProductComponent.css";
 
-const ProductComponent = ({ products }) => {
+
+
+const ProductComponent = ({ products , addToCart }) => {
   return (
     <div className="product-container">
       {products.map((product) => (
@@ -16,6 +18,7 @@ const ProductComponent = ({ products }) => {
               <p className='discount'>{product.discount}% OFF</p>
             </div>
           </div>
+          <button onClick={() => addToCart(product)}>Add to Cart</button>
         </div>
       ))}
     </div>

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Header.css";
 
-const Header = () => {
+const Header = ({ cart }) => { // Use the cart prop
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-    const [cart, setCart] = useState([]); 
-  const [isCartVisible, setIsCartVisible] = useState(false); 
+
   let lastScrollY = 0;
 
   useEffect(() => {
@@ -37,15 +36,9 @@ const Header = () => {
     document.body.style.overflowY = !isCartOpen ? "hidden" : "auto";
   };
 
-  const addToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
-  };
-
-  const toggleCartVisibility = () => {
-    setIsCartVisible((prevState) => !prevState);
-  };
-
-
+  // Calculate total price of the cart
+  const calculateTotal = () =>
+    cart.reduce((total, item) => total + item.price * item.quantity, 0);
   return (
     <>
       <header className={`header ${isHidden ? "hidden" : ""}`}>
@@ -120,28 +113,31 @@ const Header = () => {
       {isCartOpen && (
         <div className="cart-modal">
           <div className="cart-content">
-            <button className="close-cart" onClick={toggleCartVisibility}>
+            <button className="close-cart" onClick={toggleCart}>
               ×
             </button>
             <h2>Shopping Cart</h2>
-            {isCartVisible && 
-              (cart.length === 0 ? (
-                <p>Your cart is empty</p>
-              ) : (
+            {cart.length === 0 ? (
+              <p>Your cart is empty</p>
+            ) : (
+              <>
                 <ul>
                   {cart.map((item, index) => (
                     <li key={index}>
                       <img src={item.image} alt={item.name} />
                       <span>{item.name}</span>
-                      <span>{item.price}</span>
+                      <span>₹{item.price}</span>
+                      <span>Quantity: {item.quantity}</span>
                     </li>
                   ))}
                 </ul>
-              ))
-            }
+                <h3>Total: ₹{calculateTotal()}</h3>
+              </>
+            )}
           </div>
         </div>
       )}
+
     </>
   );
 };
