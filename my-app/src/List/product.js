@@ -1,0 +1,115 @@
+export const filters = [
+    { label: 'Type', options: ['Blanket', 'Backpack', 'Handbag', 'Organizer'] },
+    { label: 'Color', options: ['Green', 'Black', 'White', 'Pink'] },
+    { label: 'Price', options: ['Under ₹1,000', '₹1,000 - ₹3,000', 'Above ₹3,000'] },
+  ];
+  
+  export const products = [
+    {
+      id: 1,
+      name: 'A',
+      price: 1990,
+      discount: 35,
+      image: '/Images/Bestseller2.jpg',
+    },
+    {
+      id: 2,
+      name: 'B',
+      price: 3590,
+      discount: 34,
+      image: '/Images/Bestseller2.jpg',
+    },
+    {
+      id: 3,
+      name: 'C',
+      price: 990,
+      discount: 35,
+      image: '/Images/Bestseller2.jpg',
+    },
+    {
+      id: 4,
+      name: 'D',
+      price: 795,
+      discount: 32,
+      image: '/Images/Bestseller2.jpg',
+    },
+    {
+        id: 5,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 6,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 7,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 8,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 9,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 10,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 11,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 12,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 13,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 14,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      {
+        id: 15,
+        name: 'D',
+        price: 795,
+        discount: 32,
+        image: '/Images/Bestseller2.jpg',
+      },
+      
+  ];
+  
