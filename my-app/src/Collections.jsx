@@ -84,7 +84,7 @@ export default function Collections() {
 
   return (
     <div className="Collections">
-      <Header cart={cart} /> {/* Pass cart as a prop to Header */}
+      <Header cart={cart} />
       <Categories />
       <div className="product">
         <div className="sidebar">

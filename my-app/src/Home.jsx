@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import Header from './Components/Header';
 import Showcase from './Components/HomePage/Showcase';
 import GiftingGuide from './Components/HomePage/GiftingGuide';
@@ -9,9 +10,21 @@ import Footer from './Components/Footer';
 import "./Home.css";
 
 function Home() {
+  const [cart, setCart] = useState([]);
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+  };
   return (
     <div className="Home">
-      <Header />
+      <Header cart={cart} />
         <Showcase />
         <div className="parallax1"></div> {/* Parallax background section */}
         <div className="content-section">

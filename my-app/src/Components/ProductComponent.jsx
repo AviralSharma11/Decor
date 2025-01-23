@@ -12,13 +12,18 @@ const ProductComponent = ({ products , addToCart }) => {
             <img src={product.image} alt={product.name} />
           </div>
           <div className="product-details">
-            <h3>{product.name}</h3>
-            <div className="product-price">
-              <p>₹{product.price}</p>
-              <p className='discount'>{product.discount}% OFF</p>
+            <h3 className="product-title">{product.name}</h3>
+            <div className="product-rating">
+              {"★".repeat(Math.floor(product.rating))}{"☆".repeat(5 - Math.floor(product.rating))}
+              <span className="reviews">({product.reviews})</span>
+            </div>
+
+            <div className="product-prices">
+              <span className="original-price">Rs. {product.originalPrice.toLocaleString()}</span>
+              <span className="discounted-price">Rs. {product.discountedPrice.toLocaleString()}</span>
             </div>
           </div>
-          <button onClick={() => addToCart(product)}>Add to Cart</button>
+          <button className="addtocart" onClick={() => addToCart(product)}>Add to Cart</button>
         </div>
       ))}
     </div>

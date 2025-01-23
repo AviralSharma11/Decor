@@ -123,7 +123,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 30vw;
+    width: 40vw;
     height: 100%;
     background: white;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
@@ -144,7 +144,7 @@
     position: relative;
   }
   
-  .close-cart {
+  .close-cart  {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -155,9 +155,7 @@
     color: #333; /* Close button color */
   }
   
-  .close-cart:hover {
-    color: #ff0000; /* Change color on hover */
-  }
+ 
   
   .cart-content h2 {
     margin-bottom: 20px;
@@ -203,6 +201,13 @@
 
   .content{
     margin-left: 20px;
+  }
+
+  .login-menu{
+    z-index: 1000;
+    position: absolute;
+    top: 25%;
+    width: 100vw;
   }
 
   /* Responsive styles */

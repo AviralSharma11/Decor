@@ -35,15 +35,14 @@
   font-weight: bold;
 }
 
-button {
-  background-color: #007bff;
-  color: white;
+.addtocart button {
+  color: black;
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-button:hover {
+.addtocart button:hover {
   background-color: #0056b3;
 }
