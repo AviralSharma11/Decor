@@ -82,9 +82,22 @@ export default function Collections() {
     });
   };
 
+  // Remove product from cart
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: Math.max(1, newQuantity) } : item
+      )
+    );
+  };
+
   return (
     <div className="Collections">
-      <Header cart={cart} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
       <Categories />
       <div className="product">
         <div className="sidebar">

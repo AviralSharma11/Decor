@@ -4,13 +4,13 @@ import "../../Styles/HomePage/ProductCard.css";
 const ProductCard = ({ image, isOnSale, title, rating, reviews, originalPrice, discountedPrice }) => {
   return (
     <div className="product-card">
-      <div className="product-image">
+      <div className="product-images">
         <img src={image} alt={title} />
         {isOnSale && <span className="sale-label">Sale</span>}
       </div>
       <div className="product-details">
         <h3 className="product-title">{title}</h3>
-        <div className="product-rating">
+        <div className="product-ratings">
           {"★".repeat(Math.floor(rating))}{"☆".repeat(5 - Math.floor(rating))}
           <span className="reviews">({reviews})</span>
         </div>

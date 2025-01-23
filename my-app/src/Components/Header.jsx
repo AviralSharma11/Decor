@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Header.css";
-import { useNavigate } from "react-router-dom";
-import Login from "./Login";
+import LoginModal from "./LoginModal";
 
-const Header = ({ cart }) => { // Use the cart prop
+const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the cart prop
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLoginOpen , setIsLoginOpen] = useState(false);
+
 
   let lastScrollY = 0;
 
@@ -39,10 +38,13 @@ const Header = ({ cart }) => { // Use the cart prop
     document.body.style.overflowY = !isCartOpen ? "hidden" : "auto";
   };
 
-  const goToLogin = () => {
-    setIsLoginOpen(!isLoginOpen);
-    document.body.style.overflowY = !isLoginOpen ? "hidden" : "auto";
-  }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+
+  
 
   // Calculate total price of the cart
   const calculateTotal = () =>
@@ -69,7 +71,7 @@ const Header = ({ cart }) => { // Use the cart prop
                 <li>Aviral</li>
                 <li>Sharma</li>
               </ul>
-              <div className="profileViewer show" onClick={goToLogin}>
+              <div className="profileViewer show"onClick={openModal}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="33"
@@ -81,6 +83,7 @@ const Header = ({ cart }) => { // Use the cart prop
                 </svg>
                 <span>Log In</span>
               </div>
+              <LoginModal isOpen={isModalOpen} onClose={closeModal} />
             </div>
 
             
@@ -97,11 +100,12 @@ const Header = ({ cart }) => { // Use the cart prop
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
               </svg>
             </div>
-            <div className="icons profile hidden " onClick={goToLogin}>
+            <div className="icons profile hidden " onClick={openModal}>
               <svg xmlns="http://www.w3.org/2000/svg"  height= "33" fill="currentColor" className="bi bi-person" viewBox="0 0 16 16">
                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
               </svg>
             </div>
+            <LoginModal isOpen={isModalOpen} onClose={closeModal} />
             <div className="icons cart" onClick={toggleCart}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -120,12 +124,6 @@ const Header = ({ cart }) => { // Use the cart prop
         </div>
       </header>
 
-      {isLoginOpen &&(
-        <div className="login-menu">
-          <Login />
-        </div>
-      )}
-
       {isCartOpen && (
         <div className="cart-modal">
           <div className="cart-content">
@@ -140,19 +138,33 @@ const Header = ({ cart }) => { // Use the cart prop
                 <ul>
                   {cart.map((item, index) => (
                     <li key={index}>
-                      <img src={item.image} alt={item.name} />
-                      <span>{item.name}</span>
-                      <span>₹{item.originalPrice}</span>
-                      <span>Quantity: {item.quantity}</span>
+                      <img src={item.image} alt={item.name}  className="item-image"/>
+                      <div className="items">
+                        <span className="item-name">{item.name}</span>
+                        <span className="item-price">₹{item.originalPrice}</span>
+                        <div className="quantity-controls">
+                          <button
+                            className="quantity-button"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            disabled={item.quantity === 1}
+                          >
+                            -
+                          </button>
+                          <span>{item.quantity}</span>
+                          <button className="quantity-button" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                        </div>
+                        <button className="remove-item" onClick={() => onRemoveFromCart(item.id)}>X</button>
+                      </div>
                     </li>
                   ))}
                 </ul>
-                <h3>Total: ₹{calculateTotal()}</h3>
+                <span className="total">Total: ₹{calculateTotal()}</span>
               </>
             )}
           </div>
         </div>
       )}
+
 
     </>
   );

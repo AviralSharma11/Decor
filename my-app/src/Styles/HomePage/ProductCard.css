@@ -7,11 +7,11 @@
     font-family: Arial, sans-serif;
   }
   
-  .product-image {
+  .product-images {
     position: relative;
   }
   
-  .product-image img {
+  .product-images img {
     width: 100%;
     aspect-ratio: 1/1;
     display: block;
@@ -38,7 +38,7 @@
     margin: 10px 0;
   }
   
-  .product-rating {
+  .product-ratings {
     font-size: 14px;
     color: #f4b400;
     margin-bottom: 10px;
