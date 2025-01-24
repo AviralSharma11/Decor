@@ -47,6 +47,9 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
   
 
   // Calculate total price of the cart
+  const calculateDiscountedTotal = () =>
+    cart.reduce((total , item) => total + item.discountedPrice*item.quantity , 0 );
+
   const calculateTotal = () =>
     cart.reduce((total, item) => total + item.originalPrice * item.quantity, 0);
   return (
@@ -127,10 +130,12 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
       {isCartOpen && (
         <div className="cart-modal">
           <div className="cart-content">
-            <button className="close-cart" onClick={toggleCart}>
-              ×
-            </button>
-            <h2>Shopping Cart</h2>
+              <div className="cart-top">
+                <h2>Shopping Cart</h2>
+                <button className="close-cart" onClick={toggleCart}>
+                  ×
+                </button>
+              </div>
             {cart.length === 0 ? (
               <p>Your cart is empty</p>
             ) : (
@@ -141,7 +146,8 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
                       <img src={item.image} alt={item.name}  className="item-image"/>
                       <div className="items">
                         <span className="item-name">{item.name}</span>
-                        <span className="item-price">₹{item.originalPrice}</span>
+                        <span className="item-price">₹{item.discountedPrice}</span>
+                        <span className="item-price original">₹{item.originalPrice}</span>
                         <div className="quantity-controls">
                           <button
                             className="quantity-button"
@@ -158,7 +164,19 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
                     </li>
                   ))}
                 </ul>
-                <span className="total">Total: ₹{calculateTotal()}</span>
+                <div className="price-details">
+                  <h4>Price Details: </h4>
+                    <div className="price">Total MRP: 
+                      <div className="total-mrp">₹ {calculateTotal()}</div>
+                    </div>
+                    <div className="price">Money Saved:
+                      <div className="money-saved">-₹ {calculateTotal()-calculateDiscountedTotal()}</div>
+                    </div>
+                    <div className="price" style={{fontWeight: 600}}>Total Amount:
+                      <div className="total-amount"> ₹ {calculateDiscountedTotal()}</div>
+                    </div>
+                </div>
+
               </>
             )}
           </div>
