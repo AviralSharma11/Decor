@@ -321,6 +321,29 @@
     font-weight: bold; 
   }
   
+  .checkout{
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(160, 141, 33);
+    padding: 20px;
+    color: whitesmoke;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .checkout .dot{
+    width: 6px;
+    height: 6px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 3px;
+    position: relative;
+    bottom: 24%;
+  }
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .cart-modal {

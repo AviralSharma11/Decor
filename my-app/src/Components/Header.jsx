@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {Navigate, useNavigate} from "react-router-dom";
 import "../Styles/Header.css";
 import LoginModal from "./LoginModal";
 
@@ -52,6 +53,15 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
 
   const calculateTotal = () =>
     cart.reduce((total, item) => total + item.originalPrice * item.quantity, 0);
+
+  const formatPrice = (price) => price.toLocaleString("en-IN");
+
+  const navigate = useNavigate();
+
+  const proceedToCheckout = () =>{
+    navigate( "/checkout");
+  };
+
   return (
     <>
       <header className={`header ${isHidden ? "hidden" : ""}`}>
@@ -167,16 +177,16 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
                 <div className="price-details">
                   <h4>Price Details: </h4>
                     <div className="price">Total MRP: 
-                      <div className="total-mrp">₹ {calculateTotal()}</div>
+                      <div className="total-mrp">₹ {formatPrice(calculateTotal())}</div>
                     </div>
                     <div className="price">Money Saved:
-                      <div className="money-saved">-₹ {calculateTotal()-calculateDiscountedTotal()}</div>
+                      <div className="money-saved">-₹ {formatPrice(calculateTotal()-calculateDiscountedTotal())}</div>
                     </div>
                     <div className="price" style={{fontWeight: 600}}>Total Amount:
-                      <div className="total-amount"> ₹ {calculateDiscountedTotal()}</div>
+                      <div className="total-amount"> ₹ {formatPrice(calculateDiscountedTotal())}</div>
                     </div>
                 </div>
-
+                <button className="checkout" onClick={proceedToCheckout}> <div className="dot"></div>Proceed To Checkout</button>
               </>
             )}
           </div>
