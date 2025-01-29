@@ -22,9 +22,21 @@ function Home() {
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
+
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: Math.max(1, newQuantity) } : item
+      )
+    );
+  };
   return (
     <div className="Home">
-      <Header cart={cart} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
         <Showcase />
         <div className="parallax1"></div> {/* Parallax background section */}
         <div className="content-section">
@@ -32,7 +44,7 @@ function Home() {
       </div>
       <div className="parallax2"></div> {/* Add another parallax section if needed */}
       <div className="content-section">
-        <BestSeller />
+        <BestSeller addToCart={addToCart}/>
       </div>
       <div className="parallax3"></div> {/* Add another parallax section if needed */}
       <div className="content-section">

@@ -1,6 +1,7 @@
 import React from "react";
 import "../Styles/ProductComponent.css";
 
+
 const ProductComponent = ({ products, addToCart }) => {
   return (
     <div className="product-container">

@@ -4,10 +4,10 @@ import "../../Styles/Collection/Categories.css";
 
 const Categories = () => {
   const categories = [
-    { name: "TRENDING", image: "https://via.placeholder.com/120/FFCCCB" },
-    { name: "BY STYLE", image: "https://via.placeholder.com/120/90EE90" },
-    { name: "BY MATERIAL", image: "https://via.placeholder.com/120/ADD8E6" },
-    { name: "BY THEMES", image: "https://via.placeholder.com/120/FFD700" },
+    { name: "TRENDING", image: "/Images/bytrend.jpg" },
+    { name: "BY STYLE", image: "/Images/bystyles.jpg" },
+    { name: "BY MATERIAL", image: "/Images/bymaterial.jpg" },
+    { name: "BY THEMES", image: "/Images/bythemes.jpg" },
   ];
 
   return (
