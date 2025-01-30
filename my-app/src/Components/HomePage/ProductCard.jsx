@@ -25,7 +25,7 @@ const ProductCard = ({ addToCart}) => {
             Add to Cart
           </button>
         </div>
-       ))};
+       ))}
     </div>
   );
 };

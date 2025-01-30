@@ -1,38 +1,130 @@
+:root {
+  --primary: #fff;
+  --bg-envelope-color: #f5edd1;
+  --envelope-tab: #ecdeb8;
+  --envelope-cover: #e6cfa7;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --txt-color: #444;
+  --heart-color: rgb(252, 8, 231);
+}
+
 .testimonial-card {
-    width: 300px;
-    padding: 20px;
-    background-color: #ffeef0; /* Light pink background */
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    position: relative;
-  }
-  
-  .testimonial-name {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .testimonial-message {
-    font-size: 1em;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  @media (max-width: 1024px) {
-    .testimonial-card{
-      width: 100%;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .testimonial-name h3{
-      font-size: medium;
-    }
+.container {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .testimonial-message p{
-      font-size: x-small;
-    }
-  }
-  
+.envelope-wrapper {
+  position: relative;
+}
+
+.envelope {
+  position: relative;
+  width: 300px;
+  height: 230px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Fix ::before and ::after selectors */
+.envelope::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  border-top: 130px solid var(--envelope-tab);
+  border-right: 150px solid transparent;
+  border-left: 150px solid transparent;
+  transform-origin: top;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.envelope::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  border-top: 130px solid transparent;
+  border-right: 150px solid var(--envelope-cover);
+  border-bottom: 100px solid var(--envelope-cover);
+  border-left: 150px solid var(--envelope-cover);
+}
+
+.letter {
+  position: absolute;
+  bottom: 0;
+  width: 80%;
+  height: 75%;
+  background: var(--primary);
+  text-align: center;
+  transition: bottom 0.7s ease-in-out, transform 0.5s ease-in-out;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.letter .text {
+  font-family: 'Gill Sans', sans-serif;
+  color: var(--txt-color);
+  font-size: 12px;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+/* Heart Styling */
+.heart {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  background: var(--heart-color);
+  z-index: 3;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  transition: transform 0.4s ease-in-out;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  cursor: pointer;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: var(--heart-color);
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -9px;
+  left: 0;
+}
+
+.heart::after {
+  left: 9px;
+  top: 0;
+}
+
+/* Flap Animation */
+.flap .envelope::before {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.flap .letter {
+  bottom: 150px;
+  transform: scale(1.2);
+}

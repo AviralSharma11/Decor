@@ -5,11 +5,7 @@
     align-items: center;
     padding: 20px;
   }
-
-  .heading{
-    padding-bottom: 10px;
-  }
-  
+    
   .review {
     display: flex;
     gap: 30px;
