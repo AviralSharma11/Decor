@@ -15,7 +15,7 @@
 }
 
 .container {
-  height: 90vh;
+  height: 55vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,9 +38,9 @@
 .envelope::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 44px;
   z-index: 2;
-  border-top: 130px solid var(--envelope-tab);
+  border-top: 120px solid var(--envelope-tab);
   border-right: 150px solid transparent;
   border-left: 150px solid transparent;
   transform-origin: top;
@@ -53,20 +53,19 @@
   z-index: 1;
   width: 0;
   height: 0;
-  border-top: 130px solid transparent;
+  border-top: 40px solid transparent;
   border-right: 150px solid var(--envelope-cover);
-  border-bottom: 100px solid var(--envelope-cover);
+  border-bottom: 93px solid var(--envelope-cover);
   border-left: 150px solid var(--envelope-cover);
 }
 
 .letter {
   position: absolute;
-  bottom: 0;
   width: 80%;
-  height: 75%;
+  height: 63%;
   background: var(--primary);
   text-align: center;
-  transition: bottom 0.7s ease-in-out, transform 0.5s ease-in-out;
+  transition: bottom 1s ease-in-out, transform 0.8s ease-in-out;
   box-shadow: 0 2px 5px var(--shadow-color);
   display: flex;
   flex-direction: column;
@@ -124,7 +123,12 @@
   z-index: 0;
 }
 
-.flap .letter {
-  bottom: 150px;
+.envelope-wrapper:hover .letter {
+  bottom: 130px;
   transform: scale(1.2);
+}
+
+.flap .letter {
+  bottom: 50px;
+  transition-delay: 0.3s;
 }

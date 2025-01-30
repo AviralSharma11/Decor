@@ -5,10 +5,10 @@
     align-items: center;
     padding: 20px;
   }
-    
+
   .review {
     display: flex;
-    gap: 30px;
+    gap: 60px;
     justify-content: space-around;
   }
 
