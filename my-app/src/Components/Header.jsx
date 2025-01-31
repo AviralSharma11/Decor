@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "../Styles/Header.css";
 import LoginModal from "./LoginModal";
 
@@ -78,11 +78,11 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
           <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
             <div className="hamburgerContent">
               <ul className="nav-links content">
-                <li>Customised</li>
-                <li>Wood</li>
-                <li>Acrylic</li>
-                <li>Aviral</li>
-                <li>Sharma</li>
+                <li><Link to="/customised">Customised</Link></li>
+                <li><Link to="/material/wood">Wood</Link></li>
+                <li><Link to="/material/acrylic">Acrylic</Link></li>
+                <li><Link to="/collections">Collections</Link></li>
+                <li><Link>Sharma</Link></li>
               </ul>
               <div className="profileViewer show"onClick={openModal}>
                 <svg

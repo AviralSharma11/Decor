@@ -7,12 +7,16 @@ export const filters = [
   export const products = [
     {
       id: 1,
-      image: "Images/Bestseller1.jpg",
+      image: "/Images/Bestseller1.jpg",
       name: "The Northern Star",
       rating: 4.5,
       reviews: 38,
       originalPrice: 3499.0,
       discountedPrice: 1699.0,
+      material: "Wood",
+      woodType: "oak",
+      style: "wall decor",
+      trending: true,
     },
     {
       id: 2,
@@ -22,6 +26,10 @@ export const filters = [
       originalPrice: 3499.0,
       discountedPrice: 1699.0,
       image: '/Images/Bestseller2.jpg',
+      material: "Acrylic",
+      woodType: "N/A",
+      style: "wall decor",
+      trending: true,
     },
     {
       id: 3,
@@ -31,6 +39,10 @@ export const filters = [
       originalPrice: 3499.0,
       discountedPrice: 1699.0,
       image: '/Images/Bestseller2.jpg',
+      material: "Resins",
+      woodType: "N/A",
+      style: "wall decor",
+      trending: true,
     },
     {
       id: 4,

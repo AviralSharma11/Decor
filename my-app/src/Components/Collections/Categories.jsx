@@ -4,10 +4,10 @@ import "../../Styles/Collection/Categories.css";
 
 const Categories = () => {
   const categories = [
-    { name: "TRENDING", image: "/Images/bytrend.jpg", link: ""},
-    { name: "BY STYLE", image: "/Images/bystyles.jpg" },
-    { name: "BY MATERIAL", image: "/Images/bymaterial.jpg" },
-    { name: "BY THEMES", image: "/Images/bythemes.jpg" },
+    { name: "TRENDING", image: "/Images/bytrend.jpg", link: "/collections/trending"},
+    { name: "BY STYLE", image: "/Images/bystyles.jpg", link: "/collections/style"},
+    { name: "BY MATERIAL", image: "/Images/bymaterial.jpg", link: "/collections/material" },
+    { name: "BY THEMES", image: "/Images/bythemes.jpg" , link: "/collections/themes" },
   ];
 
   return (
