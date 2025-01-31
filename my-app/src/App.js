@@ -10,6 +10,9 @@ import Checkout from "./Components/Checkout";
 import WoodMaterialPage from "./Components/Material/Wood";
 import AcrylicMaterialPage from "./Components/Material/Acrylic";
 import ResinsMaterialPage from "./Components/Material/Resins";
+import ProductDetailPage from "./Components/ProductDetailPage";
+import ProductComponent from "./Components/ProductComponent";
+import { products } from "./List/product";
 
 function App() {
   return (
@@ -24,6 +27,8 @@ function App() {
           <Route path="/collections/style" element={<Style />} />
           <Route path="/collections/material" element={<Material/>} />
           <Route path="/material/wood" element={<WoodMaterialPage />} />
+          <Route path="/" element={<ProductComponent products={products} addToCart={() => {}} />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/material/acrylic" element={<AcrylicMaterialPage />} />
           <Route path="/material/resins" element={<ResinsMaterialPage />} />
           <Route path="/checkout" element={<Checkout/>} />
