@@ -15,8 +15,7 @@ const Categories = () => {
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
         <Link to="/">Home</Link> &gt;
-        <Link to="/collections"> Collections</Link> &gt;
-        <Link to="/shop-all-collections"> Shop All Collections</Link>
+        <Link to="/collections"> Collections</Link>
       </nav>
 
       {/* Categories Section */}

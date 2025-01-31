@@ -56,9 +56,9 @@ const AcrylicMaterialPage = () => {
       // Filter by Price
       if (selectedFilters.Price.length > 0) {
         const priceRange = selectedFilters.Price.find((range) => {
-          if (range === "Under ₹1,000") return product.price < 1000;
-          if (range === "₹1,000 - ₹3,000") return product.price >= 1000 && product.price <= 3000;
-          if (range === "Above ₹3,000") return product.price > 3000;
+          if (range === "Under ₹1,000") return product.discountedPrice < 1000;
+          if (range === "₹1,000 - ₹3,000") return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
+          if (range === "Above ₹3,000") return product.discountedPrice > 3000;
           return false;
         });
 

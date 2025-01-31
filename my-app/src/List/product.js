@@ -15,8 +15,7 @@ export const filters = [
       discountedPrice: 1699.0,
       material: "Wood",
       woodType: "oak",
-      style: "wall decor",
-      trending: true,
+      style: "Transitional",
     },
     {
       id: 2,
@@ -28,8 +27,8 @@ export const filters = [
       image: '/Images/Bestseller2.jpg',
       material: "Acrylic",
       woodType: "N/A",
-      style: "wall decor",
-      trending: true,
+      style: "Traditional",
+      trending: "Dopamine",
     },
     {
       id: 3,
@@ -41,8 +40,8 @@ export const filters = [
       image: '/Images/Bestseller2.jpg',
       material: "Resins",
       woodType: "N/A",
-      style: "wall decor",
-      trending: true,
+      style: "Modern",
+      trending: "Soft Girl Aesthetic",
     },
     {
       id: 4,
@@ -52,6 +51,10 @@ export const filters = [
       originalPrice: 3499.0,
       discountedPrice: 1699.0,
       image: '/Images/Bestseller2.jpg',
+      material: "Resins",
+      woodType: "N/A",
+      style: "Vintage",
+      trending: "Coquette",
     },
     {
         id: 5,

@@ -13,6 +13,7 @@ const FilterComponent = ({ filters, onFilterChange }) => {
 
   return (
     <div className="filter-component">
+       <h3 className='filter'>Filter</h3>
       {filters.map((filter) => (
         <div key={filter.label} className="filter-section">
           {/* Filter Header */}

@@ -1,3 +1,7 @@
+.filter{
+  margin-bottom: 10px;
+}
+
 .filter-component {
     font-family: Arial, sans-serif;
     margin: 10px;
@@ -19,6 +23,9 @@
   }
   
   .filter-option {
+    display: flex;
+    gap: 5px;
     margin-bottom: 5px;
+    align-items: baseline;
   }
   
