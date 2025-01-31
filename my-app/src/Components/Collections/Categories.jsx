@@ -4,7 +4,7 @@ import "../../Styles/Collection/Categories.css";
 
 const Categories = () => {
   const categories = [
-    { name: "TRENDING", image: "/Images/bytrend.jpg" },
+    { name: "TRENDING", image: "/Images/bytrend.jpg", link: ""},
     { name: "BY STYLE", image: "/Images/bystyles.jpg" },
     { name: "BY MATERIAL", image: "/Images/bymaterial.jpg" },
     { name: "BY THEMES", image: "/Images/bythemes.jpg" },
@@ -22,14 +22,14 @@ const Categories = () => {
       {/* Categories Section */}
       <div className="categories">
         {categories.map((category, index) => (
-          <div key={index} className="category-card">
+          <Link key={index} to={category.link} className="category-card">
             <img
               src={category.image}
               alt={category.name}
               className="category-image"
             />
             <p className="category-label">{category.name}</p>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
