@@ -113,7 +113,7 @@ export default function Trending(){
                 {/* Categories Section */}
                 <div className="categories">
                     {material.map((category, index) => (
-                    <Link key={index} to={category.link} className="category-card">
+                    <Link key={index} to={category.link} className="category-card" style={{textDecoration: "none"}}>
                         <img
                         src={category.image}
                         alt={category.name}

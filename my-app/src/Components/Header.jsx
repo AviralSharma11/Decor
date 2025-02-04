@@ -7,6 +7,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
 
 
   let lastScrollY = 0;

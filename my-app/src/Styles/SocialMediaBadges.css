@@ -8,6 +8,10 @@
     gap: 15px; /* Space between badges */
     z-index: 1000; /* Ensure it appears above other elements */
   }
+
+  .social-media-badges svg{
+    color: purple
+  }
   
   .badge {
     width: 50px;

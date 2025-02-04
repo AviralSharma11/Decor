@@ -21,7 +21,7 @@ const Categories = () => {
       {/* Categories Section */}
       <div className="categories">
         {categories.map((category, index) => (
-          <Link key={index} to={category.link} className="category-card">
+          <Link key={index} to={category.link} className="category-card" style={{textDecoration: "none"}}>
             <img
               src={category.image}
               alt={category.name}

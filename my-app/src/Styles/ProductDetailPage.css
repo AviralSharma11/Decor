@@ -1,3 +1,9 @@
+.product-detail-page{
+  display: flex;
+  flex-direction: column;
+  margin-top: 104px;
+}
+
 .product-detail-container {
     display: flex;
     align-items: center;
@@ -8,7 +14,6 @@
   
   .product-image img {
     width: 300px;
-    border-radius: 10px;
   }
   
   .product-info {
@@ -27,12 +32,12 @@
     font-size: 20px;
   }
   
-  .discounted-price {
+  .discountedPrice {
     font-weight: bold;
     color: green;
   }
   
-  .original-price {
+  .originalPrice {
     text-decoration: line-through;
     color: gray;
   }
