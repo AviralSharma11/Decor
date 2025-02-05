@@ -1,19 +1,52 @@
-  .product{
-    display: flex;
+.product {
+  display: flex;
+}
+
+/* Sidebar for desktop */
+.sidebar {
+  width: 20%;
+  padding: 10px;
+}
+
+/* Product grid for desktop */
+.contents {
+  width: 80%;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Responsive layout for screens <= 768px */
+@media (max-width: 768px) {
+  .product {
+    flex-direction: column;
   }
 
+  /* Hide sidebar on mobile */
   .sidebar {
-    width: 20%;
-    padding: 10px;
+    display: none;
   }
-  
+
+  /* Product grid for mobile */
   .contents {
-    width: 80%;
-    padding: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    width: 100%;
+    order: 1; /* Move products above filters */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
   }
-  
-  
-  
+
+  /* Style for the filter button on mobile */
+  .filter-btn {
+    background-color: #000;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    text-align: center;
+    margin: 10px;
+  }
+}

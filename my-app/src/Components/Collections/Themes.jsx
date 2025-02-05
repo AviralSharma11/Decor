@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/Collection/Categories.css";
 import Header from "../Header";
@@ -6,19 +6,29 @@ import Footer from "../Footer";
 import SocialMediaBadges from "../SocialMediaBadges";
 import ProductComponent from "../ProductComponent";
 import FilterComponent from "../FilterComponent";
+import FilterComponent2 from "../FilterComponent2";
 import { filters as initialFilters, products as initialProducts  } from "../../List/product";
 import "../../Collections.css";
 
 export default function Themes(){
     const [filters] = useState(initialFilters);
     const [products] = useState(initialProducts);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [cart, setCart] = useState([]);
     const [selectedFilters, setSelectedFilters] = useState({
         Type: [],
         Color: [],
         Price: [],
     });
+ const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
     const handleFilterChange = (filterCategory, value, isChecked) => {
         setSelectedFilters((prevFilters) => {
           const updatedFilters = { ...prevFilters };
@@ -128,6 +138,13 @@ export default function Themes(){
                     ))}
                 </div>
             </div>
+            {isMobile && (
+        <div className="mobile-controls">
+          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
+        </div>
+      )}
+
+      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
             <div className="product">
                 <div className="sidebar">
                 <FilterComponent filters={filters} onFilterChange={handleFilterChange} />

@@ -45,3 +45,40 @@
     font-weight: bold;
   }
   
+  @media (max-width: 768px) {
+    .categories {
+      gap: 10px; /* Reduce spacing on smaller screens */
+    }
+    
+    .category-card {
+      width: 100px; /* Adjust size */
+    }
+  
+    .category-image {
+      width: 100px;
+      height: 100px;
+    }
+  
+    .category-label {
+      font-size: 12px; /* Smaller text on mobile */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .categories-container {
+      margin-top: 60px; /* Reduce top margin on very small screens */
+    }
+  
+    .category-card {
+      width: 90px;
+    }
+  
+    .category-image {
+      width: 90px;
+      height: 90px;
+    }
+  
+    .category-label {
+      font-size: 11px;
+    }
+  }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/MaterialPage.css"; 
 import ProductComponent from "../../Components/ProductComponent";
@@ -6,6 +6,7 @@ import { filters as initialFilters, products as allProducts } from "../../List/p
 import Header from "../Header";
 import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
+import FilterComponent2 from "../FilterComponent2";
 import SocialMediaBadges from "../SocialMediaBadges";
 
 const WoodMaterialPage = () => {
@@ -15,13 +16,22 @@ const WoodMaterialPage = () => {
   // Use woodProducts as initial products state
   const [filters] = useState(initialFilters);
   const [products] = useState(woodProducts);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
     Price: [],
   });
+ const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   // Handle filter changes
   const handleFilterChange = (filterCategory, value, isChecked) => {
     setSelectedFilters((prevFilters) => {
@@ -116,6 +126,14 @@ const WoodMaterialPage = () => {
       <p className="material-description">
         Discover our beautiful collection of wooden products, crafted with elegance and durability.
       </p>
+
+      {isMobile && (
+        <div className="mobile-controls">
+          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
+        </div>
+      )}
+
+      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* Display Products */}
       <div className="product">
