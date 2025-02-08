@@ -7,7 +7,6 @@ export const filters = [
   export const products = [
     {
       id: 1,
-      image: "/Images/Bestseller1.jpg",
       name: "The Northern Star",
       rating: 4.5,
       reviews: 38,
@@ -19,7 +18,14 @@ export const filters = [
       description: "",
       trending: "",
       theme: "",
-      
+      image: [
+        "/Images/Bestseller1.jpg",
+        '/Images/Bestseller2.jpg',
+        '/Images/Bestseller2.jpg',
+        '/Images/Bestseller2.jpg',
+        '/Images/Bestseller2.jpg',
+      ]
+
     },
     {
       id: 2,

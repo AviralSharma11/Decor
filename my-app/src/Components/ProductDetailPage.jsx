@@ -4,13 +4,14 @@ import "../Styles/ProductDetailPage.css";
 import Header from "./Header";
 import SocialMediaBadges from "./SocialMediaBadges";
 import Footer from "./Footer";
+import { products } from "../List/product";
 
 const ProductDetailPage = () => {
   const [cart, setCart] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const product = location.state?.product; // Get product data from state
-
+  const product = location.state?.product || products; // Get product data from state
+  const [selectedImage, setSelectedImage] = useState(product.image[0]);
   if (!product) {
     return <h2>Product not found</h2>;
   }
@@ -48,8 +49,21 @@ const ProductDetailPage = () => {
     <div className="product-detail-page">
       <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
       <div className="product-detail-container">
-        <div className="product-image">
-          <img src={product.image} alt={product.name} />
+      <div className="product-image-gallery">
+          <div className="thumbnail-container">
+            {product.image.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`Thumbnail ${index}`}
+                className={`thumbnail ${selectedImage === img ? "active" : ""}`}
+                onClick={() => setSelectedImage(img)}
+              />
+            ))}
+          </div>
+          <div className="main-image-container">
+            <img src={selectedImage} alt={product.name} className="main-image" />
+          </div>
         </div>
         <div className="product-info">
           <h1>{product.name}</h1>

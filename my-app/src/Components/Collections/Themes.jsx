@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "../../Styles/Collection/Categories.css";
 import Header from "../Header";
 import Footer from "../Footer";
@@ -116,26 +117,69 @@ export default function Themes(){
     return(
         <div className="material">
             <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
-            <div className="categories-container">
+            <div className="carousel-container">
                 {/* Breadcrumb Navigation */}
                 <nav className="breadcrumb">
                     <Link to="/">Home</Link> &gt;
                     <Link to="/collections"> Collections</Link> &gt;
-                    <Link to="/collections/themes"> Shop By Themes</Link>
+                    <Link to="/collections/themes"> <strong>Shop By Themes</strong></Link>
                 </nav>
             
                 {/* Categories Section */}
-                <div className="categories">
-                    {material.map((category, index) => (
-                    <Link key={index} to={category.link} className="category-card" style={{textDecoration: "none"}}>
-                        <img
-                        src={category.image}
-                        alt={category.name}
-                        className="category-image"
-                        />
-                        <p className="category-label">{category.name}</p>
-                    </Link>
-                    ))}
+                <div className="slider-wave">
+                    <svg
+                      version="1.1"
+                      id="Layer_1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlnsXlink="http://www.w3.org/1999/xlink"
+                      viewBox="0 0 804 50.167"
+                      preserveAspectRatio="none"
+                      xmlSpace="preserve"
+                    >
+                      <path
+                        fill="#333"
+                        d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"
+                      />
+                    </svg>
+                  </div>
+                <Splide
+                  options={{
+                    type: "loop",
+                    perPage: 4,
+                    focus: "center",
+                    autoplay: true,
+                    interval: 3000,
+                    pauseOnHover: false,
+                    pagination: false,
+                    arrows: true,
+                    breakpoints: {
+                      768: { perPage: 1 },
+                    },
+                  }}
+                >
+                  {material.map((category, index) => (
+                    <SplideSlide key={index}>
+                      <Link to={category.link}>
+                      <img src={category.image} alt={`Slide ${index + 1}`} className="curved-image" />
+                      <p className="category-name">{category.name}</p>
+                      </Link>
+                    </SplideSlide>
+                  ))}
+                </Splide>
+                <div className="slider-wave2 bottom">
+                <svg
+                  version="1.1"
+                  id="Layer_1" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  xmlnsXlink="http://www.w3.org/1999/xlink" 
+                  x="0px" 
+                  y="0px" 
+                  viewBox="0 0 804 50.167" 
+                  enableBackground="new 0 0 804 50.167" 
+                  xmlSpace="preserve"
+                >
+                  <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"></path>
+                </svg>
                 </div>
             </div>
             {isMobile && (
