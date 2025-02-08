@@ -16,6 +16,10 @@ export const filters = [
       material: "Wood",
       woodType: "oak",
       style: "Transitional",
+      description: "",
+      trending: "",
+      theme: "",
+      
     },
     {
       id: 2,

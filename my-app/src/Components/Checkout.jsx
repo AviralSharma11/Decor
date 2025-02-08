@@ -3,15 +3,28 @@ import "../Styles/Checkout.css";
 import Header from "./Header";
 
 const Checkout = () => {
+  const [cart, setCart] = useState([]);
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
   const handleBillingAddressChange = (e) => {
     setBillingSameAsShipping(e.target.value === "same");
   };
 
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: Math.max(1, newQuantity) } : item
+      )
+    );
+  };
+
   return (
     <div className="checkout-container">
-        <Header />
+        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
       <h1 className="page-title">Checkout</h1>
       {/* Delivery Section */}
       <div className="format">

@@ -1,84 +1,62 @@
-.categories-container {
-    padding: 10px;
-    font-family: Arial, sans-serif;
-    margin-top: 84px;
-  }
-  
-  .breadcrumb {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #a58f69;
-  }
-  
-  .breadcrumb a {
-    text-decoration: none;
-    color: #a58f69;
-  }
-  
-  .categories {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .category-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin-left: 40px;
-    width: 120px;
-  }
-  
-  .category-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #f7f7f7;
-  }
-  
-  .category-label {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #4a4a4a;
-    font-weight: bold;
-  }
-  
-  @media (max-width: 768px) {
-    .categories {
-      gap: 10px; /* Reduce spacing on smaller screens */
-    }
-    
-    .category-card {
-      width: 100px; /* Adjust size */
-    }
-  
-    .category-image {
-      width: 100px;
-      height: 100px;
-    }
-  
-    .category-label {
-      font-size: 12px; /* Smaller text on mobile */
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .categories-container {
-      margin-top: 60px; /* Reduce top margin on very small screens */
-    }
-  
-    .category-card {
-      width: 90px;
-    }
-  
-    .category-image {
-      width: 90px;
-      height: 90px;
-    }
-  
-    .category-label {
-      font-size: 11px;
-    }
-  }
+.carousel-container {
+  margin-top: 104px;
+  margin-bottom: 0px;
+  text-align: center;
+}
+
+.splide__track {
+  overflow: visible;
+}
+
+
+.curved-image {
+  width: 95%;
+  height: 90%;
+  object-fit: cover;
+}
+
+.splide__arrow {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.splide__arrow:hover {
+  background: black;
+}
+
+.slider-wave {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  left:0;
+  right:0;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.slider-wave svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.slider-wave2{
+  width: 100%;
+  height: auto;
+  position: relative;
+  right: 0;
+  left: 0;
+  bottom:104px;
+  overflow: hidden;
+  z-index:2;
+  transform: rotate(180deg);
+}
+
+.slider-wave2 svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
