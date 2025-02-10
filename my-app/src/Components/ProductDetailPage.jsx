@@ -12,6 +12,20 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const product = location.state?.product || products; // Get product data from state
   const [selectedImage, setSelectedImage] = useState(product.image[0]);
+  const sections = [
+    { title: "Description", content: product.description },
+    { title: "Features", content: product.trending || "No features available" },
+    {
+      title: "Size & Material",
+      content: `Material: ${product.material}, Wood Type: ${product.woodType}`,
+    },
+  ];
+
+  const [openSection, setOpenSection] = useState(null);
+
+  const toggleSection = (index) => {
+    setOpenSection(openSection === index ? null : index);
+  };
   if (!product) {
     return <h2>Product not found</h2>;
   }
@@ -76,6 +90,24 @@ const ProductDetailPage = () => {
             <span className="discountedPrice">₹{product.discountedPrice.toLocaleString()}</span>
             <span className="originalPrice">₹{product.originalPrice.toLocaleString()}</span>
             <span className="discount">{Math.round(((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100)}% Off</span>
+          </div>
+          <div className="accordion">
+            {sections.map((section, index) => (
+              <div key={index} className="accordion-item">
+                <button
+                  onClick={() => toggleSection(index)}
+                  className="accordion-header"
+                >
+                  {section.title}
+                  <span className="accordion-icon">
+                    {openSection === index ? "▲" : "▼"}
+                  </span>
+                </button>
+                {openSection === index && (
+                  <div className="accordion-content">{section.content}</div>
+                )}
+              </div>
+            ))}
           </div>
           <button className="buy-now" onClick={proceedToCheckout}>Buy Now</button>
           <button className="add-to-cart" onClick={() => addToCart(product)}>Add to Cart</button>

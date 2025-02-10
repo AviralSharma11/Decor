@@ -15,11 +15,11 @@ export const filters = [
       material: "Wood",
       woodType: "oak",
       style: "Transitional",
-      description: "",
+      description: "Wooden engraved wedding hearts, wedding save the date, laser engraving initial pins, unique wedding boutonniere, wedding gift for guest",
       trending: "",
       theme: "",
       image: [
-        "/Images/Bestseller1.jpg",
+        "/Images/img2.webp",
         '/Images/Bestseller2.jpg',
         '/Images/Bestseller2.jpg',
         '/Images/Bestseller2.jpg',
