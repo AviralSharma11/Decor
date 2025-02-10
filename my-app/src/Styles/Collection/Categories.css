@@ -78,6 +78,8 @@
 }
 
 .category-name{
+  position: relative;
+  z-index: 10;
   text-decoration: none;
   color: white;
   font-weight: 600;
@@ -86,6 +88,12 @@
 
 .splide__slide:not(.is-active) .category-name {
   opacity: 40%;
+}
+
+@media (min-width: 557px) and (max-width: 786px){
+  .slider-wave2{
+    bottom: 7vh;
+  }
 }
 
 @media (min-width:390px) and (max-width:480px) {

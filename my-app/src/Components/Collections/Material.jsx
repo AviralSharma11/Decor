@@ -158,8 +158,9 @@ export default function Material(){
                           <SplideSlide key={index}>
                             <Link to={category.link} className="slide">
                               <img src={category.image} alt={`Slide ${index + 1}`} className="curved-image" />
+                              </Link>
                               <p className="category-name">{category.name}</p>
-                            </Link>
+                            
                           </SplideSlide>
                         ))}
                       </Splide>
