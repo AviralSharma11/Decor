@@ -15,6 +15,7 @@ export const filters = [
       material: "Wood",
       woodType: "oak",
       style: "Transitional",
+      customisable: true,
       description: "Wooden engraved wedding hearts, wedding save the date, laser engraving initial pins, unique wedding boutonniere, wedding gift for guest",
       trending: "",
       theme: "",
@@ -39,6 +40,7 @@ export const filters = [
       woodType: "N/A",
       style: "Traditional",
       trending: "Dopamine",
+      customisable: true,
     },
     {
       id: 3,
@@ -52,6 +54,7 @@ export const filters = [
       woodType: "N/A",
       style: "Modern",
       trending: "Soft Girl Aesthetic",
+      customisable: true,
     },
     {
       id: 4,
@@ -65,6 +68,7 @@ export const filters = [
       woodType: "N/A",
       style: "Vintage",
       trending: "Coquette",
+      customisable: true,
     },
     {
         id: 5,
@@ -74,6 +78,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 6,
@@ -83,6 +88,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 7,
@@ -92,6 +98,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 8,
@@ -101,6 +108,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 9,
@@ -110,6 +118,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 10,
@@ -119,6 +128,7 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 11,
@@ -128,15 +138,17 @@ export const filters = [
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 12,
         name: 'D',
         rating: 4.5,
         reviews: 38,
-        originalPrice: 3499.0,
-        discountedPrice: 1699.0,
+        originalPrice: 54443.0,
+        discountedPrice: 10000.0,
         image: '/Images/Bestseller2.jpg',
+        customisable: true,
       },
       {
         id: 13,

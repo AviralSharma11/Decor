@@ -13,6 +13,7 @@ import ResinsMaterialPage from "./Components/Material/Resins";
 import ProductDetailPage from "./Components/ProductDetailPage";
 import ProductComponent from "./Components/ProductComponent";
 import { products } from "./List/product";
+import CustomisedMaterialPage from "./Components/Collections/Customised";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/material/acrylic" element={<AcrylicMaterialPage />} />
           <Route path="/material/resins" element={<ResinsMaterialPage />} />
+          <Route path="/collections/customised-products" element={<CustomisedMaterialPage/>} />
           <Route path="/checkout" element={<Checkout/>} />
         </Routes>
       </Router>    

@@ -80,7 +80,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
         <div className="product-info">
-          <h1>{product.name}</h1>
+          <h1 className="product-name">{product.name}</h1>
           <div className="product-rating">
             {"★".repeat(Math.floor(product.rating))}
             {"☆".repeat(5 - Math.floor(product.rating))}
@@ -90,6 +90,10 @@ const ProductDetailPage = () => {
             <span className="discountedPrice">₹{product.discountedPrice.toLocaleString()}</span>
             <span className="originalPrice">₹{product.originalPrice.toLocaleString()}</span>
             <span className="discount">{Math.round(((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100)}% Off</span>
+          </div>
+          <div className="buttons">
+            <button className="buy-now" onClick={proceedToCheckout}>Buy Now</button>
+            <button className="add-to-cart" onClick={() => addToCart(product)}>Add to Cart</button>
           </div>
           <div className="accordion">
             {sections.map((section, index) => (
@@ -109,8 +113,6 @@ const ProductDetailPage = () => {
               </div>
             ))}
           </div>
-          <button className="buy-now" onClick={proceedToCheckout}>Buy Now</button>
-          <button className="add-to-cart" onClick={() => addToCart(product)}>Add to Cart</button>
         </div>
       </div>
       <SocialMediaBadges />

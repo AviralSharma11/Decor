@@ -79,7 +79,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
           <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
             <div className="hamburgerContent">
               <ul className="nav-links content">
-                <li><Link to="/customised">Customised</Link></li>
+                <li><Link to="/collections/customised-products">Customisable</Link></li>
                 <li><Link to="/material/wood">Wood</Link></li>
                 <li><Link to="/material/acrylic">Acrylic</Link></li>
                 <li><Link to="/collections">Collections</Link></li>
