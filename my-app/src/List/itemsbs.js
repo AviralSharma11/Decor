@@ -1,13 +1,26 @@
 const itemsbs =[
     {
         id: 1,
-        image: "/Images/Bestseller1.jpg",
-        isOnSale: true,
         name: "The Northern Star",
         rating: 4.5,
         reviews: 38,
         originalPrice: 3499.0,
         discountedPrice: 1699.0,
+        material: "Wood",
+        woodType: "oak",
+        style: "Transitional",
+        customisable: true,
+        description: "Wooden engraved wedding hearts, wedding save the date, laser engraving initial pins, unique wedding boutonniere, wedding gift for guest",
+        trending: "",
+        theme: "",
+        image: [
+          "/Images/img2.webp",
+          '/Images/Bestseller2.jpg',
+          '/Images/Bestseller2.jpg',
+          '/Images/Bestseller2.jpg',
+          '/Images/Bestseller2.jpg',
+        ],
+        backgroundImage: "/Images/background.jpg",
     },
     {
         id: 2,
