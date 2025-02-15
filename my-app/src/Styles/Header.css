@@ -346,6 +346,12 @@
     bottom: 24%;
   }
 
+  .cart-count{
+    position: absolute;
+    left:35%;
+    top:25%;
+  }
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .cart-modal {
