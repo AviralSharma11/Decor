@@ -15,9 +15,15 @@ const WoodMaterialPage = () => {
 
   // Use woodProducts as initial products state
   const [filters] = useState(initialFilters);
-  const [products] = useState(woodProducts);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
@@ -87,27 +93,39 @@ const WoodMaterialPage = () => {
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
+      let updatedCart;
+  
       if (existingItem) {
-        return prevCart.map((item) =>
+        updatedCart = prevCart.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
+      } else {
+        updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+  
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
+      return updatedCart;
     });
   };
 
   // Remove product from cart
   const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== productId);
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
+      return updatedCart;
+    });
   };
 
   // Update product quantity in cart
   const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: Math.max(1, newQuantity) } : item
-      )
-    );
+    setCart((prevCart) => {
+      const updatedCart = prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      );
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
+      return updatedCart;
+    });
   };
 
   return (

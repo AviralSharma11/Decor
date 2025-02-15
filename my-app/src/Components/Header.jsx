@@ -1,25 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {Link, useNavigate} from "react-router-dom";
 import "../Styles/Header.css";
 import LoginModal from "./LoginModal";
 
-const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the cart prop
+const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the cart prop
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  
-
-
-  let lastScrollY = 0;
+  const lastScrollY = useRef(0); //  Use useRef instead of a regular variable
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
+      if (window.scrollY > lastScrollY.current) {
         setIsHidden(true);
       } else {
         setIsHidden(false);
       }
-      lastScrollY = window.scrollY;
+      lastScrollY.current = window.scrollY; //  Update the ref value
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -151,30 +148,48 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity }) => { // Use the ca
               <p>Your cart is empty</p>
             ) : (
               <>
-                <ul>
-                  {cart.map((item, index) => (
-                    <li key={index}>
-                      <img src={item.image} alt={item.name}  className="item-image"/>
-                      <div className="items">
-                        <span className="item-name">{item.name}</span>
-                        <span className="item-price">₹{item.discountedPrice}</span>
-                        <span className="item-price original">₹{item.originalPrice}</span>
-                        <div className="quantity-controls">
-                          <button
-                            className="quantity-button"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            disabled={item.quantity === 1}
-                          >
-                            -
-                          </button>
-                          <span>{item.quantity}</span>
-                          <button className="quantity-button" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                        </div>
-                        <button className="remove-item" onClick={() => onRemoveFromCart(item.id)}>X</button>
+              <ul>
+                {cart.map((product, index) => (
+                  <li key={index}>
+                    <Link 
+                      to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
+                      state={{ product }} 
+                      style={{ textDecoration: "none" }}>
+                      <img src={product.image} alt={product.name} className="item-image" />
+                    </Link>
+
+                    <div className="items">
+                      <Link 
+                        to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
+                        state={{ product }} 
+                        style={{ textDecoration: "none" }}>
+                        <span className="item-name">{product.name}</span>
+                      </Link>
+
+                      <span className="item-price">₹{product.discountedPrice}</span>
+                      <span className="item-price original">₹{product.originalPrice}</span>
+
+                      <div className="quantity-controls">
+                        <button 
+                          className="quantity-button" 
+                          onClick={() => updateQuantity(product.id, product.quantity - 1)}
+                          disabled={product.quantity === 1}>
+                          -
+                        </button>
+                        <span>{product.quantity}</span>
+                        <button 
+                          className="quantity-button" 
+                          onClick={() => updateQuantity(product.id, product.quantity + 1)}>
+                          +
+                        </button>
                       </div>
-                    </li>
-                  ))}
-                </ul>
+
+                      <button className="remove-item" onClick={() => onRemoveFromCart(product.id)}>X</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
                 <div className="price-details">
                   <h4>Price Details: </h4>
                     <div className="price">Total MRP: 

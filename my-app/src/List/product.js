@@ -25,8 +25,8 @@ export const filters = [
         '/Images/Bestseller2.jpg',
         '/Images/Bestseller2.jpg',
         '/Images/Bestseller2.jpg',
-      ]
-
+      ],
+      backgroundImage: "/Images/background.jpg",
     },
     {
       id: 2,

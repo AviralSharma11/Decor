@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/Checkout.css";
 import Header from "./Header";
 
 const Checkout = () => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
   const handleBillingAddressChange = (e) => {
@@ -11,15 +19,21 @@ const Checkout = () => {
   };
 
   const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== productId);
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
+      return updatedCart;
+    });
   };
 
   const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: Math.max(1, newQuantity) } : item
-      )
-    );
+    setCart((prevCart) => {
+      const updatedCart = prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      );
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
+      return updatedCart;
+    });
   };
 
   return (

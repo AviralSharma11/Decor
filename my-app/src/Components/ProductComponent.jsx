@@ -7,7 +7,7 @@ const ProductComponent = ({ products, addToCart }) => {
     <div className="product-container">
       {products.map((product) => (
         <div key={product.id} className="product-card">
-          <Link to={`/product/${product.name}`.toLowerCase()} state={{ product }} style={{textDecoration: "none"}}>
+          <Link to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")} state={{ product }} style={{textDecoration: "none"}}>
           <div className="product-image">
               <img src={product.image} alt={product.name} />
           </div>
