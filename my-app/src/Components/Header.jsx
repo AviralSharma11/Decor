@@ -70,8 +70,10 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
             <span className="line"></span>
           </div>
           <div className="logo">
-            <h1>TITLE</h1>
+            <Link to="/" style={{textDecoration: 'none'}}>
+            <h1 className="company-name">TITLE</h1>
             <span className="subtitle">Sub Title</span>
+            </Link>
           </div>
           <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
             <div className="hamburgerContent">
@@ -121,7 +123,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-bag" viewBox="0 0 16 16">
               <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
             </svg>
-              {cart.length >= 0 && (
+              {cart.length > 0 && (
                 <span className="cart-count">{cart.length}</span>
               )}
 
@@ -186,7 +188,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
               </ul>
 
                 <div className="price-details">
-                  <h4>Price Details: </h4>
+                  <h4 >Price Details: </h4>
                     <div className="price">Total MRP: 
                       <div className="total-mrp">₹ {formatPrice(calculateTotal())}</div>
                     </div>
@@ -197,7 +199,9 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
                       <div className="total-amount"> ₹ {formatPrice(calculateDiscountedTotal())}</div>
                     </div>
                 </div>
-                <button className="checkout" onClick={proceedToCheckout}> <div className="dot"></div>Proceed To Checkout</button>
+                <div className="cart-footer">
+                  <button className="checkout" onClick={proceedToCheckout}> <div className="dot"></div>Proceed To Checkout</button>
+                </div>
               </>
             )}
           </div>

@@ -90,6 +90,12 @@
   opacity: 40%;
 }
 
+@media (min-width: 911px) and (max-width: 994px){
+  .slider-wave2{
+    bottom: 6vh;
+  }
+}
+
 @media (min-width: 557px) and (max-width: 786px){
   .slider-wave2{
     bottom: 7vh;

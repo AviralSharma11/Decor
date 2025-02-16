@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../../Styles/HomePage/GiftingGuide.css";
 import People from "./People";
 import peopleData from "../../List/peopledata";
@@ -11,11 +12,9 @@ export default function GiftingGuide(){
             </div>
           <div className="People">
             {peopleData.map((person, index) => (
-              <People
-                key={index}
-                imageSrc={person.imageSrc}
-                title={person.title}
-              />
+              <Link key={index} to={person.url} className="people-card-link">
+                <People imageSrc={person.imageSrc} title={person.title} />
+              </Link>
             ))}
           </div>
         </div>

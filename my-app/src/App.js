@@ -14,14 +14,28 @@ import ProductDetailPage from "./Components/ProductDetailPage";
 import ProductComponent from "./Components/ProductComponent";
 import { products } from "./List/product";
 import CustomisedMaterialPage from "./Components/Collections/Customised";
+import HIMPage from "./Components/HomePage/GiftingGuide/HIM";
+import HERPage from "./Components/HomePage/GiftingGuide/HER";
+import FriendsPage from "./Components/HomePage/GiftingGuide/Friends";
+import FamilyPage from "./Components/HomePage/GiftingGuide/Family";
+import OfficePage from "./Components/HomePage/GiftingGuide/Office";
+import DIYPage from "./Components/HomePage/GiftingGuide/DIY";
+import ScrollToTop from "./Components/ScrollToTop";
 
 function App() {
   return (
     <div className="App">
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/collections" element={<Collections/>} />
+          <Route path="/collections/him" element={<HIMPage />} />
+          <Route path="/collections/her" element={<HERPage />} />
+          <Route path="/collections/friends" element={<FriendsPage />} />
+          <Route path="/collections/family" element={<FamilyPage />} />
+          <Route path="/collections/office" element={<OfficePage />} />
+          <Route path="/collections/diy" element={<DIYPage/>} />
           <Route path="/material/:materialType" element={<MaterialPage />} />
           <Route path="/collections/trending" element={<Trending/>} />
           <Route path="/collections/themes" element={<Themes/>} />

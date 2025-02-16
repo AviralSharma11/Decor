@@ -27,6 +27,7 @@ export const filters = [
         '/Images/Bestseller2.jpg',
       ],
       backgroundImage: "/Images/background.jpg",
+      giftingguide: "HIM",
     },
     {
       id: 2,
@@ -41,6 +42,7 @@ export const filters = [
       style: "Traditional",
       trending: "Dopamine",
       customisable: true,
+      giftingguide: "HER",
     },
     {
       id: 3,
@@ -55,6 +57,7 @@ export const filters = [
       style: "Modern",
       trending: "Soft Girl Aesthetic",
       customisable: true,
+      giftingguide: "Family",
     },
     {
       id: 4,
@@ -69,6 +72,7 @@ export const filters = [
       style: "Vintage",
       trending: "Coquette",
       customisable: true,
+      giftingguide: "Friends",
     },
     {
         id: 5,
@@ -79,6 +83,7 @@ export const filters = [
         discountedPrice: 1699.0,
         image: '/Images/Bestseller2.jpg',
         customisable: true,
+        giftingguide: "Office",
       },
       {
         id: 6,
