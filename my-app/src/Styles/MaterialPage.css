@@ -7,22 +7,22 @@
   .breadcrumb {
     margin: 26px;
     font-size: 14px;
-    color: #a58f69;
+    color: #ac8d4f;
   }
   
   .breadcrumb a {
     text-decoration: none;
-    color: #a58f69;
+    color: #d4bf94;
     transition: color 0.3s;
   }
   
   .breadcrumb a:hover {
-    color: #a08962;
+    color: #d4bf94;
   }
   
   .breadcrumb span {
     font-weight: bold;
-    color: #a58f69;
+    color: #d4bf94;
   }
   
   /* Page Heading */

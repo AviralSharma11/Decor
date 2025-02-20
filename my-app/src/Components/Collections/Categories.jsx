@@ -27,7 +27,13 @@ const Categories = () => {
           viewBox="0 0 804 50.167"
           preserveAspectRatio="none"
         >
-          <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
+         <defs>
+            <radialGradient id="gradient" cx="50%" cy="50%" r="50%" gradientTransform="rotate(90, 0.5, 0.5)">
+              <stop offset="30%" stop-color="#87704f" />
+              <stop offset="100%" stop-color="rgb(100, 83, 59)" />
+            </radialGradient>
+          </defs>
+          <path fill="url(#gradient)" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
         </svg>
       </div>
 
@@ -70,7 +76,13 @@ const Categories = () => {
           viewBox="0 0 804 50.167"
           preserveAspectRatio="none"
         >
-          <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
+           <defs>
+            <radialGradient id="gradient" cx="50%" cy="50%" r="50%" gradientTransform="rotate(90, 0.5, 0.5)">
+              <stop offset="30%" stop-color="#87704f" />
+              <stop offset="100%" stop-color="rgb(100, 83, 59)" />
+            </radialGradient>
+          </defs>
+          <path fill="url(#gradient)" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
         </svg>
       </div>
       </div>

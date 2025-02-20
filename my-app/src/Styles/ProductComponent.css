@@ -8,6 +8,7 @@
 
 .product-card {
   border: 1px solid #ddd;
+  position: relative;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -36,12 +37,13 @@
 
 .product-detail{
   margin-left: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 60px;
 }
 
 .product-detail h3 {
   display: flex;
   margin: 10px 0;
+  margin-right: 4px;
   font-size: 13px;
   color: #555252;
   font-weight: 600;
@@ -71,6 +73,10 @@
 
 
 .addtocart {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
   width: 100%;
   padding: 12px;
   border: none;

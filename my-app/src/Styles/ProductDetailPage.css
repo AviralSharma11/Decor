@@ -111,7 +111,8 @@
   
   .main-image {
     width: 350px;
-    height: auto;
+    min-width: 350px;
+    height: 55vh;
   }
   
   .accordion {

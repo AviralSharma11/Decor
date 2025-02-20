@@ -140,7 +140,11 @@ const ProductDetailPage = () => {
               {"☆".repeat(5 - Math.floor(product.rating))}
               <span className="reviews">({product.reviews})</span>
             </div>
-            <button className="customised-btn" onClick={toggleCustomModal}>Customised to your needs</button>
+            {product.customisable && (
+              <button className="customised-btn" onClick={toggleCustomModal}>
+                Customised to your needs
+              </button>
+            )}
             <div className="product-prices">
               <span className="discountedPrice">₹{product.discountedPrice.toLocaleString()}</span>
               <span className="originalPrice">₹{product.originalPrice.toLocaleString()}</span>

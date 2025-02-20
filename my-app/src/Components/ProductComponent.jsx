@@ -9,7 +9,7 @@ const ProductComponent = ({ products, addToCart }) => {
         <div key={product.id} className="product-card">
           <Link to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")} state={{ product }} style={{textDecoration: "none"}}>
           <div className="product-image">
-              <img src={product.image} alt={product.name} />
+              <img src={product.image[0]} alt={product.name} />
           </div>
           <div className="product-rating">
             {"★".repeat(Math.floor(product.rating))}

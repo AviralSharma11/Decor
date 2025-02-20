@@ -9,7 +9,7 @@ const ProductCard = ({ addToCart}) => {
         <div key={product.id} className="product-card">
           <Link to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")} state={{ product }} style={{textDecoration: "none"}}>
           <div className="product-images">
-            <img src={product.image} alt={product.name} />
+            <img src={product.image[0]} alt={product.name} />
             {product.isOnSale && <span className="sale-label">Sale</span>}
           </div>
           <div className="product-details">
