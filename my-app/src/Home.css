@@ -3,7 +3,7 @@
   }
   
   .parallax1 {
-    height: 550px; /* Adjust height as needed */
+    height: 500px; /* Adjust height as needed */
     background-image: url('../public/Images/para11.webp'); /* Update the path */
     background-attachment: fixed;
     background-position: center;
