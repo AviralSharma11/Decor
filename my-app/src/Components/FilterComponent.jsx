@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../Styles/FilterComponent.css";
 
-const FilterComponent = ({ filters, onFilterChange }) => {
+const FilterComponent = ({ filters, selectedFilters, onFilterChange }) => {
   const [expandedFilters, setExpandedFilters] = useState({}); // To track expanded/collapsed filters
 
   const toggleFilter = (filterLabel) => {
@@ -10,6 +10,7 @@ const FilterComponent = ({ filters, onFilterChange }) => {
       [filterLabel]: !prev[filterLabel],
     }));
   };
+
 
   return (
     <div className="filter-component">
@@ -35,6 +36,7 @@ const FilterComponent = ({ filters, onFilterChange }) => {
                 <div key={option} className="filter-option">
                   <input
                     type="checkbox"
+                    checked={selectedFilters[filter.label]?.includes(option) || false}
                     id={`${filter.label}-${option}`}
                     onChange={(e) =>
                       onFilterChange(filter.label, option, e.target.checked)

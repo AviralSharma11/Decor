@@ -23,6 +23,30 @@
   gap: 20px;
 }
 
+.mobile-controls{
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  z-index: 1000;
+}
+
+.filter-btn {
+  background-color: rgb(100, 83, 59);
+  font-weight: 600;
+  color: #f3e5ca;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 10vw;
+  text-align: center;
+  margin: 0px;
+}
+
+.filter-btn:hover{
+  background-color: rgb(124, 97, 58);
+}
+
 /* Responsive layout for screens <= 768px */
 @media (max-width: 768px) {
   .product {
@@ -44,21 +68,8 @@
   }
 
   /* Style for the filter button on mobile */
-  .filter-btn {
-    background-color: rgb(100, 83, 59);
-    font-weight: 600;
-    color: #f3e5ca;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100px;
-    text-align: center;
+  .filter-btn{
     margin: 10px;
-  }
-
-  .filter-btn:hover{
-    background-color: rgb(124, 97, 58);
+    width: 30vw;
   }
 }

@@ -90,3 +90,31 @@
 .addtocart:hover {
   background-color: #a7724a;
 }
+
+/* .product-container {
+  display: flex;
+  gap: 10px; 
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+  width: calc(50% - 10px); 
+  max-width: 260px; 
+  min-width: 160px;
+}
+
+
+.product-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+} */

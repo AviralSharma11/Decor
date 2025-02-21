@@ -12,6 +12,7 @@ import "./Collections.css";
 export default function Collections() {
   const [filters] = useState(initialFilters);
   const [products] = useState(initialProducts);
+  const [filtersKey, setFiltersKey] = useState(0);
   const [cart, setCart] = useState(() => {
       const savedCart = localStorage.getItem("cart");
       return savedCart ? JSON.parse(savedCart) : [];
@@ -104,6 +105,15 @@ export default function Collections() {
     });
   };
 
+  const resetFilters = () => {
+  
+    filters.forEach((filter) => {
+      filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
+    });
+    setFiltersKey((prevKey) => prevKey + 1);
+  };
+  
+
   const removeFromCart = (productId) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.filter((item) => item.id !== productId);
@@ -130,14 +140,24 @@ export default function Collections() {
       {isMobile && (
         <div className="mobile-controls">
           <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
+          <button className="filter-btn filter2" onClick={resetFilters}>Reset Filters</button>
         </div>
       )}
 
-      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <FilterComponent2 
+        key={filtersKey} 
+        filters={filters} 
+        onFilterChange={handleFilterChange} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        selectedFilters={selectedFilters}
+      />
+
 
       <div className="product">
         <div className="sidebar">
-          <FilterComponent filters={filters} onFilterChange={handleFilterChange} />
+          <FilterComponent filters={filters} onFilterChange={handleFilterChange}  selectedFilters={selectedFilters}/>
+          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
         </div>
         
         <div className="contents">
