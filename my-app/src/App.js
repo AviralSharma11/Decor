@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './Home';
 import Collections from "./Collections";
 import MaterialPage from "./Components/MaterialPage";
@@ -29,25 +29,25 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/collections" element={<Collections/>} />
+          <Route path="/collections" element={<Collections />} />
           <Route path="/collections/him" element={<HIMPage />} />
           <Route path="/collections/her" element={<HERPage />} />
           <Route path="/collections/friends" element={<FriendsPage />} />
           <Route path="/collections/family" element={<FamilyPage />} />
           <Route path="/collections/office" element={<OfficePage />} />
-          <Route path="/collections/diy" element={<DIYPage/>} />
+          <Route path="/collections/diy" element={<DIYPage />} />
           <Route path="/material/:materialType" element={<MaterialPage />} />
-          <Route path="/collections/trending" element={<Trending/>} />
-          <Route path="/collections/themes" element={<Themes/>} />
+          <Route path="/collections/trending" element={<Trending />} />
+          <Route path="/collections/themes" element={<Themes />} />
           <Route path="/collections/style" element={<Style />} />
-          <Route path="/collections/material" element={<Material/>} />
+          <Route path="/collections/material" element={<Material />} />
           <Route path="/material/wood" element={<WoodMaterialPage />} />
           <Route path="/" element={<ProductComponent products={products} addToCart={() => {}} />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/material/acrylic" element={<AcrylicMaterialPage />} />
           <Route path="/material/resins" element={<ResinsMaterialPage />} />
-          <Route path="/collections/customised-products" element={<CustomisedMaterialPage/>} />
-          <Route path="/checkout" element={<Checkout/>} />
+          <Route path="/collections/customised-products" element={<CustomisedMaterialPage />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </Router>    
     </div>
