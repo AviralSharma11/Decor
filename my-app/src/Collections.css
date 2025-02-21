@@ -1,3 +1,6 @@
+.collections{
+  background-color: #FFFDD0;
+}
 .product {
   position: relative;
   display: flex;
@@ -42,14 +45,20 @@
 
   /* Style for the filter button on mobile */
   .filter-btn {
-    background-color: #000;
-    color: white;
+    background-color: rgb(100, 83, 59);
+    font-weight: 600;
+    color: #f3e5ca;
     padding: 10px 15px;
     font-size: 16px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    width: fit-content;
+    width: 100px;
     text-align: center;
     margin: 10px;
+  }
+
+  .filter-btn:hover{
+    background-color: rgb(124, 97, 58);
   }
 }

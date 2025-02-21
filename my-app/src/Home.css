@@ -3,8 +3,8 @@
   }
   
   .parallax1 {
-    height: 500px; /* Adjust height as needed */
-    background-image: url('../public/Images/par1.jpg'); /* Update the path */
+    height: 550px; /* Adjust height as needed */
+    background-image: url('../public/Images/para1.webp'); /* Update the path */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -13,7 +13,7 @@
 
   .parallax2{
     height: 500px; /* Adjust height as needed */
-    background-image: url('../public/Images/par2.jpg'); /* Update the path */
+    background-image: url('../public/Images/para2.webp'); /* Update the path */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -22,7 +22,7 @@
 
   .parallax3{
     height: 500px; /* Adjust height as needed */
-    background-image: url('../public/Images/par3.jpg'); /* Update the path */
+    background-image: url('../public/Images/para3.avif'); /* Update the path */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;

@@ -80,7 +80,7 @@
   width: 100%;
   padding: 12px;
   border: none;
-  background-color: #ffc0cb;
+  background-color: #ca9f74;
   color: #333;
   font-size: 16px;
   font-weight: bold;
@@ -88,5 +88,5 @@
 }
 
 .addtocart:hover {
-  background-color: #ff98a7;
+  background-color: #a7724a;
 }

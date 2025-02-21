@@ -53,12 +53,20 @@ export default function Collections() {
 
   const applyFilters = () => {
     return products.filter((product) => {
-      if (selectedFilters.Type.length > 0 && !selectedFilters.Type.includes(product.name.split(" ")[0])) {
+      if (
+        selectedFilters.Type.length > 0 &&
+        (!product.type || 
+         !selectedFilters.Type.some(filterType => 
+           product.type
+             .split(" , ")
+             .map(t => t.trim().toLowerCase()) // Convert to lowercase and trim spaces
+             .includes(filterType.toLowerCase()) // Compare in lowercase
+         ))
+      ) {
         return false;
       }
-      if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {
-        return false;
-      }
+      
+
       if (selectedFilters.Price.length > 0) {
         const priceRange = selectedFilters.Price.find((range) => {
           if (range === "Under ₹1,000") return product.discountedPrice < 1000;

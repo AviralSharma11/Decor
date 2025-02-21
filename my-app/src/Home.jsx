@@ -3,11 +3,10 @@ import Header from './Components/Header';
 import Showcase from './Components/HomePage/Showcase';
 import GiftingGuide from './Components/HomePage/GiftingGuide';
 import BestSeller from './Components/HomePage/BestSeller';
-import Collage from './Components/HomePage/Collage';
-import Testimonials from './Components/HomePage/Testimonials';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";
+import ReviewBoard from './Components/HomePage/Noticeboard';
 
 function Home() {
   const [cart, setCart] = useState(() => {
@@ -69,9 +68,8 @@ function Home() {
       </div>
       <div className="parallax3"></div> {/* Add another parallax section if needed */}
       <div className="content-section">
-        <Collage />
+        <ReviewBoard />
         <SocialMediaBadges />
-        <Testimonials />
         <Footer />
       </div>
     </div>

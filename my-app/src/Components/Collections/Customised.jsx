@@ -141,7 +141,7 @@ const CustomisedMaterialPage = () => {
 
       <h2 className="material-heading">Customisable Collection</h2>
       <p className="material-description">
-        Discover our beautiful collection of wooden products, crafted with elegance and durability.
+        Discover our beautiful collection of customisable products, crafted with elegance and durability.
       </p>
       {isMobile && (
         <div className="mobile-controls">

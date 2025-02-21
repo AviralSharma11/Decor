@@ -3,7 +3,6 @@
     max-width: 900px;
     margin: auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
     color: #333;
   }
 
@@ -15,7 +14,7 @@
     margin-bottom: 20px;
     font-size: 1.8rem;
     font-weight: bold;
-    color: #d7007e;
+    color: #9c5f22;
   }
   
   .section {
@@ -94,7 +93,7 @@
   
   .pay-now {
     width: 100%;
-    background-color: #d7007e;
+    background: linear-gradient(to right, #9c5f22, #d29d67);
     color: #fff;
     padding: 12px 15px;
     border: none;

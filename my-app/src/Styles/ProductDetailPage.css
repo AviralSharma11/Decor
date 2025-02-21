@@ -47,26 +47,27 @@
     align-items: center;
     gap: 10px;
     font-size: 20px;
+    margin: 15px 0 0 0 ;
   }
   
   .discountedPrice {
     font-weight: bold;
-    color: green;
+    color: #046A38;
   }
   
   .originalPrice {
     text-decoration: line-through;
-    color: gray;
+    color: #a0a0a0;
   }
   
   .discount {
-    color: red;
+    color: #d72638;
   }
 
   .buttons{
     display:flex;
     gap:10px;
-    margin: 20px 0 40px 0;
+    margin: 0px 0 40px 0;
   }
   
   .buy-now, .add-to-cart {
@@ -80,16 +81,25 @@
   }
   
   .buy-now {
-    background-color: #ff7f50;
+    background-color: #D29D67;
     color: white;
   }
   
   .add-to-cart {
     background-color: white;
-    color: #ff7f50;
+    color: #daa46f;
     border:1px solid #c5c5c5;
   }
   
+  .buy-now:hover{
+    background-color: #a57b52;
+  }
+
+  .add-to-cart:hover{
+    background-color: rgb(243, 243, 243);
+  }
+
+
   .thumbnail-container {
     display: flex;
     flex-direction: row;
@@ -289,3 +299,20 @@
     padding: 5px 10px;
   }
   
+  .customised-btn {
+    background: linear-gradient(to right, #9c5f22, #d29d67); /* Gradient Blue-Purple */
+    color: white; /* White text for contrast */
+    border: none; /* No border for a modern look */
+    padding: 8px 16px; /* Comfortable padding */
+    font-size: 14px; /* Readable font size */
+    border-radius: 6px; /* Smooth rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: all 0.3s ease-in-out; /* Smooth transitions */
+    font-weight: 600; /* Slightly bold text */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.customised-btn:hover {
+    background: linear-gradient(to right, #814f1c, #c49260); /* Reverse gradient on hover */
+    transform: scale(1.05); /* Slight pop effect */
+}

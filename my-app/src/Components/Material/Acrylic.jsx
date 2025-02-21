@@ -144,7 +144,7 @@ const AcrylicMaterialPage = () => {
 
       <h2 className="material-heading">Acrylic Collection</h2>
       <p className="material-description">
-        Discover our beautiful collection of wooden products, crafted with elegance and durability.
+        Discover our beautiful collection of acrylic products, crafted with elegance and durability.
       </p>
       {isMobile && (
         <div className="mobile-controls">

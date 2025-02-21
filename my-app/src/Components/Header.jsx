@@ -152,7 +152,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
                       to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
                       state={{ product }} 
                       style={{ textDecoration: "none" }}>
-                      <img src={product.image} alt={product.name} className="item-image" />
+                      <img src={product.image[0]} alt={product.name} className="item-image" />
                     </Link>
 
                     <div className="items">

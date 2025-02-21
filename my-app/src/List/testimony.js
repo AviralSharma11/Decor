@@ -1,16 +1,9 @@
 const testimony = [
-    {
-        name: "Harshika",
-        message: "Never thought buying jewellery would be this easy, thanks for helping make my mom’s birthday special.",
-    },
-    {
-        name: "Harshika",
-        message: "Never thought buying jewellery would be this easy, thanks for helping make my mom’s birthday special.",
-    },
-    {
-        name: "Harshika",
-        message: "Never thought buying jewellery would be this easy, thanks for helping make my mom’s birthday special.",
-    }
+    "Amazing product! Totally worth it.",
+  "I loved the customization options!",
+  "Fantastic quality and great service!",
+  "Highly recommended for gifting.",
+  "Beautifully crafted piece of art.",
 ];
 
 export default testimony;

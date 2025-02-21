@@ -2,7 +2,6 @@
   margin-top: 84px;
   text-align: center;
   padding-top: 5px;
-  background-color: #26300a;
   background: rgb(100, 83, 59);
 
 }
@@ -25,7 +24,6 @@
 }
 
 .splide__slide{
-  /* background-color: #26300a; */
   background: rgb(100, 83, 59);
 }
 

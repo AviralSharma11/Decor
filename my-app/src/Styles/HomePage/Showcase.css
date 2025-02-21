@@ -1,5 +1,5 @@
 .showcase {
-  background-color: #f4f1ec;
+  background-color: #f5ecdd;
   padding: 40px 20px;
   text-align: center;
   margin-top: 84px;
@@ -22,6 +22,10 @@
   width: 100%; /* Adjust as needed */
   height: auto;
   border-radius: 8px;
+}
+
+img.middle {
+  height: 400px;
 }
 
 .hiddentext {
@@ -61,6 +65,30 @@
 }
 
 /* Media Query */
+@media (max-width: 1123px){
+  img.middle{
+    height: 350px;
+  }
+}
+
+@media (max-width: 986px){
+  img.middle{
+    height: 330px;
+  }
+}
+
+@media (max-width: 925px){
+  img.middle{
+    height: 300px;
+  }
+}
+
+@media (max-width: 832px){
+  img.middle{
+    height: 270px;
+  }
+}
+
 @media (max-width: 750px) {
   .showcase{
     padding: 0 20px;

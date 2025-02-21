@@ -338,7 +338,7 @@
   .checkout {
     width: 100%;
     padding: 10px;
-    background: rgb(160 , 141 , 33);
+    background: linear-gradient(to right, #9c5f22, #d29d67);
     color: whitesmoke;
     border: none;
     cursor: pointer;

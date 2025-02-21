@@ -144,7 +144,7 @@ const ResinsMaterialPage = () => {
 
       <h2 className="material-heading">Resin Collection</h2>
       <p className="material-description">
-        Discover our beautiful collection of wooden products, crafted with elegance and durability.
+        Discover our beautiful collection of resins products, crafted with elegance and durability.
       </p>
       {isMobile && (
         <div className="mobile-controls">

@@ -1,6 +1,5 @@
 export const filters = [
-    { label: 'Type', options: ['Blanket', 'Backpack', 'Handbag', 'Organizer'] },
-    { label: 'Color', options: ['Green', 'Black', 'White', 'Pink'] },
+    { label: 'Type', options: ['Wall Art', 'Wooden Art', 'Wearables', 'Table Decors', 'Lamps' ] },
     { label: 'Price', options: ['Under ₹1,000', '₹1,000 - ₹3,000', 'Above ₹3,000'] },
   ];
   
@@ -25,6 +24,7 @@ export const filters = [
       trending: "Soft Girl Aesthetic",
       customisable: true,
       giftingguide: "Family",
+      type: "Table Decors",
     },
     
     {
@@ -47,6 +47,7 @@ export const filters = [
       trending: "Dopamine",
       customisable: true,
       giftingguide: "HER",
+      type: "Wooden Art",
     },
     {
       id: 3,
@@ -71,6 +72,7 @@ export const filters = [
       ],
       backgroundImage: "/Images/background.jpg",
       giftingguide: "HIM",
+      type: "Wooden Art , Table Decors , Wall Art"
     },
     {
       id: 4,
@@ -92,6 +94,7 @@ export const filters = [
       trending: "Coquette",
       customisable: true,
       giftingguide: "Friends",
+      type: "Table Decors"
     },
     {
         id: 5,
@@ -303,7 +306,7 @@ export const filters = [
       },
       {
         id: 18,
-        name: 'Parametric Cucic Wall Art',
+        name: 'Parametric Cubic Wall Art',
         rating: 4.5,
         reviews: 38,
         originalPrice: 3499.0,

@@ -6,11 +6,11 @@
     display: flex;
     flex-direction: column;
     gap: 15px; /* Space between badges */
-    z-index: 1000; /* Ensure it appears above other elements */
+    z-index: 100; /* Ensure it appears above other elements */
   }
 
   .social-media-badges svg{
-    color: purple
+    color: #b15901;
   }
   
   .badge {
