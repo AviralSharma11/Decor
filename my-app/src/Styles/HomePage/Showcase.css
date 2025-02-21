@@ -24,14 +24,6 @@
   border-radius: 8px;
 }
 
-img.last{
-  height: 490px;
-}
-
-img.middle {
-  height: 400px;
-}
-
 .hiddentext {
   position: absolute;
   top: 50%;
@@ -69,30 +61,6 @@ img.middle {
 }
 
 /* Media Query */
-@media (max-width: 1123px){
-  img.middle{
-    height: 350px;
-  }
-}
-
-@media (max-width: 986px){
-  img.middle{
-    height: 330px;
-  }
-}
-
-@media (max-width: 925px){
-  img.middle{
-    height: 300px;
-  }
-}
-
-@media (max-width: 832px){
-  img.middle{
-    height: 270px;
-  }
-}
-
 @media (max-width: 750px) {
   .showcase{
     padding: 0 20px;

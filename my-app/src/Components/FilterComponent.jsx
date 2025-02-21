@@ -23,7 +23,7 @@ const FilterComponent = ({ filters, onFilterChange }) => {
             style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between' }}
           >
             <span>{filter.label}</span>
-            <span>{expandedFilters[filter.label] ? '▲' : '▼'}</span>
+            <span>{expandedFilters[filter.label] ? 'X' : '☰' }</span>
           </div>
 
           <div className="modal-divider"></div>

@@ -196,7 +196,7 @@ const ProductDetailPage = () => {
                   <button onClick={() => setWidth(300) & setHeight(450)}>12"x18"</button>
                   <button onClick={() => setWidth(400) & setHeight(600)}>18"x24"</button>
                 </div>
-                <label htmlFor="upload">Upload Photo:</label>
+                <label htmlFor="upload" className="custom-file-upload">Upload Photo:</label>
                 <input
                   type="file"
                   id="upload"
