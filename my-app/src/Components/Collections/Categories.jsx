@@ -43,6 +43,7 @@ const Categories = () => {
         className="screen"
         options={{
           type: "loop",
+          rewind: true,
           perPage: 4,
           focus: "center",
           autoplay: true,
