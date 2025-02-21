@@ -26,6 +26,8 @@ const FilterComponent = ({ filters, onFilterChange }) => {
             <span>{expandedFilters[filter.label] ? '▲' : '▼'}</span>
           </div>
 
+          <div className="modal-divider"></div>
+
           {/* Filter Options */}
           {expandedFilters[filter.label] && (
             <div className="filter-options">
@@ -41,6 +43,7 @@ const FilterComponent = ({ filters, onFilterChange }) => {
                   <label htmlFor={`${filter.label}-${option}`}>{option}</label>
                 </div>
               ))}
+              
             </div>
           )}
         </div>

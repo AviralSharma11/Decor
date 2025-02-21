@@ -10,7 +10,7 @@ const Showcase = () => {
           <span className="hiddentext">Reflection</span>
         </div>
         <div className="image-item">
-          <img src="/Images/Spotify Frames/4.webp" alt="img 3" className="middle"/>
+          <img src="/Images/LampCover.jpg" alt="img 3" className="middle"/>
           <span className="hiddentext">Mesmerisation</span>
         </div>
         <div className="image-item">
@@ -18,7 +18,7 @@ const Showcase = () => {
           <span className="hiddentext">Drop Of Soul</span>
         </div>
         <div className="image-item hidden">
-          <img src="/Images/LampCover.jpg" alt="img 4" />
+          <img src="/Images/par.webp" alt="img 4" className="last" />
         </div>
       </div>
       <div className="text-section hidden">

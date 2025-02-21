@@ -5,7 +5,7 @@
   left: -100%; /* Initially hidden */
   width: 300px;
   height: 100%;
-  background: white;
+  background: #f3f3f3;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   transition: right 0.3s ease-in-out;
   z-index: 1000;
@@ -22,12 +22,16 @@
   padding: 20px;
 }
 
+h3.filter{
+  font-weight: 500;
+}
+
 .filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 20px;
 }
 
@@ -50,10 +54,16 @@
 .filter-option {
   display: flex;
   align-items: baseline;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .filter-option input {
   margin-right: 8px;
 }
 
+.modal-divider {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #6f6f6f;
+}

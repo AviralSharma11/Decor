@@ -2,7 +2,7 @@
   margin-top: 84px;
   text-align: center;
   padding-top: 5px;
-  background: rgb(100, 83, 59);
+  background: #333;
 
 }
 
@@ -24,7 +24,7 @@
 }
 
 .splide__slide{
-  background: rgb(100, 83, 59);
+  background: #333;
 }
 
 .curved-image {

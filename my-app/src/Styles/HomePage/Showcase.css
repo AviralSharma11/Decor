@@ -24,6 +24,10 @@
   border-radius: 8px;
 }
 
+img.last{
+  height: 490px;
+}
+
 img.middle {
   height: 400px;
 }
