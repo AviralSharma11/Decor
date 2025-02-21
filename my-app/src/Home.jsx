@@ -6,7 +6,7 @@ import BestSeller from './Components/HomePage/BestSeller';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";
-import ReviewBoard from './Components/HomePage/Noticeboard';
+import ReviewBoard from './Components/HomePage/Reviewboard';
 
 function Home() {
   const [cart, setCart] = useState(() => {

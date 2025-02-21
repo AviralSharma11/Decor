@@ -1,7 +1,7 @@
 import React, { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/MaterialPage.css"; 
-import ProductComponent from "../../Components/ProductComponent";
+import ProductComponent from "../ProductComponent";
 import { filters as initialFilters, products as allProducts } from "../../List/product"; 
 import Header from "../Header";
 import Footer from "../Footer";
