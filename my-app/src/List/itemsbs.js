@@ -1,7 +1,7 @@
 const itemsbs =[
     {
         id: 1,
-        name: "The Northern Star",
+        name: "Perosnalised Wooden Heart Badges",
         rating: 4.5,
         reviews: 38,
         originalPrice: 3499.0,

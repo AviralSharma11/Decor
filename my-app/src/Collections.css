@@ -26,8 +26,6 @@
 .mobile-controls{
   display: flex;
   justify-content: center;
-  position: sticky;
-  z-index: 1000;
 }
 
 .filter-btn {

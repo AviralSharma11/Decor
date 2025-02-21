@@ -1,7 +1,7 @@
 import React, { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/MaterialPage.css"; 
-import ProductComponent from "../ProductComponent";
+import ProductComponent from "../../Components/ProductComponent";
 import { filters as initialFilters, products as allProducts } from "../../List/product"; 
 import Header from "../Header";
 import Footer from "../Footer";
@@ -15,6 +15,7 @@ const CustomisedMaterialPage = () => {
 
   // Use woodProducts as initial products state
   const [filters] = useState(initialFilters);
+  const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
@@ -91,6 +92,14 @@ const CustomisedMaterialPage = () => {
 
   const filteredProducts = applyFilters();
 
+  const resetFilters = () => {
+  
+    filters.forEach((filter) => {
+      filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
+    });
+    setFiltersKey((prevKey) => prevKey + 1);
+  };
+  
   // Add product to cart
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -146,14 +155,24 @@ const CustomisedMaterialPage = () => {
       {isMobile && (
         <div className="mobile-controls">
           <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
+          <button className="filter-btn filter2" onClick={resetFilters}>Reset Filters</button>
         </div>
       )}
 
-      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      {/* Display Products */}
+      <FilterComponent2 
+        key={filtersKey} 
+        filters={filters} 
+        onFilterChange={handleFilterChange} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        selectedFilters={selectedFilters}
+      />
+
+
       <div className="product">
         <div className="sidebar">
-          <FilterComponent filters={filters} onFilterChange={handleFilterChange} />
+          <FilterComponent filters={filters} onFilterChange={handleFilterChange}  selectedFilters={selectedFilters}/>
+          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
         </div>
         <div className="contents">
           {filteredProducts.length > 0 ? (

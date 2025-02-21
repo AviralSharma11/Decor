@@ -14,6 +14,7 @@ import "../../Collections.css";
 export default function Material(){
     const [filters] = useState(initialFilters);
     const [products] = useState(initialProducts);
+    const [filtersKey, setFiltersKey] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cart, setCart] = useState(() => {
       const savedCart = localStorage.getItem("cart");
@@ -87,6 +88,14 @@ export default function Material(){
       };
     
       const filteredProducts = applyFilters();
+
+      const resetFilters = () => {
+  
+        filters.forEach((filter) => {
+          filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
+        });
+        setFiltersKey((prevKey) => prevKey + 1);
+      };
     
       // Add product to cart
       const addToCart = (product) => {
@@ -202,14 +211,25 @@ export default function Material(){
             {isMobile && (
         <div className="mobile-controls">
           <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
+          <button className="filter-btn filter2" onClick={resetFilters}>Reset Filters</button>
         </div>
       )}
 
-      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-            <div className="product">
-                <div className="sidebar">
-                <FilterComponent filters={filters} onFilterChange={handleFilterChange} />
-                </div>
+      <FilterComponent2 
+        key={filtersKey} 
+        filters={filters} 
+        onFilterChange={handleFilterChange} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        selectedFilters={selectedFilters}
+      />
+
+
+      <div className="product">
+        <div className="sidebar">
+          <FilterComponent filters={filters} onFilterChange={handleFilterChange}  selectedFilters={selectedFilters}/>
+          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
+        </div>
                 <div className="contents">
                 <ProductComponent products={filteredProducts} addToCart={addToCart} />
                 </div>
