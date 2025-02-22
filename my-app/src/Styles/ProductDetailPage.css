@@ -279,25 +279,29 @@
   .frame {
     position: relative;
     display: flex;
+    left: 120px;
+    top: 50px;
     justify-content: center;
     align-items: center;
-    background: none;
+    max-width: 100%;
+    max-height: 100%;
     overflow: hidden;
+    padding: 10px;
   }
   
   .photo {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    object-fit:fill;
   }
   
   .preview-text {
     position: absolute;
-    color: white;
+    top:50%;
+    justify-content: center;
+    color: rgb(0, 0, 0);
     font-size: 20px;
     font-weight: bold;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 5px 10px;
+    background: rgb(255, 248, 248);
+    opacity: 0.7;
   }
 
   .custom-file-upload{

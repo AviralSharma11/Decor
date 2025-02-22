@@ -19,9 +19,16 @@ const ProductDetailPage = () => {
   }, [cart]);
 
   const [isCustomisedOpen , setIsCustomisedOpen] = useState(false);
-  const [width, setWidth] = useState(200);
-  const [height, setHeight] = useState(300);
+  const [width, setWidth] = useState(50);
+  const [height, setHeight] = useState(75); 
+  const [frameWidth, setFrameWidth] = useState(55);
+  const [frameHeight, setFrameHeight] = useState(80); 
+  const [frameTop, setFrameTop] = useState();
+  const [frameLeft, setFrameLeft] = useState();
   const [image, setImage] = useState(null);
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 50, y: 50 });
   const location = useLocation();
   const navigate = useNavigate();
   const selectedProduct = products.find((p) => p.id === 1);
@@ -107,11 +114,32 @@ const ProductDetailPage = () => {
 
   const resetToDefault = () => {
     setImage(null); // Clears the uploaded image
-    setWidth(200);  // Resets width to default
-    setHeight(300); // Resets height to default
+    setWidth(50);  // Resets width to default
+    setHeight(75); // Resets height to default
+    setFrameHeight(80);
+    setFrameWidth(55);
+  };
+
+  const sizeOptions = {
+    "Table Decors": [
+      { width: 85, height: 124, label: 'Small' , frameHeight:126 , frameWidth:89 , top: 50 , left:170 },
+      { width: 106, height: 151, label: 'Medium', frameHeight:155 , frameWidth:110, top: 50 , left:250},
+      { width: 141, height: 201, label: 'Large', frameHeight:205 , frameWidth:145, top: 47 , left:300},
+    ],
+    "Wall Art": [
+      { width: 200, height: 300, label: 'Small' },
+      { width: 300, height: 400, label: 'Medium' },
+      { width: 400, height: 500, label: 'Large' },
+    ],
+    "default": [
+      { width: 100, height: 100, label: 'Small' },
+      { width: 150, height: 150, label: 'Medium' },
+      { width: 200, height: 200, label: 'Large' },
+    ],
   };
   
-
+  const selectedSizes = sizeOptions[selectedProduct.type] || sizeOptions["default"];  
+  
   return (
     <>
       <div className="product-detail-page">
@@ -191,11 +219,13 @@ const ProductDetailPage = () => {
             {/* Added Upload and Input Fields */}
             <div className="modal-body">
               <div className="inputs">
-                <div className="button-container">
-                  <button onClick={() => setWidth(200) & setHeight(300)}>8"x12"</button>
-                  <button onClick={() => setWidth(300) & setHeight(450)}>12"x18"</button>
-                  <button onClick={() => setWidth(400) & setHeight(600)}>18"x24"</button>
-                </div>
+              <div className="button-container">
+                {selectedSizes.map((size, index) => (
+                  <button key={index} onClick={() => { setWidth(size.width); setHeight(size.height); setFrameHeight(size.frameHeight) ; setFrameWidth(size.frameWidth) ; setFrameTop(size.top) ; setFrameLeft(size.left) }}>
+                    {size.label}
+                  </button>
+                ))}
+              </div>
                 <label htmlFor="upload" className="custom-file-upload">Upload Photo:</label>
                 <input
                   type="file"
@@ -213,12 +243,25 @@ const ProductDetailPage = () => {
               <div className="image-container" style={{
                 backgroundImage: `url(${selectedProduct.backgroundImage})`,
               }}>
-              {image && (
-                <div className="frame" style={{ width, height }}>
-                  <img src={image} alt="Preview" className="photo" />
-                  <div className="preview-text">PREVIEW</div>
+              
+              <div className="frame" style={{
+                  backgroundImage: `url(${selectedProduct.frame})`,
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  width: `${frameWidth}px`,
+                  height: `${frameHeight}px`,
+                  top: `${frameTop}px`,
+                  Left: `${frameLeft}px`,
+                }}>
+                  {image && (
+                    <div style={{ width: `${width}px`, height: `${height}px`, position: "relative", display:"flex" ,justifyContent:"center" }} >
+                      <img src={image} className="photo" alt="Preview" style={{ width: `${width}px`, height: `${height}px` }} />
+                      <div className="preview-text">{selectedProduct.preview}</div>
+                    </div>
+                  )}
                 </div>
-              )}
+              
               </div>
             </div>
           </div>

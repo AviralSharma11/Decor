@@ -25,7 +25,12 @@ export const filters = [
       customisable: true,
       giftingguide: "Family",
       type: "Table Decors",
+      backgroundImage: "/Images/tbg.jpg",
+      isDraggable: false,
+      preview: "PREVIEW",
+      frame: "/Images/tfr1.jpg",
     },
+
     
     {
       id: 2,
