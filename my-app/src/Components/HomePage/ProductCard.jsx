@@ -1,8 +1,27 @@
-import React from "react";
+import React , {useState} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/HomePage/ProductCard.css";
 import itemsbs from "../../List/itemsbs";
 const ProductCard = ({ addToCart}) => {
+
+  const [addedToCart, setAddedToCart] = useState({});
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    setAddedToCart((prev) => ({
+      ...prev,
+      [product.id]: true, // Mark the product as added
+    }));
+
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setAddedToCart((prev) => ({
+        ...prev,
+        [product.id]: false,
+      }));
+    }, 3000);
+  };
+
   return (
     <div className="product-container">
        {itemsbs.map((product) => (
@@ -24,8 +43,12 @@ const ProductCard = ({ addToCart}) => {
             </div>
           </div>
           </Link>
-          <button className="addtocart" onClick={() => addToCart(product)}>
-            Add to Cart
+          <button
+            className={`addtocart ${addedToCart[product.id] ? "added" : ""}`}
+            onClick={() => handleAddToCart(product)}
+            disabled={addedToCart[product.id]} // Disable button when added
+          >
+            {addedToCart[product.id] ? "Added to Cart " : "Add to Cart"}
           </button>
         </div>
        ))}

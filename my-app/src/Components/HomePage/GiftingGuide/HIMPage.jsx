@@ -16,6 +16,7 @@ const HIMPage = () => {
   // Use HIM as initial products state
   const [filters] = useState(initialFilters);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filtersKey, setFiltersKey] = useState(0);
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
@@ -55,39 +56,35 @@ const HIMPage = () => {
     });
   };
 
-  // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
     return HIMProducts.filter((product) => {
+  
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !selectedFilters.Type.includes(product.type)) {
+          return false;
+        }
       }
-
-      // Filter by Color
-      if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {
-        return false;
-      }
-
+  
       // Filter by Price
       if (selectedFilters.Price.length > 0) {
-        const priceRange = selectedFilters.Price.find((range) => {
+        const priceMatches = selectedFilters.Price.some((range) => {
           if (range === "Under ₹1,000") return product.discountedPrice < 1000;
           if (range === "₹1,000 - ₹3,000") return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
           if (range === "Above ₹3,000") return product.discountedPrice > 3000;
           return false;
         });
-
-        if (!priceRange) {
+  
+        if (!priceMatches) {
+          console.log(`Skipping ${product.name} because Price doesn't match.`);
           return false;
         }
       }
-
+  
       return true;
     });
   };
+  
 
   const filteredProducts = applyFilters();
 
@@ -130,6 +127,14 @@ const HIMPage = () => {
     });
   };
 
+  const resetFilters = () => {
+  
+    filters.forEach((filter) => {
+      filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
+    });
+    setFiltersKey((prevKey) => prevKey + 1);
+  };
+  
   return (
     <div className="material-page">
       <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
@@ -151,11 +156,20 @@ const HIMPage = () => {
         </div>
       )}
 
-      <FilterComponent2 filters={filters} onFilterChange={handleFilterChange} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <FilterComponent2 
+            key={filtersKey} 
+            filters={filters} 
+            onFilterChange={handleFilterChange} 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            selectedFilters={selectedFilters}
+          />
+
       {/* Display Products */}
       <div className="product">
         <div className="sidebar">
-          <FilterComponent filters={filters} onFilterChange={handleFilterChange} />
+          <FilterComponent filters={filters} onFilterChange={handleFilterChange} selectedFilters={selectedFilters} />
+          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
         </div>
         <div className="contents">
           {filteredProducts.length > 0 ? (

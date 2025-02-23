@@ -1,6 +1,6 @@
 const itemsbs =[
     {
-        id: 1,
+        id: 2,
         name: "Perosnalised Wooden Heart Badges",
         rating: 4.5,
         reviews: 38,
@@ -23,7 +23,7 @@ const itemsbs =[
         backgroundImage: "/Images/background.jpg",
     },
     {
-        id: 2,
+        id: 1,
         name: 'Anime Backlighting Frame',
         rating: 4.5,
         reviews: 38,
@@ -44,7 +44,7 @@ const itemsbs =[
         giftingguide: "Family",
       },
       {
-        id: 3,
+        id: 12,
         name: 'Personalised Spotify Frame',
         rating: 4.5,
         reviews: 38,
