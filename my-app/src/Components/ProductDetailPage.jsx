@@ -31,7 +31,7 @@ const ProductDetailPage = () => {
   const [offset, setOffset] = useState({ x: 50, y: 50 });
   const location = useLocation();
   const navigate = useNavigate();
-  const selectedProduct = products.find((p) => p.id === 1);
+  const [selectedProduct, setSelectedProduct] = useState(products[0]);
   const product = location.state?.product || products; // Get product data from state
   const [selectedImage, setSelectedImage] = useState(product.image[0]);
   const sections = [
@@ -43,6 +43,21 @@ const ProductDetailPage = () => {
     },
   ];
 
+  useEffect(() => {
+    console.log("Selected product changed:", selectedProduct);
+    console.log("Frame Image URL:", selectedProduct.frame);
+  }, [selectedProduct]);
+  
+  const handleProductChange = (product) => {
+    setSelectedProduct(product);
+  };
+  
+  useEffect(() => {
+    if (product) {
+      handleProductChange(product);
+    }
+  }, [product]);
+  
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (index) => {
@@ -268,7 +283,7 @@ const ProductDetailPage = () => {
               <div
                   className="frame"
                   style={{
-                    backgroundImage: `url(${selectedProduct.frame})`,
+                    backgroundImage: `url("/Images/Spotify Frames/spotify frame.png")`,
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",

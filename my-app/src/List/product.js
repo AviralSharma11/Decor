@@ -230,6 +230,11 @@ export const filters = [
           "/Images/Spotify Frames/5.webp",
         ],
         customisable: true,
+        type: "Table Decors",
+      backgroundImage: "/Images/tbg.jpg",
+      isDraggable: false,
+      preview: "PREVIEW",
+      frame: "/Images/Spotify Frames/spotify frame.png",
       },
       {
         id: 13,
