@@ -54,36 +54,33 @@ export default function Collections() {
 
   const applyFilters = () => {
     return products.filter((product) => {
-      if (
-        selectedFilters.Type.length > 0 &&
-        (!product.type || 
-         !selectedFilters.Type.some(filterType => 
-           product.type
-             .split(" , ")
-             .map(t => t.trim().toLowerCase()) // Convert to lowercase and trim spaces
-             .includes(filterType.toLowerCase()) // Compare in lowercase
-         ))
-      ) {
-        return false;
+  
+      // Filter by Type
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !selectedFilters.Type.includes(product.type)) {
+          return false;
+        }
       }
-      
-
+  
+      // Filter by Price
       if (selectedFilters.Price.length > 0) {
-        const priceRange = selectedFilters.Price.find((range) => {
+        const priceMatches = selectedFilters.Price.some((range) => {
           if (range === "Under ₹1,000") return product.discountedPrice < 1000;
           if (range === "₹1,000 - ₹3,000") return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
           if (range === "Above ₹3,000") return product.discountedPrice > 3000;
           return false;
         });
-
-        if (!priceRange) {
+  
+        if (!priceMatches) {
+          console.log(`Skipping ${product.name} because Price doesn't match.`);
           return false;
         }
       }
-
+  
       return true;
     });
   };
+  
 
   const filteredProducts = applyFilters();
 

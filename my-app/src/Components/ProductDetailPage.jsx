@@ -19,12 +19,12 @@ const ProductDetailPage = () => {
   }, [cart]);
 
   const [isCustomisedOpen , setIsCustomisedOpen] = useState(false);
-  const [width, setWidth] = useState(50);
-  const [height, setHeight] = useState(75); 
-  const [frameWidth, setFrameWidth] = useState(55);
-  const [frameHeight, setFrameHeight] = useState(80); 
-  const [frameTop, setFrameTop] = useState();
-  const [frameLeft, setFrameLeft] = useState();
+  const [width, setWidth] = useState(100)
+  const [height, setHeight] = useState(100)
+  const [frameWidth, setFrameWidth] = useState(100);
+  const [frameHeight, setFrameHeight] = useState(100); 
+  const [frameTop, setFrameTop] = useState(100);
+  const [frameLeft, setFrameLeft] = useState(160);
   const [image, setImage] = useState(null);
   const [position, setPosition] = useState({ x: 50, y: 50 });
   const [isDragging, setIsDragging] = useState(false);
@@ -112,19 +112,41 @@ const ProductDetailPage = () => {
     }
   };
 
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setOffset({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    setPosition({
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   const resetToDefault = () => {
     setImage(null); // Clears the uploaded image
-    setWidth(50);  // Resets width to default
-    setHeight(75); // Resets height to default
-    setFrameHeight(80);
-    setFrameWidth(55);
+    setWidth(100);  // Resets width to default
+    setHeight(100); // Resets height to default
+    setFrameHeight(100);
+    setFrameWidth(100);
+    setFrameTop(100);
+    setFrameLeft(160);
   };
 
   const sizeOptions = {
     "Table Decors": [
-      { width: 85, height: 124, label: 'Small' , frameHeight:126 , frameWidth:89 , top: 50 , left:170 },
-      { width: 106, height: 151, label: 'Medium', frameHeight:155 , frameWidth:110, top: 50 , left:250},
-      { width: 141, height: 201, label: 'Large', frameHeight:205 , frameWidth:145, top: 47 , left:300},
+      { width: 85, height: 124, label: 'Small' , frameHeight:126 , frameWidth:89 , top: 100 , left:160 },
+      { width: 106, height: 151, label: 'Medium', frameHeight:155 , frameWidth:110, top: 85 , left:174},
+      { width: 141, height: 201, label: 'Large', frameHeight:205 , frameWidth:145, top: 60 , left:200},
     ],
     "Wall Art": [
       { width: 200, height: 300, label: 'Small' },
@@ -243,25 +265,31 @@ const ProductDetailPage = () => {
               <div className="image-container" style={{
                 backgroundImage: `url(${selectedProduct.backgroundImage})`,
               }}>
-              
-              <div className="frame" style={{
-                  backgroundImage: `url(${selectedProduct.frame})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  width: `${frameWidth}px`,
-                  height: `${frameHeight}px`,
-                  top: `${frameTop}px`,
-                  Left: `${frameLeft}px`,
-                }}>
+              <div
+                  className="frame"
+                  style={{
+                    backgroundImage: `url(${selectedProduct.frame})`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    width: `${frameWidth}px`,
+                    height: `${frameHeight}px`,
+                    top: `${frameTop}px`,
+                    left: `${frameLeft}px`,
+                    cursor: selectedProduct.isDraggable ? "grab" : "default",
+                  }}
+                  onMouseDown={selectedProduct.isDraggable ? handleMouseDown : undefined}
+                  onMouseMove={selectedProduct.isDraggable ? handleMouseMove : undefined}
+                  onMouseUp={selectedProduct.isDraggable ? handleMouseUp : undefined}
+                  onMouseLeave={selectedProduct.isDraggable ? handleMouseUp : undefined}
+                >
                   {image && (
-                    <div style={{ width: `${width}px`, height: `${height}px`, position: "relative", display:"flex" ,justifyContent:"center" }} >
+                    <div style={{ width: `${width}px`, height: `${height}px`, position: "relative", display:"flex", justifyContent:"center" }}>
                       <img src={image} className="photo" alt="Preview" style={{ width: `${width}px`, height: `${height}px` }} />
                       <div className="preview-text">{selectedProduct.preview}</div>
                     </div>
                   )}
                 </div>
-              
               </div>
             </div>
           </div>
