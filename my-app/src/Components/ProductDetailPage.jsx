@@ -283,7 +283,7 @@ const ProductDetailPage = () => {
               <div
                   className="frame"
                   style={{
-                    backgroundImage: `url("/Images/Spotify Frames/spotify frame.png")`,
+                    backgroundImage: `url(${selectedProduct.frame})`,
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
