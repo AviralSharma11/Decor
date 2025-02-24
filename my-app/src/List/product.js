@@ -28,7 +28,7 @@ export const filters = [
       backgroundImage: "/Images/tbg.jpg",
       isDraggable: false,
       preview: "PREVIEW",
-      frame: "/Images/tfr1.jpg",
+      frame: "animeframe1.jpg",
     },
 
     
@@ -99,7 +99,10 @@ export const filters = [
       trending: "Coquette",
       customisable: true,
       giftingguide: "Friends",
-      type: "Table Decors"
+      type: "Table Decors",
+      backgroundImage: "/Images/tbg.jpg",
+      preview: "PREVIEW",
+      frame: "bubblegramframe1.png",
     },
     {
         id: 5,
@@ -234,7 +237,7 @@ export const filters = [
       backgroundImage: "/Images/tbg.jpg",
       isDraggable: false,
       preview: "PREVIEW",
-      frame: "/Images/Spotify Frames/spotify frame.png",
+      frame: "spotifyframe1.jpg",
       },
       {
         id: 13,

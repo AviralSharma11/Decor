@@ -34,6 +34,7 @@ const ProductDetailPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(products[0]);
   const product = location.state?.product || products; // Get product data from state
   const [selectedImage, setSelectedImage] = useState(product.image[0]);
+  const [frameUrl, setFrameUrl] = useState(selectedProduct.frame);
   const sections = [
     { title: "Description", content: product.description },
     { title: "Features", content: product.trending || "No features available" },
@@ -43,10 +44,7 @@ const ProductDetailPage = () => {
     },
   ];
 
-  useEffect(() => {
-    console.log("Selected product changed:", selectedProduct);
-    console.log("Frame Image URL:", selectedProduct.frame);
-  }, [selectedProduct]);
+
   
   const handleProductChange = (product) => {
     setSelectedProduct(product);
@@ -57,6 +55,15 @@ const ProductDetailPage = () => {
       handleProductChange(product);
     }
   }, [product]);
+
+  useEffect(() => {
+    console.log("Selected product changed:", selectedProduct);
+    console.log("Frame Image URL:", selectedProduct.frame);
+  }, [selectedProduct]);
+  
+  useEffect(() => {
+    setFrameUrl(`/Images/Frames/${selectedProduct.frame}`);
+  }, [selectedProduct.frame]);
   
   const [openSection, setOpenSection] = useState(null);
 
@@ -283,7 +290,7 @@ const ProductDetailPage = () => {
               <div
                   className="frame"
                   style={{
-                    backgroundImage: `url(${selectedProduct.frame})`,
+                    backgroundImage: `url(${frameUrl})`,
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",

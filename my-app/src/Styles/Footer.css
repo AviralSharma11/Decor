@@ -1,4 +1,7 @@
 .footer {
+    position: absolute;
+    left:0;
+    right:0;
     background: linear-gradient(to bottom, #f5f1ea, #f8e6c7);
     padding: 10px;
     font-size: 14px;
@@ -88,6 +91,10 @@
   }
 
   @media (max-width: 768px) {
+
+    .footer{
+      z-index: 1000;
+    }
   
     .footer-section {
       padding: 10px; /* Adjust padding for smaller screens */
@@ -109,6 +116,7 @@
       font-size: smaller;
     }
   }
+
   
   
   
