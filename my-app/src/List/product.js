@@ -28,7 +28,7 @@ export const filters = [
       backgroundImage: "/Images/tbg.jpg",
       isDraggable: false,
       preview: "PREVIEW",
-      frame: "animeframe1.jpg",
+      frameImageURL: "animeframe1.jpg",
     },
 
     
@@ -102,7 +102,7 @@ export const filters = [
       type: "Table Decors",
       backgroundImage: "/Images/tbg.jpg",
       preview: "PREVIEW",
-      frame: "bubblegramframe1.png",
+      frameImageURL: "bubblegramframe1.png",
     },
     {
         id: 5,
@@ -234,10 +234,10 @@ export const filters = [
         ],
         customisable: true,
         type: "Table Decors",
-      backgroundImage: "/Images/tbg.jpg",
-      isDraggable: false,
-      preview: "PREVIEW",
-      frame: "spotifyframe1.jpg",
+        backgroundImage: "/Images/tbg.jpg",
+        isDraggable: false,
+        preview: "PREVIEW",
+        frameImageURL: "spotifyframe1.jpg",
       },
       {
         id: 13,
