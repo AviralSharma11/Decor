@@ -57,13 +57,13 @@ const ProductDetailPage = () => {
   }, [product]);
 
   useEffect(() => {
+    setFrameUrl(`/Images/Frames/${selectedProduct.frameImageURL}`);
+  }, [selectedProduct.frameImageURL]);
+  
+  useEffect(() => {
     console.log("Selected product changed:", selectedProduct);
     console.log("Frame Image URL:", selectedProduct.frameImageURL);
   }, [selectedProduct]);
-  
-  useEffect(() => {
-    setFrameUrl(`/Images/Frames/${selectedProduct.frameImageURL}`);
-  }, [selectedProduct.frameImageURL]);
   
   const [openSection, setOpenSection] = useState(null);
 

@@ -19,8 +19,9 @@
   width: 400px;
   text-align: center;
   position: relative;
-  height: 50vh;
+  height: 40vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 
 /* Close Button */
@@ -96,4 +97,10 @@ button.close-button {
   margin-top: 5px;
   margin-bottom: 0;
   color: rgb(180, 33, 33);
+}
+
+@media (max-width: 750px){
+  .modal-container{
+    height: 45vh;
+  }
 }
