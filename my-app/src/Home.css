@@ -1,6 +1,14 @@
 .Home {
     position: relative;
   }
+
+  .parallax1, .parallax2, .parallax3 {
+    position: relative;
+    display: flex;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+  }
   
   .parallax1 {
     height: 500px; /* Adjust height as needed */
@@ -21,7 +29,7 @@
   }
 
   .parallax3{
-    height: 500px; /* Adjust height as needed */
+    height: 1000px; /* Adjust height as needed */
     background-image: url('../public/Images/para13.webp'); /* Update the path */
     background-attachment: fixed;
     background-position: center;
@@ -29,7 +37,62 @@
     background-size: cover;
   }
   
-  .content-section {
-    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for contrast */
-    text-align: center;
+
+
+  .parallax-text {
+    position: absolute;
+    top:10vh;
+    left: 4vw;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
+    opacity: 0;
+    padding: 5px  40px;
+    transform: translateX(-100%);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    text-align: left;
+    text-decoration: underline;
   }
+  
+  .parallax-text.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .parallax-subtext {
+    position: absolute;
+    right: 15vw;
+    bottom: 7vh;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
+    opacity: 0;
+    padding: 5px  40px;
+    transform: translateX(-100%);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    text-align: right;
+    font-size: 1rem;
+  }
+
+  .parallax-subtext.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .parallax-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    text-align: left;
+  }
+  
+  .parallax-list li {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .parallax-list li::before {
+    content: "➤"; /* Arrow Symbol */
+    color: rgb(255, 255, 255); /* Customize Arrow Color */
+    font-size: 1.4rem;
+    margin-right: 10px;
+  }
+

@@ -6,7 +6,7 @@ import BestSeller from './Components/HomePage/BestSeller';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";
-import ReviewBoard from './Components/HomePage/Reviewboard';
+
 
 function Home() {
   const [cart, setCart] = useState(() => {
@@ -53,12 +53,38 @@ function Home() {
         return updatedCart;
       });
     };
+
+    useEffect(() => {
+      const handleScroll = () => {
+        const texts = document.querySelectorAll('.parallax-text, .parallax-subtext');
+        texts.forEach((text) => {
+          const textPosition = text.getBoundingClientRect().top;
+          const screenHeight = window.innerHeight;
+          if (textPosition < screenHeight * 0.8) {
+            text.classList.add("show");
+          }
+        });
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
     
   return (
     <div className="Home">
       <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
         <Showcase />
-        <div className="parallax1"></div> {/* Parallax background section */}
+        <div className="parallax1">
+          <div className="parallax-text">Discover Our Collection</div>
+          <div className="parallax-subtext">
+            <ul className="parallax-list">
+              <li> Premium Quality Products</li>
+              <li> Handcrafted Gifts</li>
+              <li> Exclusive Discounts</li>
+              <li> Fast & Safe Delivery</li>
+            </ul>
+          </div>
+        </div> {/* Parallax background section */}
         <div className="content-section">
         <GiftingGuide />
       </div>
@@ -68,7 +94,6 @@ function Home() {
       </div>
       <div className="parallax3"></div> {/* Add another parallax section if needed */}
       <div className="content-section">
-        <ReviewBoard />
         <SocialMediaBadges />
         <Footer />
       </div>
