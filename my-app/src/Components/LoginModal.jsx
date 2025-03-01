@@ -120,7 +120,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Styles/Modal.css";
 
-const LoginModal = ({ isOpen, onClose }) => {
+const LoginModal = ({ isOpen, onClose ,onLogin }) => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -172,6 +172,8 @@ const LoginModal = ({ isOpen, onClose }) => {
       setOtpSent(false);
       setEmail("");
       setOtp("");
+      localStorage.setItem("isAuthenticated", "true");
+      onLogin();
       onClose();
     } catch (err) {
       setError("Invalid OTP. Please try again.");
@@ -182,6 +184,7 @@ const LoginModal = ({ isOpen, onClose }) => {
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
     localStorage.removeItem("token");
+    localStorage.removeItem("isAuthenticated");
     setUserEmail(null);
     onClose();
   };

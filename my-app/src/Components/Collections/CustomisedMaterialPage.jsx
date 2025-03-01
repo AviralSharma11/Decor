@@ -8,6 +8,7 @@ import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
 import FilterComponent2 from "../FilterComponent2";
 import SocialMediaBadges from "../SocialMediaBadges";
+import LoginModal from "../LoginModal";
 
 const CustomisedMaterialPage = () => {
   // Filter only wood products
@@ -21,7 +22,15 @@ const CustomisedMaterialPage = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+  });
   
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
+
+
   useEffect(() => {
     if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -102,6 +111,12 @@ const CustomisedMaterialPage = () => {
   
   // Add product to cart
   const addToCart = (product) => {
+
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       let updatedCart;
@@ -185,6 +200,19 @@ const CustomisedMaterialPage = () => {
 
       <SocialMediaBadges />
       <Footer />
+
+      {isLoginModalOpen && (
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={() => {
+            setIsAuthenticated(true);
+            localStorage.setItem("isAuthenticated", "true");
+            setIsLoginModalOpen(false); // Close modal after login
+          }}
+        />
+      )}
+
     </div>
   );
 };

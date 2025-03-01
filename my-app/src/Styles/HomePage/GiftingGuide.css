@@ -27,6 +27,13 @@
     grid-template-columns: repeat(3, 1fr); /* Adjust to 3 columns */
     gap: 15px; /* Adjust spacing for this breakpoint */
   }
+  .people-card-link:nth-child(3) {
+    order: 2;
+  }
+
+  .people-card-link:nth-child(4) {
+    order: 3;
+  }
 }
 
 @media (max-width: 768px) {
@@ -38,6 +45,11 @@
 @media (max-width: 480px) {
   .People {
     gap: 10px; /* Maintain consistent spacing */
+  }
+
+  img.circle-image{
+    height: 100px;
+    width: 100px;
   }
 
   .heading {

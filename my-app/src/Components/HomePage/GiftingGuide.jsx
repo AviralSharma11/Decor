@@ -13,7 +13,7 @@ export default function GiftingGuide(){
           <div className="People">
             {peopleData.map((person, index) => (
               <Link key={index} to={person.url} className="people-card-link">
-                <People imageSrc={person.imageSrc} title={person.title} />
+                <People imageSrc={person.imageSrc} title={person.title} className="people-image-circle"/>
               </Link>
             ))}
           </div>

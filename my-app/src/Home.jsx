@@ -6,6 +6,7 @@ import BestSeller from './Components/HomePage/BestSeller';
 import SocialMediaBadges from './Components/SocialMediaBadges';
 import Footer from './Components/Footer';
 import "./Home.css";
+import LoginModal from './Components/LoginModal';
 
 
 function Home() {
@@ -13,12 +14,20 @@ function Home() {
       const savedCart = localStorage.getItem("cart");
       return savedCart ? JSON.parse(savedCart) : [];
     });
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+      return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+    });
   
     useEffect(() => {
       localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
   
     const addToCart = (product) => {
+      if (!isAuthenticated) {
+        setIsLoginModalOpen(true); // Open login modal
+        return;
+      }
       setCart((prevCart) => {
         const existingItem = prevCart.find((item) => item.id === product.id);
         let updatedCart;
@@ -97,6 +106,19 @@ function Home() {
         <SocialMediaBadges />
         <Footer />
       </div>
+
+      {isLoginModalOpen && (
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={() => {
+            setIsAuthenticated(true);
+            localStorage.setItem("isAuthenticated", "true");
+            setIsLoginModalOpen(false); // Close modal after login
+          }}
+        />
+      )}
+
     </div>
   );
 }

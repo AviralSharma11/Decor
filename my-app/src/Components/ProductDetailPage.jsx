@@ -5,6 +5,7 @@ import Header from "./Header";
 import SocialMediaBadges from "./SocialMediaBadges";
 import Footer from "./Footer";
 import { products } from "../List/product";
+import LoginModal from "./LoginModal";
 
 const ProductDetailPage = () => {
   const [cart, setCart] = useState(() => {
@@ -35,6 +36,10 @@ const ProductDetailPage = () => {
   const product = location.state?.product || products; // Get product data from state
   const [selectedImage, setSelectedImage] = useState(product.image[0]);
   const [frameUrl, setFrameUrl] = useState(selectedProduct.frame);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+  });
   const sections = [
     { title: "Description", content: product.description },
     { title: "Features", content: product.trending || "No features available" },
@@ -75,6 +80,11 @@ const ProductDetailPage = () => {
   }
   
   const addToCart = (product) => {
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true); // Open login modal
+      return;
+    }
+
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       let updatedCart;
@@ -317,6 +327,18 @@ const ProductDetailPage = () => {
           </div>
         </div>
       )}
+
+      {isLoginModalOpen && (
+              <LoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLogin={() => {
+                  setIsAuthenticated(true);
+                  localStorage.setItem("isAuthenticated", "true");
+                  setIsLoginModalOpen(false); // Close modal after login
+                }}
+              />
+            )}
 
     </>
   );

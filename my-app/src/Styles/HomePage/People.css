@@ -47,3 +47,16 @@
     opacity: 1; /* Show the title on hover */
   }
   
+  @media (max-width: 480px){
+    .people-circle{
+      height: 100px;
+      width: 100px;
+    }
+  }
+
+  @media (max-width: 376px){
+    .people-circle{
+      height: 90px;
+      width: 90px;
+    }
+  }
