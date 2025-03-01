@@ -120,15 +120,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Styles/Modal.css";
 
-const LoginModal = ({ isOpen, onClose ,onLogin }) => {
+const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail"));
 
   useEffect(() => {
-    // Check if user is already logged in
     const storedEmail = localStorage.getItem("userEmail");
     if (storedEmail) {
       setUserEmail(storedEmail);
@@ -141,38 +141,49 @@ const LoginModal = ({ isOpen, onClose ,onLogin }) => {
   const handleSendOtp = async () => {
     setError("");
 
-    // Basic email validation
+    // Email validation
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
       setError("Invalid email address.");
       return;
     }
 
+    setLoading(true); // Show "Wait..."
+    
     try {
       await axios.post("http://localhost:5000/send-email-otp", { email });
-      setOtpSent(true);
+      setTimeout(() => { // Simulate loading delay
+        setLoading(false);
+        setOtpSent(true);
+      }, 1000);
     } catch (err) {
       setError("Failed to send OTP. Try again.");
+      setLoading(false);
     }
   };
 
   // Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    if (!otpSent) {
+      setError("Please request an OTP first.");
+      return;
+    }
+
     setError("");
 
     try {
       const response = await axios.post("http://localhost:5000/verify-email-otp", { email, otp });
-      
-      // Store user email in localStorage
+
       localStorage.setItem("userEmail", email);
       localStorage.setItem("token", response.data.token);
-      
-      setUserEmail(email); // Update state
+      localStorage.setItem("isAuthenticated", "true");
+
+      setUserEmail(email);
       setOtpSent(false);
       setEmail("");
       setOtp("");
-      localStorage.setItem("isAuthenticated", "true");
+
       onLogin();
       onClose();
     } catch (err) {
@@ -180,13 +191,24 @@ const LoginModal = ({ isOpen, onClose ,onLogin }) => {
     }
   };
 
-  // Logout function
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
     localStorage.removeItem("token");
     localStorage.removeItem("isAuthenticated");
     setUserEmail(null);
-    onClose();
+  };
+
+  // Handle "Enter" keypress
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!otpSent) {
+        handleSendOtp();
+      } else {
+        handleVerifyOtp(e);
+      }
+    }
   };
 
   return (
@@ -212,12 +234,13 @@ const LoginModal = ({ isOpen, onClose ,onLogin }) => {
               className="modal-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyPress={handleKeyPress}
               required
             />
 
             {!otpSent ? (
-              <button type="button" className="modal-button" onClick={handleSendOtp}>
-                Send OTP
+              <button type="button" className="modal-button" onClick={handleSendOtp} disabled={loading}>
+                {loading ? "Wait..." : "Send OTP"}
               </button>
             ) : (
               <>
@@ -227,6 +250,7 @@ const LoginModal = ({ isOpen, onClose ,onLogin }) => {
                   className="modal-input"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   required
                 />
                 <button type="submit" className="modal-button">
@@ -244,4 +268,6 @@ const LoginModal = ({ isOpen, onClose ,onLogin }) => {
 };
 
 export default LoginModal;
+
+
 
