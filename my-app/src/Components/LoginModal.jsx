@@ -125,8 +125,10 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail"));
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("savedCart")) || []);
+  const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("userEmail");
@@ -134,6 +136,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       setUserEmail(storedEmail);
     }
   }, []);
+
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   if (!isOpen) return null;
 
@@ -148,14 +157,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       return;
     }
 
-    setLoading(true); // Show "Wait..."
-    
+    setLoading(true);
+
     try {
       await axios.post("http://localhost:5000/send-email-otp", { email });
-      setTimeout(() => { // Simulate loading delay
-        setLoading(false);
-        setOtpSent(true);
-      }, 1000);
+      setLoading(false);
+      setOtpSent(true);
+      setResendTimer(30); // Start 30-second countdown
     } catch (err) {
       setError("Failed to send OTP. Try again.");
       setLoading(false);
@@ -184,6 +192,12 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       setEmail("");
       setOtp("");
 
+      // Restore the cart after login
+      const savedCart = localStorage.getItem("savedCart");
+      if (savedCart) {
+        setCart(JSON.parse(savedCart));
+      }
+
       onLogin();
       onClose();
     } catch (err) {
@@ -193,9 +207,17 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
   // Logout
   const handleLogout = () => {
+    // Store the cart before logout
+    localStorage.setItem("savedCart", JSON.stringify(cart));
+
+    // Clear authentication details
     localStorage.removeItem("userEmail");
     localStorage.removeItem("token");
     localStorage.removeItem("isAuthenticated");
+
+    // Clear cart
+    setCart([]);
+    localStorage.removeItem("cart"); // Clear cart from storage
     setUserEmail(null);
   };
 
@@ -223,8 +245,12 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
         {userEmail ? (
           <div className="logged-in-section">
-            <p className="logged-in-email">Signed in as: <strong>{userEmail}</strong></p>
-            <button className="modal-button" onClick={handleLogout}>Logout</button>
+            <p className="logged-in-email">
+              Signed in as: <strong>{userEmail}</strong>
+            </p>
+            <button className="modal-button" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         ) : (
           <form className="modal-form" onSubmit={handleVerifyOtp}>
@@ -239,8 +265,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
             />
 
             {!otpSent ? (
-              <button type="button" className="modal-button" onClick={handleSendOtp} disabled={loading}>
-                {loading ? "Wait..." : "Send OTP"}
+              <button
+                type="button"
+                className="modal-button"
+                onClick={handleSendOtp}
+                disabled={loading || resendTimer > 0}
+              >
+                {loading ? "Wait..." : resendTimer > 0 ? `Resend OTP (${resendTimer}s)` : "Send OTP"}
               </button>
             ) : (
               <>
@@ -268,6 +299,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 };
 
 export default LoginModal;
+
 
 
 
