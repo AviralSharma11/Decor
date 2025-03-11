@@ -168,7 +168,12 @@ export default function Collections() {
         </div>
         
         <div className="contents">
-          <ProductComponent products={filteredProducts} addToCart={addToCart} />
+        <ProductComponent
+          products={products}
+          addToCart={addToCart}
+          isAuthenticated={isAuthenticated}
+          setIsLoginModalOpen={setIsLoginModalOpen}
+        />
         </div>
       </div>
 

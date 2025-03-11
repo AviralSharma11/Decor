@@ -2,23 +2,34 @@ import React , {useState} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/HomePage/ProductCard.css";
 import itemsbs from "../../List/itemsbs";
-const ProductCard = ({ addToCart}) => {
+const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
 
   const [addedToCart, setAddedToCart] = useState({});
 
-  const handleAddToCart = (product) => {
-    addToCart(product);
-    setAddedToCart((prev) => ({
-      ...prev,
-      [product.id]: true, // Mark the product as added
-    }));
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true);
+      return;
+    }
 
-    // Reset after 3 seconds
+    addToCart(product);
+    setAddedToCart((prev) => ({ ...prev, [product.id]: true }));
+
+    const email = localStorage.getItem("userEmail");
+
+    try {
+      await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, product }),
+      });
+    } catch (err) {
+      console.error("Failed to save cart:", err);
+    }
+
+    // Reset button state after 3 seconds
     setTimeout(() => {
-      setAddedToCart((prev) => ({
-        ...prev,
-        [product.id]: false,
-      }));
+      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 3000);
   };
 

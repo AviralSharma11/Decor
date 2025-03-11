@@ -219,6 +219,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     setCart([]);
     localStorage.removeItem("cart"); // Clear cart from storage
     setUserEmail(null);
+
   };
 
   // Handle "Enter" keypress

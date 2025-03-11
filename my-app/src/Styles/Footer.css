@@ -92,6 +92,7 @@
   @media (max-width: 768px) {
 
     .footer{
+      position: relative;
       z-index: 1000;
     }
   

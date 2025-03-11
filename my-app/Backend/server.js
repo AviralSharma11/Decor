@@ -88,5 +88,71 @@ app.post("/verify-email-otp", (req, res) => {
     );
 });
 
+app.post("/api/cart", (req, res) => {
+    const { email, cart } = req.body;
+
+    if (!Array.isArray(cart)) {
+        return res.status(400).json({ message: "Invalid cart format" });
+    }
+
+    console.log(`Updating cart for ${email}:`, cart); // Debugging log
+
+    cart.forEach(product => {
+        db.query(
+            "INSERT INTO cart (user_email, product_id, product_name, product_image, quantity, price) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + 1",
+            [email, product.id, product.name, product.image[0], product.quantity, product.discountedPrice],
+            (err) => {
+                if (err) {
+                    console.error("Database error:", err);
+                }
+            }
+        );
+    });
+
+    res.json({ message: "Cart updated" });
+});
+
+
+
+app.get("/api/cart/:email", (req, res) => {
+    const email = req.params.email;
+
+    console.log(`Fetching cart for user: ${email}`); // Debugging log
+
+    db.query(
+        "SELECT product_id AS id, product_name AS name, product_image AS image, quantity, price FROM cart WHERE user_email = ?",
+        [email],
+        (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Database error" });
+            }
+
+            console.log("Cart data retrieved:", results); // Debugging log
+
+            res.json(results);
+        }
+    );
+});
+
+
+
+
+app.post("/api/cart/remove", (req, res) => {
+    const { email, productId } = req.body;
+
+    db.query(
+        "DELETE FROM cart WHERE user_email = ? AND product_id = ?",
+        [email, productId],
+        (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Database error" });
+            }
+            res.json({ message: "Item removed from cart" });
+        }
+    );
+});
+
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
