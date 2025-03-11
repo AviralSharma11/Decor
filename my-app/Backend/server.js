@@ -7,21 +7,28 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MySQL Database Connection (Replace with your actual credentials)
+// MySQL Database Connection
 const db = mysql.createConnection({
     host: "localhost",
-    user: "root",  // Change this if your MySQL username is different
-    password: "S_a570P/?z",  // Replace with your MySQL password
-    database: "decorlogindb"  // Replace with your actual database name
+    user: "root",
+    password: "S_a570P/?z",
+    database: "decorlogindb"
 });
 
+db.connect((err) => {
+    if (err) {
+        console.error("MySQL connection failed:", err);
+    } else {
+        console.log("MySQL connected");
+    }
+});
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-        user: "aviral0201sharma@gmail.com",  // Replace with your email
-        pass: "feqs zzqa etvu pvrv",  // Replace with your email password or app password
+        user: "aviral0201sharma@gmail.com",
+        pass: "feqs zzqa etvu pvrv",
     },
 });
 
@@ -31,6 +38,10 @@ const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString()
 // Send OTP via Email
 app.post("/send-email-otp", (req, res) => {
     const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
     const otp = generateOtp();
     const otpExpiry = new Date(Date.now() + 10 * 60000); // OTP valid for 10 minutes
 
@@ -39,11 +50,12 @@ app.post("/send-email-otp", (req, res) => {
         [email, otp, otpExpiry, otp, otpExpiry],
         (err) => {
             if (err) {
+                console.error("Database error:", err);
                 return res.status(500).json({ message: "Database error" });
             }
 
             const mailOptions = {
-                from: "your_email@gmail.com",
+                from: "aviral0201sharma@gmail.com",
                 to: email,
                 subject: "Your OTP Code",
                 text: `Your OTP is: ${otp}. It expires in 10 minutes.`,
@@ -51,6 +63,7 @@ app.post("/send-email-otp", (req, res) => {
 
             transporter.sendMail(mailOptions, (error) => {
                 if (error) {
+                    console.error("Email sending error:", error);
                     return res.status(500).json({ message: "Failed to send OTP" });
                 }
                 res.json({ message: "OTP sent successfully" });
@@ -63,13 +76,19 @@ app.post("/send-email-otp", (req, res) => {
 app.post("/verify-email-otp", (req, res) => {
     const { email, otp } = req.body;
 
+    if (!email || !otp) {
+        return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
     db.query(
         "SELECT otp, otp_expiry FROM users WHERE email = ?",
         [email],
         (err, results) => {
             if (err) {
+                console.error("Database error:", err);
                 return res.status(500).json({ message: "Database error" });
             }
+
             if (results.length === 0) {
                 return res.status(400).json({ message: "Email not found" });
             }
@@ -81,43 +100,60 @@ app.post("/verify-email-otp", (req, res) => {
             }
 
             // Clear OTP after successful verification
-            db.query("UPDATE users SET otp=NULL, otp_expiry=NULL WHERE email=?", [email]);
+            db.query(
+                "UPDATE users SET otp=NULL, otp_expiry=NULL WHERE email=?",
+                [email]
+            );
 
             res.json({ message: "OTP verified successfully", token: "dummy-jwt-token" });
         }
     );
 });
 
+//  Add items to cart
 app.post("/api/cart", (req, res) => {
-    const { email, cart } = req.body;
+    const { email, product } = req.body;
 
-    if (!Array.isArray(cart)) {
-        return res.status(400).json({ message: "Invalid cart format" });
+    console.log(`Received request to add to cart. Email: ${email}, Product:`, product);
+
+    if (!email || !product || !product.id) {
+        console.error("Invalid request data");
+        return res.status(400).json({ message: "Email and product details are required" });
     }
 
-    console.log(`Updating cart for ${email}:`, cart); // Debugging log
+    const { id, name, image, price } = product;
 
-    cart.forEach(product => {
-        db.query(
-            "INSERT INTO cart (user_email, product_id, product_name, product_image, quantity, price) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + 1",
-            [email, product.id, product.name, product.image[0], product.quantity, product.discountedPrice],
-            (err) => {
-                if (err) {
-                    console.error("Database error:", err);
-                }
+    const quantity = 1; // Default to 1 for new products
+
+    // Insert or update the cart
+    db.query(
+        `INSERT INTO cart (user_email, product_id, product_name, product_image, quantity, price)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
+        [email, id, name, image[0], quantity, price],
+        (err, result) => {
+            if (err) {
+                console.error("Database error while adding to cart:", err);
+                return res.status(500).json({ message: "Failed to add product to cart" });
             }
-        );
-    });
 
-    res.json({ message: "Cart updated" });
+            console.log(`Added product ${id} to ${email}'s cart`);
+            res.json({ message: "Product added to cart" });
+        }
+    );
 });
 
 
 
+//  Fetch cart items
 app.get("/api/cart/:email", (req, res) => {
     const email = req.params.email;
 
-    console.log(`Fetching cart for user: ${email}`); // Debugging log
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    console.log(`Fetching cart for user: ${email}`);
 
     db.query(
         "SELECT product_id AS id, product_name AS name, product_image AS image, quantity, price FROM cart WHERE user_email = ?",
@@ -128,31 +164,33 @@ app.get("/api/cart/:email", (req, res) => {
                 return res.status(500).json({ message: "Database error" });
             }
 
-            console.log("Cart data retrieved:", results); // Debugging log
+            console.log("Cart data retrieved:", results);
 
             res.json(results);
         }
     );
 });
 
-
-
-
+// Remove item from cart
 app.post("/api/cart/remove", (req, res) => {
     const { email, productId } = req.body;
+
+    if (!email || !productId) {
+        return res.status(400).json({ message: "Email and productId are required" });
+    }
 
     db.query(
         "DELETE FROM cart WHERE user_email = ? AND product_id = ?",
         [email, productId],
         (err) => {
             if (err) {
+                console.error("Database error:", err);
                 return res.status(500).json({ message: "Database error" });
             }
             res.json({ message: "Item removed from cart" });
         }
     );
 });
-
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -54,14 +54,27 @@ function Home() {
   useEffect(() => {
     if (isAuthenticated && cart.length > 0) {
         const email = localStorage.getItem("userEmail");
+        const payload = { email, cart };
+
+        console.log("Sending cart to server:", payload); // Debugging output
 
         fetch("/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, cart }),
-        }).catch((err) => console.error("Failed to save cart:", err));
+            body: JSON.stringify(payload),
+        })
+        .then((res) => {
+            if (!res.ok) {
+                return res.json().then((data) => {
+                    throw new Error(`Failed to add to cart: ${data.message}`);
+                });
+            }
+            console.log("Cart saved successfully");
+        })
+        .catch((err) => console.error("Failed to save cart:", err));
     }
 }, [cart, isAuthenticated]);
+
 
 
 
