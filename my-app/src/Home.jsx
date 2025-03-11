@@ -31,7 +31,7 @@ function Home() {
     localStorage.setItem("userEmail", email);
 
     try {
-        const response = await fetch(`/api/cart/${email}`);
+        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
         const cartData = await response.json();
 
         if (!Array.isArray(cartData)) {
@@ -58,7 +58,7 @@ function Home() {
 
         console.log("Sending cart to server:", payload); // Debugging output
 
-        fetch("/api/cart", {
+        fetch("http://localhost:5000/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -101,13 +101,31 @@ function Home() {
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
-  };
+  const removeFromCart = async (productId) => {
+    const email = localStorage.getItem("userEmail");
+
+    try {
+        const response = await fetch("http://localhost:5000/api/cart/remove", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email,
+                productId: String(productId), // Ensure consistent type
+            }),
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "Failed to remove product");
+        }
+
+        console.log("Product removed from cart");
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    } catch (error) {
+        console.error("Failed to remove from cart:", error);
+    }
+};
+
 
   const updateQuantity = (productId, newQuantity) => {
     setCart((prevCart) => {

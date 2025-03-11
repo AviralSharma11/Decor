@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "./Components/Header";
 import SocialMediaBadges from "./Components/SocialMediaBadges";
 import Footer from "./Components/Footer";
@@ -13,173 +14,225 @@ import LoginModal from "./Components/LoginModal";
 export default function Collections() {
   const [filters] = useState(initialFilters);
   const [products] = useState(initialProducts);
-  const [filtersKey, setFiltersKey] = useState(0);
-  const [cart, setCart] = useState(() => {
-      const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
-    });
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
-
-    const [isAuthenticated, setIsAuthenticated] = useState(() => {
-      return localStorage.getItem("isAuthenticated") === "true"; // Check login status
-    });
-  
-    useEffect(() => {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }, [cart]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
     Price: [],
   });
 
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    localStorage.getItem("isAuthenticated") === "true"
+  );
+
+  const user = localStorage.getItem("userEmail");
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // Save cart to localStorage on changes
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // Handle screen resizing
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleFilterChange = (filterCategory, value, isChecked) => {
-    setSelectedFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters };
-      if (isChecked) {
-        updatedFilters[filterCategory] = [...updatedFilters[filterCategory], value];
-      } else {
-        updatedFilters[filterCategory] = updatedFilters[filterCategory].filter(
-          (item) => item !== value
-        );
-      }
-      return updatedFilters;
-    });
+  // Fetch user cart from backend
+  const fetchCart = async (email) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/cart/${email}`);
+      setCart(response.data);
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    }
   };
 
-  const applyFilters = () => {
-    return products.filter((product) => {
-  
-      // Filter by Type
-      if (selectedFilters.Type.length > 0) {
-        if (!product.type || !selectedFilters.Type.includes(product.type)) {
-          return false;
-        }
-      }
-  
-      // Filter by Price
-      if (selectedFilters.Price.length > 0) {
-        const priceMatches = selectedFilters.Price.some((range) => {
-          if (range === "Under ₹1,000") return product.discountedPrice < 1000;
-          if (range === "₹1,000 - ₹3,000") return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
-          if (range === "Above ₹3,000") return product.discountedPrice > 3000;
-          return false;
-        });
-  
-        if (!priceMatches) {
-          console.log(`Skipping ${product.name} because Price doesn't match.`);
-          return false;
-        }
-      }
-  
-      return true;
-    });
+  // Combined filter handling logic
+  const handleFilterChange = (filterCategory, value, isChecked) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [filterCategory]: isChecked
+        ? [...prev[filterCategory], value]
+        : prev[filterCategory].filter((item) => item !== value),
+    }));
   };
-  
+
+  // Price filter mapping
+  const priceRanges = {
+    "Under ₹1,000": (price) => price < 1000,
+    "₹1,000 - ₹3,000": (price) => price >= 1000 && price <= 3000,
+    "Above ₹3,000": (price) => price > 3000,
+  };
+
+  // Apply filters to product list
+  const applyFilters = () =>
+    products.filter((product) =>
+      (!selectedFilters.Type.length || selectedFilters.Type.includes(product.type)) &&
+      (!selectedFilters.Price.length ||
+        selectedFilters.Price.some((range) => priceRanges[range]?.(product.discountedPrice)))
+    );
 
   const filteredProducts = applyFilters();
 
+  // Add product to cart
   const addToCart = (product) => {
     if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
+      setIsLoginModalOpen(true);
       return;
     }
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
-  
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+
+    setCart((prevCart) =>
+      prevCart.some((item) => item.id === product.id)
+        ? prevCart.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        : [...prevCart, { ...product, quantity: 1 }]
+    );
+  };
+
+  // Remove product from cart
+  const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user, productId }),
+      });
+
+      if (response.ok) {
+        setCart((prevCart) =>
+          prevCart.filter((item) => item.id !== productId)
         );
       } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        console.error("Failed to remove from cart");
       }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
-    });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
+  // Update product quantity in cart
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user, productId, quantity: newQuantity }),
+      });
+
+      if (response.ok) {
+        setCart((prevCart) =>
+          prevCart.map((item) =>
+            item.id === productId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      } else {
+        console.error("Failed to update quantity");
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  // Reset all filters
   const resetFilters = () => {
-  
-    filters.forEach((filter) => {
-      filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
-    });
-    setFiltersKey((prevKey) => prevKey + 1);
-  };
-  
-
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      );
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
+    setSelectedFilters({
+      Type: [],
+      Color: [],
+      Price: [],
     });
   };
 
   return (
     <div className="Collections">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      {/* Header */}
+      <Header
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
+        updateQuantity={updateQuantity}
+        user={user}
+      />
+
+      {/* Categories */}
       <Categories />
-      
+
+      {/* Mobile filter controls */}
       {isMobile && (
         <div className="mobile-controls">
-          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
-          <button className="filter-btn filter2" onClick={resetFilters}>Reset Filters</button>
+          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>
+            Filters
+          </button>
+          <button
+            className={`filter-btn ${
+              Object.values(selectedFilters).flat().length === 0 ? "disabled" : ""
+            }`}
+            onClick={resetFilters}
+            disabled={Object.values(selectedFilters).flat().length === 0}
+          >
+            Reset Filters
+          </button>
         </div>
       )}
 
-      <FilterComponent2 
-        key={filtersKey} 
-        filters={filters} 
-        onFilterChange={handleFilterChange} 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      {/* Filter component (mobile) */}
+      <FilterComponent2
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         selectedFilters={selectedFilters}
       />
 
-
+      {/* Main content */}
       <div className="product">
+        {/* Sidebar filter */}
         <div className="sidebar">
-          <FilterComponent filters={filters} onFilterChange={handleFilterChange}  selectedFilters={selectedFilters}/>
-          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
+          <FilterComponent
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            selectedFilters={selectedFilters}
+          />
+          <button
+            className={`filter-btn ${
+              Object.values(selectedFilters).flat().length === 0 ? "disabled" : ""
+            }`}
+            onClick={resetFilters}
+            disabled={Object.values(selectedFilters).flat().length === 0}
+          >
+            Reset Filters
+          </button>
         </div>
-        
+
+        {/* Product grid */}
         <div className="contents">
-        <ProductComponent
-          products={filteredProducts}
-          addToCart={addToCart}
-          isAuthenticated={isAuthenticated}
-          setIsLoginModalOpen={setIsLoginModalOpen}
-        />
+          <ProductComponent
+            products={filteredProducts}
+            addToCart={addToCart}
+            isAuthenticated={isAuthenticated}
+            setIsLoginModalOpen={setIsLoginModalOpen}
+          />
         </div>
       </div>
 
+      {/* Social media + Footer */}
       <SocialMediaBadges />
       <Footer />
 
+      {/* Login Modal */}
       {isLoginModalOpen && (
         <LoginModal
           isOpen={isLoginModalOpen}
@@ -187,12 +240,10 @@ export default function Collections() {
           onLogin={() => {
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
-            setIsLoginModalOpen(false); // Close modal after login
+            setIsLoginModalOpen(false);
           }}
         />
       )}
-
-
     </div>
   );
 }

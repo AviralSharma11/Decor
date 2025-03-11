@@ -171,6 +171,36 @@ app.get("/api/cart/:email", (req, res) => {
     );
 });
 
+// Update item quantity in cart
+app.post("/api/cart/update", (req, res) => {
+    const { email, productId, quantity } = req.body;
+
+    if (!email || !productId || quantity < 1) {
+        return res.status(400).json({ message: "Invalid input" });
+    }
+
+    const query = `
+        UPDATE cart 
+        SET quantity = ? 
+        WHERE user_email = ? AND product_id = ?
+    `;
+
+    db.query(query, [quantity, email, productId], (err, result) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Failed to update quantity" });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Item not found in cart" });
+        }
+
+        res.json({ message: "Quantity updated successfully" });
+    });
+});
+
+
+
 // Remove item from cart
 app.post("/api/cart/remove", (req, res) => {
     const { email, productId } = req.body;
@@ -182,15 +212,18 @@ app.post("/api/cart/remove", (req, res) => {
     db.query(
         "DELETE FROM cart WHERE user_email = ? AND product_id = ?",
         [email, productId],
-        (err) => {
+        (err, result) => {
             if (err) {
                 console.error("Database error:", err);
-                return res.status(500).json({ message: "Database error" });
+                return res.status(500).json({ message: "Failed to remove item from cart" });
             }
+
             res.json({ message: "Item removed from cart" });
         }
     );
 });
+
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
