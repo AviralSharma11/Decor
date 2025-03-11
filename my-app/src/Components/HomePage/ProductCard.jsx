@@ -5,6 +5,12 @@ import itemsbs from "../../List/itemsbs";
 const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
 
   const [addedToCart, setAddedToCart] = useState({});
+  const [currentImage, setCurrentImage] = useState(
+    itemsbs.reduce((acc, product) => {
+      acc[product.id] = product.image[0];
+      return acc;
+    }, {})
+  );
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
@@ -38,8 +44,22 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
        {itemsbs.map((product) => (
         <div key={product.id} className="product-card">
           <Link to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")} state={{ product }} style={{textDecoration: "none"}}>
-          <div className="product-images">
-            <img src={product.image[0]} alt={product.name} />
+          <div
+              className="product-images"
+              onMouseEnter={() =>
+                setCurrentImage((prev) => ({
+                  ...prev,
+                  [product.id]: product.image[1],
+                }))
+              }
+              onMouseLeave={() =>
+                setCurrentImage((prev) => ({
+                  ...prev,
+                  [product.id]: product.image[0],
+                }))
+              }
+            >
+              <img src={currentImage[product.id]} alt={product.name} />
             {product.isOnSale && <span className="sale-label">Sale</span>}
           </div>
           <div className="product-details">

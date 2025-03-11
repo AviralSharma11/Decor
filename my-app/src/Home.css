@@ -43,13 +43,12 @@
     position: absolute;
     top:10vh;
     left: 4vw;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
     opacity: 0;
     padding: 5px  40px;
     transform: translateX(-100%);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
     text-align: left;
-    text-decoration: underline;
+    text-shadow: 2px 2px 4px #000000;
   }
   
   .parallax-text.show {
@@ -61,13 +60,14 @@
     position: absolute;
     right: 15vw;
     bottom: 7vh;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
     opacity: 0;
     padding: 5px  40px;
     transform: translateX(-100%);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
     text-align: right;
     font-size: 1rem;
+    font-weight: 400;
+    text-shadow: 4px 4px 8px #000000;
   }
 
   .parallax-subtext.show {
@@ -92,7 +92,7 @@
   .parallax-list li::before {
     content: "➤"; /* Arrow Symbol */
     color: rgb(255, 255, 255); /* Customize Arrow Color */
-    font-size: 1.4rem;
+    font-size: 0.9rem;
     margin-right: 10px;
   }
 

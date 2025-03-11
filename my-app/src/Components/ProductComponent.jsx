@@ -4,6 +4,12 @@ import "../Styles/ProductComponent.css";
 
 const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModalOpen }) => {
   const [addedToCart, setAddedToCart] = useState({});
+  const [currentImage, setCurrentImage] = useState(
+    products.reduce((acc, product) => {
+      acc[product.id] = product.image[0];
+      return acc;
+    }, {})
+  );
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
@@ -41,8 +47,22 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
             state={{ product }}
             style={{ textDecoration: "none" }}
           >
-            <div className="product-image">
-              <img src={product.image[0]} alt={product.name} />
+            <div
+              className="product-image"
+              onMouseEnter={() =>
+                setCurrentImage((prev) => ({
+                  ...prev,
+                  [product.id]: product.image[1],
+                }))
+              }
+              onMouseLeave={() =>
+                setCurrentImage((prev) => ({
+                  ...prev,
+                  [product.id]: product.image[0],
+                }))
+              }
+            >
+              <img src={currentImage[product.id]} alt={product.name} />
             </div>
             <div className="product-rating">
               {"★".repeat(Math.floor(product.rating))}
@@ -66,7 +86,7 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
             onClick={() => handleAddToCart(product)}
             disabled={addedToCart[product.id]}
           >
-            {addedToCart[product.id] ? "Added to Cart " : "Add to Cart"}
+            {addedToCart[product.id] ? "Added to Cart" : "Add to Cart"}
           </button>
         </div>
       ))}

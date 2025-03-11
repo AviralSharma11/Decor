@@ -130,7 +130,7 @@ function Home() {
         <div className="parallax-text">Discover Our Collection</div>
         <div className="parallax-subtext">
           <ul className="parallax-list">
-            <li>Premium Quality Products</li>
+            <li>Premium Quality Pr oducts</li>
             <li>Handcrafted Gifts</li>
             <li>Exclusive Discounts</li>
             <li>Fast & Safe Delivery</li>

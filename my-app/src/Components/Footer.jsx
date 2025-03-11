@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import "../Styles/Footer.css";
 
 const Footer = () => {
+  const footerLinks = [
+    // { name: "Create a Return", path: "/create-return" },
+    { name: "Shipping", path: "/shipping" },
+    { name: "Privacy Policy", path: "/privacy-policy" },
+    { name: "Return Policy", path: "/return-policy" },
+    { name: "Terms & Conditions", path: "/terms-conditions" },
+    { name: "Contact Us", path: "/contact" },
+    { name: "FAQs", path: "/faqs" },
+  ];
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -78,16 +88,10 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Help</h3>
           <ul className="footer-list">
-            {[
-              "Create a Return",
-              "Shipping",
-              "Privacy Policy",
-              "Return Policy",
-              "Terms & Conditions",
-              "Contact Us",
-              "FAQs",
-            ].map((item) => (
-              <li key={item}>{item}</li>
+            {footerLinks.map((link) => (
+              <li key={link.name}>
+                <Link style={{textDecoration: "none", color:"#1f1f1f"}} to={link.path}>{link.name} </Link>
+              </li>
             ))}
           </ul>
         </div>

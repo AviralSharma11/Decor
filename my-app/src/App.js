@@ -21,6 +21,7 @@ import FamilyPage from "./Components/HomePage/GiftingGuide/FamilyPage";
 import OfficePage from "./Components/HomePage/GiftingGuide/OfficePage";
 import DIYPage from "./Components/HomePage/GiftingGuide/DIYPage";
 import ScrollToTop from "./Components/ScrollToTop";
+import Shipping from "./Components/Footer/Shipping";
 
 function App() {
   return (
@@ -54,6 +55,9 @@ function App() {
           {/* Product Pages */}
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/products" element={<ProductComponent products={products} addToCart={() => {}} />} />
+
+          {/* Footer Links */}
+          <Route path="/shipping" element={<Shipping/>}/>
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />

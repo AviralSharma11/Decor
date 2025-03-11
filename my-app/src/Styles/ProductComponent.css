@@ -20,7 +20,29 @@
   width: 100%;
   aspect-ratio: 1/1;
   display: block;
+} 
+
+.product-image img:first-child {
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  
 }
+
+.product-image img:last-child {
+  opacity: 1;
+  transition: opacity 1.5s ease-in-out, transform 0.4s ease ;
+}
+
+.product-image:hover img:first-child {
+  opacity: 0;
+  
+}
+
+.product-image:hover img:last-child {
+  opacity: 1;
+  transform:scale(1.05);
+}
+
 
 .product-rating {
   font-size: 14px;
