@@ -16,7 +16,6 @@
 
 /* Product grid for desktop */
 .contents {
-  width: 80%;
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -58,11 +57,7 @@
 
   /* Product grid for mobile */
   .contents {
-    width: 100%;
     order: 1; /* Move products above filters */
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
   }
 
   /* Style for the filter button on mobile */

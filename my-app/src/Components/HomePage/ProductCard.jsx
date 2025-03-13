@@ -57,7 +57,7 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
         <div key={product.id} className="product-card">
           <Link to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")} state={{ product }} style={{textDecoration: "none"}}>
           <div
-              className="product-images"
+              className="product-image"
               onMouseEnter={() =>
                 setCurrentImage((prev) => ({
                   ...prev,
