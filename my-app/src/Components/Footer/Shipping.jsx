@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../Styles/Footer/FooterLinks.css";
 import Header from "../Header";
 import Footer from "../Footer";
+import "../../Styles/Footer/Shipping.css"
 
 export default function Shipping(){
     const shippingInfo = [
@@ -51,7 +52,7 @@ export default function Shipping(){
          <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity}/>
          <div className="shipping">
             <h3 className="page-title">Shipping</h3>
-            <p className="notice">Somethin somethin blah blah blah blah blah</p>
+            <p className="notice">We ship across ..... .... .. . . . . . . .</p>
             <div className="shipping-table"></div>
             <div className="shipping-info">
                 <ul className="info-list">
@@ -60,7 +61,7 @@ export default function Shipping(){
                 ))}
                 </ul>
             </div>
-            <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:500}}>info@nestasia.in</span></p>
+            <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:600}}>email@gamil.com</span></p>
          </div>
          <Footer />   
         </div>

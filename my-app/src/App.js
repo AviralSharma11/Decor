@@ -22,6 +22,7 @@ import OfficePage from "./Components/HomePage/GiftingGuide/OfficePage";
 import DIYPage from "./Components/HomePage/GiftingGuide/DIYPage";
 import ScrollToTop from "./Components/ScrollToTop";
 import Shipping from "./Components/Footer/Shipping";
+import ContactUS from "./Components/Footer/ContactUS";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
 
           {/* Footer Links */}
           <Route path="/shipping" element={<Shipping/>}/>
+          <Route path="/contact-us" element={<ContactUS />}/>
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />

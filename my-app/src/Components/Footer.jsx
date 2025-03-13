@@ -9,7 +9,7 @@ const Footer = () => {
     { name: "Privacy Policy", path: "/privacy-policy" },
     { name: "Return Policy", path: "/return-policy" },
     { name: "Terms & Conditions", path: "/terms-conditions" },
-    { name: "Contact Us", path: "/contact" },
+    { name: "Contact Us", path: "/contact-us" },
     { name: "FAQs", path: "/faqs" },
   ];
 

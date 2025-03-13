@@ -24,29 +24,36 @@ function Home() {
     return localStorage.getItem("isAuthenticated") === "true";
   });
 
-  // Fetch cart from MySQL on login
-  const handleLogin = async (email) => {
-    setIsAuthenticated(true);
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("userEmail", email);
+  // ✅ Fetch cart from MySQL on login and sync state + localStorage
+const handleLogin = async (email) => {
+  setIsAuthenticated(true);
+  localStorage.setItem("isAuthenticated", "true");
+  localStorage.setItem("userEmail", email);
 
-    try {
-        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
-        const cartData = await response.json();
+  try {
+      // ✅ Fetch cart data from backend
+      const response = await fetch(`http://localhost:5000/api/cart/${email}`);
+      if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
+      
+      const cartData = await response.json();
 
-        if (!Array.isArray(cartData)) {
-            console.error("Invalid cart data format:", cartData);
-            setCart([]); // Ensure the cart doesn't break
-        } else {
-            setCart(cartData);
-        }
+      // ✅ Validate and update state
+      if (Array.isArray(cartData) && cartData.length > 0) {
+          console.log("Fetched cart data:", cartData);
+          setCart([...cartData]); // Spread operator ensures state update
+          localStorage.setItem("savedCart", JSON.stringify(cartData)); // ✅ Consistent key
+      } else {
+          console.warn("Empty or invalid cart data:", cartData);
+          setCart([]); // ✅ Avoid rendering issues with empty cart
+      }
+  } catch (error) {
+      console.error("Failed to fetch cart:", error.message);
+      alert("Failed to fetch cart data. Please try again.");
+  }
 
-        localStorage.setItem("cart", JSON.stringify(cartData)); // Save to local storage
-    } catch (error) {
-        console.error("Failed to fetch cart:", error);
-    }
-
-    setIsLoginModalOpen(false);
+  // ✅ Ensure state is updated before closing the modal
+  await Promise.resolve();
+  setIsLoginModalOpen(false);
 };
 
 

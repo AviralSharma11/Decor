@@ -1,0 +1,13 @@
+.shipping{
+    margin-top: 14px;
+    padding: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #4B3621;
+    line-height: 1.5;
+}
+
+.shipping-info{
+    font-size: 12px;
+}
