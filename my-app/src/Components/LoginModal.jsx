@@ -8,11 +8,11 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail"));
+  const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem("savedCart")) || []);
   const [resendTimer, setResendTimer] = useState(0);
 
-  // ✅ Sync cart from localStorage on load
+  // ✅ Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("savedCart"));
     if (savedCart) {
@@ -21,7 +21,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   }, []);
 
-  // ✅ Handle resend timer countdown
+  // ✅ Resend timer countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -35,7 +35,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const handleSendOtp = async () => {
     setError("");
 
-    // Email validation
+    // Validate email format
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
       setError("Invalid email address.");
@@ -58,46 +58,53 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   // ✅ Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+
     if (!otpSent) {
       setError("Please request an OTP first.");
       return;
     }
-  
+
     setError("");
-  
+
     try {
       const response = await axios.post("http://localhost:5000/verify-email-otp", { email, otp });
-  
+
       localStorage.setItem("userEmail", email);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("isAuthenticated", "true");
-  
+
       setUserEmail(email);
       setOtpSent(false);
       setEmail("");
       setOtp("");
-  
-      // ✅ Fetch cart from MySQL after login
+
+      // ✅ Fetch cart data after login
       const cartResponse = await axios.get(`http://localhost:5000/api/cart/${email}`);
-      const cartData = cartResponse.data;
-  
-      console.log("Cart data fetched from MySQL:", cartData);
-  
-      if (cartData && cartData.length > 0) {
-        setCart(cartData); // ✅ No await needed here
-        localStorage.setItem("savedCart", JSON.stringify(cartData));
-        console.log("Cart data saved in state and localStorage");
+      console.log("Full cart response:", cartResponse);
+
+      const cartData = cartResponse.data.cart || cartResponse.data;
+
+      if (cartData?.length > 0) {
+        // ✅ Ensure cart data format is consistent
+        const updatedCart = cartData.map((item) => ({
+          ...item,
+          image: Array.isArray(item.image) ? item.image[0] : item.image || "", // Ensure image is a string
+        }));
+
+        setCart(updatedCart);
+        localStorage.setItem("savedCart", JSON.stringify(updatedCart));
+        console.log("Cart saved to localStorage:", updatedCart);
       } else {
         console.warn("No cart data found.");
       }
-  
-      onLogin(); // Trigger login state update
+
+      onLogin();
       onClose();
     } catch (err) {
       setError("Invalid OTP. Please try again.");
     }
   };
-  
+
   // ✅ Logout
   const handleLogout = async () => {
     try {
@@ -109,22 +116,20 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
           quantity: item.quantity,
         });
       }
-  
-      // ✅ Clear localStorage and state
+
+      // ✅ Clear user data from localStorage
       localStorage.removeItem("userEmail");
       localStorage.removeItem("token");
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("savedCart");
-  
-      // ✅ Set state to empty
+
       setUserEmail(null);
-      setCart([]); // 👈 Ensure cart is emptied
-      localStorage.removeItem("cart");
-  
-      // ✅ Wait briefly to allow state update to propagate
+      setCart([]); // Clear cart state
+
+      // ✅ Short delay to let state updates propagate
       await new Promise((resolve) => setTimeout(resolve, 100));
-  
-      // ✅ Redirect after state update
+
+      // ✅ Redirect to home after logout
       window.location.href = "/";
     } catch (err) {
       console.error("Failed to save cart before logout:", err);

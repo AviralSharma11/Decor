@@ -206,7 +206,7 @@ const handleLogin = async (email) => {
 
   return (
     <div className="Home">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
       <Showcase />
       <div className="parallax1">
         <div className="parallax-text">Discover Our Collection</div>

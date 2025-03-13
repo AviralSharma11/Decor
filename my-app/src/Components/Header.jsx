@@ -78,10 +78,10 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
           <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
             <div className="hamburgerContent">
               <ul className="nav-links content">
+                <li><Link to="/collections">Collections</Link></li>
                 <li><Link to="/collections/customised-products">Customisable</Link></li>
                 <li><Link to="/material/wood">Wood</Link></li>
                 <li><Link to="/material/acrylic">Acrylic</Link></li>
-                <li><Link to="/collections">Collections</Link></li>
                 <li><Link>Sharma</Link></li>
               </ul>
               {user ? (
@@ -146,80 +146,87 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
       </header>
 
       {isCartOpen && (
-        <div className="cart-modal">
-          <div className="cart-content">
-              <div className="cart-top">
-                <h2>Shopping Cart</h2>
-                <button className="close-cart" onClick={toggleCart}>
-                  ×
-                </button>
-              </div>
-            {cart.length === 0 ? (
-              <p>Your cart is empty</p>
-            ) : (
-              <>
-              <ul>
-                {cart.map((product, index) => (
-                  <li key={index}>
-                    <Link 
-                      to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
-                      state={{ product }} 
-                      style={{ textDecoration: "none" }}>
-                      <img src={product.image[0]} alt={product.name} className="item-image" />
-                    </Link>
+  <div className="cart-modal">
+    <div className="cart-content">
+      <div className="cart-top">
+        <h2>Shopping Cart</h2>
+        <button className="close-cart" onClick={toggleCart}>
+          ×
+        </button>
+      </div>
 
-                    <div className="items">
-                      <Link 
-                        to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
-                        state={{ product }} 
-                        style={{ textDecoration: "none" }}>
-                        <span className="item-name">{product.name}</span>
-                      </Link>
+      {/* ✅ If user is not logged in, show message */}
+      {!user ? (
+        <p>You need to login to add to cart.</p>
+      ) : cart.length === 0 ? (
+        <p>Your cart is empty</p>
+      ) : (
+        <>
+          <ul>
+            {cart.map((product, index) => (
+              <li key={index}>
+                <Link 
+                  to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
+                  state={{ product }} 
+                  style={{ textDecoration: "none" }}>
+                  <img src={product.image[0]} alt={product.name} className="item-image" />
+                </Link>
 
-                      <span className="item-price">₹{product.discountedPrice}</span>
-                      <span className="item-price original">₹{product.originalPrice}</span>
+                <div className="items">
+                  <Link 
+                    to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`} 
+                    state={{ product }} 
+                    style={{ textDecoration: "none" }}>
+                    <span className="item-name">{product.name}</span>
+                  </Link>
 
-                      <div className="quantity-controls">
-                        <button 
-                          className="quantity-button" 
-                          onClick={() => updateQuantity(product.id, product.quantity - 1)}
-                          disabled={product.quantity === 1}>
-                          -
-                        </button>
-                        <span>{product.quantity}</span>
-                        <button 
-                          className="quantity-button" 
-                          onClick={() => updateQuantity(product.id, product.quantity + 1)}>
-                          +
-                        </button>
-                      </div>
+                  <span className="item-price">₹{product.discountedPrice}</span>
+                  <span className="item-price original">₹{product.originalPrice}</span>
 
-                      <button className="remove-item" onClick={() => onRemoveFromCart(product.id)}>X</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                  <div className="quantity-controls">
+                    <button 
+                      className="quantity-button" 
+                      onClick={() => updateQuantity(product.id, product.quantity - 1)}
+                      disabled={product.quantity === 1}>
+                      -
+                    </button>
+                    <span>{product.quantity}</span>
+                    <button 
+                      className="quantity-button" 
+                      onClick={() => updateQuantity(product.id, product.quantity + 1)}>
+                      +
+                    </button>
+                  </div>
 
-                <div className="price-details">
-                  <h4 >Price Details: </h4>
-                    <div className="price">Total MRP: 
-                      <div className="total-mrp">₹ {formatPrice(calculateTotal())}</div>
-                    </div>
-                    <div className="price">Money Saved:
-                      <div className="money-saved">-₹ {formatPrice(calculateTotal()-calculateDiscountedTotal())}</div>
-                    </div>
-                    <div className="price" style={{fontWeight: 600}}>Total Amount:
-                      <div className="total-amount"> ₹ {formatPrice(calculateDiscountedTotal())}</div>
-                    </div>
+                  <button className="remove-item" onClick={() => onRemoveFromCart(product.id)}>X</button>
                 </div>
-                <div className="cart-footer">
-                  <button className="checkout" onClick={proceedToCheckout}> <div className="dot"></div>Proceed To Checkout</button>
-                </div>
-              </>
-            )}
+              </li>
+            ))}
+          </ul>
+
+          <div className="price-details">
+            <h4>Price Details:</h4>
+            <div className="price">
+              Total MRP: <div className="total-mrp">₹{formatPrice(calculateTotal())}</div>
+            </div>
+            <div className="price">
+              Money Saved: <div className="money-saved">-₹{formatPrice(calculateTotal() - calculateDiscountedTotal())}</div>
+            </div>
+            <div className="price" style={{ fontWeight: 600 }}>
+              Total Amount: <div className="total-amount">₹{formatPrice(calculateDiscountedTotal())}</div>
+            </div>
           </div>
-        </div>
+
+          <div className="cart-footer">
+            <button className="checkout" onClick={proceedToCheckout}>
+              <div className="dot"></div>Proceed To Checkout
+            </button>
+          </div>
+        </>
       )}
+    </div>
+  </div>
+)}
 
 
     </>

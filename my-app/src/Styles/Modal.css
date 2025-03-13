@@ -65,6 +65,7 @@ button.close-button:hover{
   font-size: 16px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  margin-bottom: 0;
 }
 
 /* Modal Button */
