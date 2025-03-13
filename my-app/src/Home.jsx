@@ -63,7 +63,7 @@ function Home() {
             name: product.name,
             price: Number(product.price),
             quantity: product.quantity || 1,
-            image: typeof product.image === "string" ? product.image : product.image[0],
+            image: product.image || "",
           },
         };
   
@@ -92,32 +92,22 @@ function Home() {
 
   const addToCart = (product) => {
     if (!isAuthenticated) {
-      setIsLoginModalOpen(true);
+      setIsLoginModalOpen(true); // Open login modal
       return;
     }
-  
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       let updatedCart;
   
       if (existingItem) {
         updatedCart = prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        updatedCart = [
-          ...prevCart,
-          {
-            ...product,
-            quantity: 1,
-            image: typeof product.image === "string" ? product.image : product.image[0], // ✅ Ensure image is a string
-          },
-        ];
+        updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
   
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
       return updatedCart;
     });
   };

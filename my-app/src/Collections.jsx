@@ -121,7 +121,7 @@ export default function Collections() {
   };
   
 
-  const removeFromCart = async (productId) => {
+const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
   
     try {

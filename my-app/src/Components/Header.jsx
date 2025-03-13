@@ -3,7 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import "../Styles/Header.css";
 import LoginModal from "./LoginModal";
 
-const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the cart prop
+const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use the cart prop
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -84,23 +84,35 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity}) => { // Use the car
                 <li><Link to="/collections">Collections</Link></li>
                 <li><Link>Sharma</Link></li>
               </ul>
-              <div className="profileViewer show"onClick={openModal}>
+              {user ? (
+                <div className="profileViewer show" onClick={() => navigate("/profile")}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="33"
+                    fill="currentColor"
+                    className="bi bi-person content"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                  </svg>
+                  <span>{user.email}</span>
+                </div>
+              ) : (   
+                <div className="profileViewer show" onClick={() => navigate("/profile")}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="33"
                   fill="currentColor"
                   className="bi bi-person content"
                   viewBox="0 0 16 16"
-                  style={{marginLeft: "15px"}}
                 >
                   <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
                 </svg>
-                <span>Log In</span>
+                <span>Login</span>
               </div>
+              )}
               <LoginModal isOpen={isModalOpen} onClose={closeModal} />
             </div>
-
-            
           </nav>
 
           <div className="icons-grid">
