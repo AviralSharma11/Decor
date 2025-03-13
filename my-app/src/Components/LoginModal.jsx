@@ -220,6 +220,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     localStorage.removeItem("cart"); // Clear cart from storage
     setUserEmail(null);
 
+    window.location.reload(); //refresh the page
+
   };
 
   // Handle "Enter" keypress

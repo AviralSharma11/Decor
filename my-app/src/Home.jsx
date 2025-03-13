@@ -31,7 +31,7 @@ function Home() {
     localStorage.setItem("userEmail", email);
 
     try {
-        const response = await fetch(`/api/cart/${email}`);
+        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
         const cartData = await response.json();
 
         if (!Array.isArray(cartData)) {
@@ -53,71 +53,143 @@ function Home() {
   // Save cart to MySQL when it updates
   useEffect(() => {
     if (isAuthenticated && cart.length > 0) {
-        const email = localStorage.getItem("userEmail");
-        const payload = { email, cart };
-
-        console.log("Sending cart to server:", payload); // Debugging output
-
-        fetch("/api/cart", {
+      const email = localStorage.getItem("userEmail");
+  
+      cart.forEach(async (product) => {
+        const payload = {
+          email,
+          product: {
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            quantity: product.quantity || 1,
+            image: typeof product.image === "string" ? product.image : product.image[0],
+          },
+        };
+  
+        console.log("Sending product to server:", JSON.stringify(payload, null, 2));
+  
+        try {
+          const res = await fetch("http://localhost:5000/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-        })
-        .then((res) => {
-            if (!res.ok) {
-                return res.json().then((data) => {
-                    throw new Error(`Failed to add to cart: ${data.message}`);
-                });
-            }
-            console.log("Cart saved successfully");
-        })
-        .catch((err) => console.error("Failed to save cart:", err));
+          });
+  
+          if (!res.ok) {
+            const data = await res.json();
+            console.error(`Failed to add product: ${data.message}`);
+          } else {
+            console.log("Product added to cart successfully");
+          }
+        } catch (err) {
+          console.error("Failed to save product to cart:", err);
+        }
+      });
     }
-}, [cart, isAuthenticated]);
-
-
-
+  }, [cart, isAuthenticated]);
+  
 
   const addToCart = (product) => {
     if (!isAuthenticated) {
       setIsLoginModalOpen(true);
       return;
     }
-
+  
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       let updatedCart;
-
+  
       if (existingItem) {
         updatedCart = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        updatedCart = [
+          ...prevCart,
+          {
+            ...product,
+            quantity: 1,
+            image: typeof product.image === "string" ? product.image : product.image[0], // ✅ Ensure image is a string
+          },
+        ];
       }
-
+  
       localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
+  
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
+  const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/cart/remove', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem('userEmail'), // Assuming email is stored in localStorage
+          productId,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setCart((prevCart) => {
+          const updatedCart = prevCart.filter((item) => item.id !== productId);
+          localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
+          return updatedCart;
+        });
+        console.log(data.message);
+      } else {
+        console.error('Failed to remove from cart:', data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
+  
 
-  const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return; // Prevent setting quantity to less than 1
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/cart/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem('userEmail'),
+          productId,
+          quantity: newQuantity,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update quantity: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log(data.message);
+  
+      // Update cart state if successful
+      setCart((prevCart) => 
+        prevCart.map((item) =>
+          item.id === productId ? { ...item, quantity: newQuantity } : item
+        )
       );
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
+  
 
   useEffect(() => {
     const handleScroll = () => {

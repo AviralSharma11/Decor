@@ -143,8 +143,6 @@ app.post("/api/cart", (req, res) => {
     );
 });
 
-
-
 //  Fetch cart items
 app.get("/api/cart/:email", (req, res) => {
     const email = req.params.email;
@@ -191,6 +189,27 @@ app.post("/api/cart/remove", (req, res) => {
         }
     );
 });
+
+app.post("/api/cart/update", (req, res) => {
+    const { email, productId, quantity } = req.body;
+
+    if (!email || !productId || quantity === undefined) {
+        return res.status(400).json({ message: "Email, productId, and quantity are required" });
+    }
+
+    db.query(
+        "UPDATE cart SET quantity = ? WHERE user_email = ? AND product_id = ?",
+        [quantity, email, productId],
+        (err, result) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Failed to update quantity" });
+            }
+            res.json({ message: "Cart updated successfully" });
+        }
+    );
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -8,12 +8,13 @@ import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
 import FilterComponent2 from "../FilterComponent2";
 import SocialMediaBadges from "../SocialMediaBadges";
+import LoginModal from "../LoginModal";
 
 const ResinsMaterialPage = () => {
   // Filter only wood products
   const resinsProducts = allProducts.filter((product) => product.material === "Resins");
 
-  // Use woodProducts as initial products state
+  // Use resinsProducts as initial products state
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,7 +22,10 @@ const ResinsMaterialPage = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-  
+      const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
+      const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+      });   
   useEffect(() => {
     if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -101,6 +105,10 @@ const ResinsMaterialPage = () => {
 
   // Add product to cart
   const addToCart = (product) => {
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true); // Open login modal
+      return;
+    }
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       let updatedCart;
@@ -119,23 +127,71 @@ const ResinsMaterialPage = () => {
   };
 
   // Remove product from cart
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
+  const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/cart/remove', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem('userEmail'), // Assuming email is stored in localStorage
+          productId,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setCart((prevCart) => {
+          const updatedCart = prevCart.filter((item) => item.id !== productId);
+          localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
+          return updatedCart;
+        });
+        console.log(data.message);
+      } else {
+        console.error('Failed to remove from cart:', data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
+  
 
-  // Update product quantity in cart
-  const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return; // Prevent setting quantity to less than 1
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/cart/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem('userEmail'),
+          productId,
+          quantity: newQuantity,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update quantity: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log(data.message);
+  
+      // Update cart state if successful
+      setCart((prevCart) => 
+        prevCart.map((item) =>
+          item.id === productId ? { ...item, quantity: newQuantity } : item
+        )
       );
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
 
   return (
@@ -187,6 +243,18 @@ const ResinsMaterialPage = () => {
 
       <SocialMediaBadges />
       <Footer />
+
+      {isLoginModalOpen && (
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={() => {
+            setIsAuthenticated(true);
+            localStorage.setItem("isAuthenticated", "true");
+            setIsLoginModalOpen(false); // Close modal after login
+          }}
+        />
+      )}
     </div>
   );
 };

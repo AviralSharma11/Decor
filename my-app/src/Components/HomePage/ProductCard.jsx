@@ -14,8 +14,8 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
-      setIsLoginModalOpen(true);
-      return;
+        setIsLoginModalOpen(true);
+        return;
     }
 
     addToCart(product);
@@ -24,20 +24,32 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
     const email = localStorage.getItem("userEmail");
 
     try {
-      await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, product }),
-      });
+        const response = await fetch("http://localhost:5000/api/cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email,
+                product: {
+                    id: product.id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.discountedPrice, // Use discounted price for cart
+                },
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to add to cart: ${response.statusText}`);
+        }
     } catch (err) {
-      console.error("Failed to save cart:", err);
+        console.error("Failed to save cart:", err);
     }
 
-    // Reset button state after 3 seconds
     setTimeout(() => {
-      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
+        setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 3000);
-  };
+};
+
 
   return (
     <div className="product-container">
