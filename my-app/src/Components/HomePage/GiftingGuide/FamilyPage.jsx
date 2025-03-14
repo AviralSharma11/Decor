@@ -90,6 +90,17 @@ const FamilyPage = () => {
     });
   };
   
+      const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser) : null;
+      });
+      
+        useEffect(() => {
+          const storedEmail = localStorage.getItem("userEmail");
+          if (storedEmail) {
+            setUser({ email: storedEmail });
+          }
+        }, []);
 
   const filteredProducts = applyFilters();
 
@@ -194,7 +205,7 @@ const FamilyPage = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
@@ -248,6 +259,7 @@ const FamilyPage = () => {
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
             setIsLoginModalOpen(false); // Close modal after login
+            window.location.reload();
           }}
         />
       )}

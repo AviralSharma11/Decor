@@ -26,7 +26,17 @@ const OfficePage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("isAuthenticated") === "true"; // Check login status
   });
-  
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+      useEffect(() => {
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedEmail) {
+          setUser({ email: storedEmail });
+        }
+      }, []); 
   useEffect(() => {
     if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -194,7 +204,7 @@ const OfficePage = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
@@ -248,6 +258,7 @@ const OfficePage = () => {
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
             setIsLoginModalOpen(false); // Close modal after login
+            window.location.reload();
           }}
         />
       )}

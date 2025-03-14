@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, use} from "react";
 import { Link } from "react-router-dom";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "../../Styles/Collection/Categories.css";
@@ -58,7 +58,17 @@ export default function Material(){
           return updatedFilters;
         });
       };
-
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+      useEffect(() => {
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedEmail) {
+          setUser({ email: storedEmail });
+        }
+      }, []);
       const applyFilters = () => {
         return products.filter((product) => {
           // Filter by Type
@@ -201,7 +211,7 @@ export default function Material(){
       ];
     return(
         <div className="material">
-            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
             <div className="carousel-container">
                 {/* Breadcrumb Navigation */}
                 <nav className="breadcrumb">
@@ -303,6 +313,7 @@ export default function Material(){
                   setIsAuthenticated(true);
                   localStorage.setItem("isAuthenticated", "true");
                   setIsLoginModalOpen(false); // Close modal after login
+                  window.location.reload();
                 }}
               />
             )}

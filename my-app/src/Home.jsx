@@ -19,44 +19,58 @@ function Home() {
     }
 });
 
+const [user, setUser] = useState(() => {
+  const savedUser = localStorage.getItem("user");
+  return savedUser ? JSON.parse(savedUser) : null;
+});
+
+
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("isAuthenticated") === "true";
   });
 
   // ✅ Fetch cart from MySQL on login and sync state + localStorage
-const handleLogin = async (email) => {
-  setIsAuthenticated(true);
-  localStorage.setItem("isAuthenticated", "true");
-  localStorage.setItem("userEmail", email);
-
-  try {
-      // ✅ Fetch cart data from backend
-      const response = await fetch(`http://localhost:5000/api/cart/${email}`);
-      if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
-      
-      const cartData = await response.json();
-
-      // ✅ Validate and update state
-      if (Array.isArray(cartData) && cartData.length > 0) {
-          console.log("Fetched cart data:", cartData);
-          setCart([...cartData]); // Spread operator ensures state update
-          localStorage.setItem("savedCart", JSON.stringify(cartData)); // ✅ Consistent key
-      } else {
-          console.warn("Empty or invalid cart data:", cartData);
-          setCart([]); // ✅ Avoid rendering issues with empty cart
-      }
-  } catch (error) {
-      console.error("Failed to fetch cart:", error.message);
-      alert("Failed to fetch cart data. Please try again.");
-  }
-
-  // ✅ Ensure state is updated before closing the modal
-  await Promise.resolve();
-  setIsLoginModalOpen(false);
-};
-
-
+  const handleLogin = async (email) => {
+    setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("userEmail", email);
+  
+    try {
+        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
+        if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
+        
+        const cartData = await response.json();
+  
+        if (Array.isArray(cartData) && cartData.length > 0) {
+            console.log("Fetched cart data:", cartData);
+            setCart([...cartData]);
+            localStorage.setItem("savedCart", JSON.stringify(cartData));
+        } else {
+            console.warn("Empty or invalid cart data:", cartData);
+            setCart([]);
+        }
+  
+        // ✅ Set user state after successful login
+        setUser({ email });
+    } catch (error) {
+        console.error("Failed to fetch cart:", error.message);
+        alert("Failed to fetch cart data. Please try again.");
+    }
+    
+    setIsLoginModalOpen(false);
+    window.location.reload();
+  };
+  
+  
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) {
+      setUser({ email: storedEmail });
+    }
+  }, []);
+  
   // Save cart to MySQL when it updates
   useEffect(() => {
     if (isAuthenticated && cart.length > 0) {

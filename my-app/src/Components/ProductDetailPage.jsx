@@ -49,7 +49,17 @@ const ProductDetailPage = () => {
     },
   ];
 
-
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+      useEffect(() => {
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedEmail) {
+          setUser({ email: storedEmail });
+        }
+      }, []);
   
   const handleProductChange = (product) => {
     setSelectedProduct(product);
@@ -197,7 +207,7 @@ const ProductDetailPage = () => {
   return (
     <>
       <div className="product-detail-page">
-        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
         <div className="product-detail-container">
         <div className="product-image-gallery">
             <div className="thumbnail-container">
@@ -336,6 +346,7 @@ const ProductDetailPage = () => {
                   setIsAuthenticated(true);
                   localStorage.setItem("isAuthenticated", "true");
                   setIsLoginModalOpen(false); // Close modal after login
+                  window.location.reload();
                 }}
               />
             )}

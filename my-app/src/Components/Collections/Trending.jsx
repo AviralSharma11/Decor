@@ -60,6 +60,17 @@ export default function Trending(){
           return updatedFilters;
         });
       };
+          const [user, setUser] = useState(() => {
+            const savedUser = localStorage.getItem("user");
+            return savedUser ? JSON.parse(savedUser) : null;
+          });
+          
+            useEffect(() => {
+              const storedEmail = localStorage.getItem("userEmail");
+              if (storedEmail) {
+                setUser({ email: storedEmail });
+              }
+            }, []);
 
       const applyFilters = () => {
         return products.filter((product) => {
@@ -202,7 +213,7 @@ export default function Trending(){
       ];
     return(
         <div className="material">
-            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
             <div className="carousel-container">
                 {/* Breadcrumb Navigation */}
                 <nav className="breadcrumb">
@@ -304,6 +315,7 @@ export default function Trending(){
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
             setIsLoginModalOpen(false); // Close modal after login
+            window.location.reload();
           }}
         />
       )}

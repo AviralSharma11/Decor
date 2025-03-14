@@ -26,6 +26,17 @@ const WoodMaterialPage = () => {
         const [isAuthenticated, setIsAuthenticated] = useState(() => {
           return localStorage.getItem("isAuthenticated") === "true"; // Check login status
         });
+            const [user, setUser] = useState(() => {
+              const savedUser = localStorage.getItem("user");
+              return savedUser ? JSON.parse(savedUser) : null;
+            });
+            
+              useEffect(() => {
+                const storedEmail = localStorage.getItem("userEmail");
+                if (storedEmail) {
+                  setUser({ email: storedEmail });
+                }
+              }, []);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -196,7 +207,7 @@ const WoodMaterialPage = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
@@ -253,6 +264,7 @@ const WoodMaterialPage = () => {
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
             setIsLoginModalOpen(false); // Close modal after login
+            window.location.reload();
           }}
         />
       )}

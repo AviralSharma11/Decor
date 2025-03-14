@@ -47,9 +47,21 @@ export default function Shipping(){
         });
       };
 
+          const [user, setUser] = useState(() => {
+            const savedUser = localStorage.getItem("user");
+            return savedUser ? JSON.parse(savedUser) : null;
+          });
+          
+            useEffect(() => {
+              const storedEmail = localStorage.getItem("userEmail");
+              if (storedEmail) {
+                setUser({ email: storedEmail });
+              }
+            }, []);
+
     return(
         <div className="shipping-container">
-         <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity}/>
+         <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
          <div className="shipping">
             <h3 className="page-title">Shipping</h3>
             <p className="notice">We ship across ..... .... .. . . . . . . .</p>

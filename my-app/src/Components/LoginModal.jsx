@@ -100,6 +100,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
       onLogin();
       onClose();
+
     } catch (err) {
       setError("Invalid OTP. Please try again.");
     }

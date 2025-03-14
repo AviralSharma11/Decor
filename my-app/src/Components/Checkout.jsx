@@ -7,7 +7,17 @@ const Checkout = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+      useEffect(() => {
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedEmail) {
+          setUser({ email: storedEmail });
+        }
+      }, []);
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -38,7 +48,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout-container">
-        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
       <h1 className="page-title">Checkout</h1>
       {/* Delivery Section */}
       <div className="format">

@@ -23,6 +23,18 @@ export default function Collections() {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
       return localStorage.getItem("isAuthenticated") === "true"; // Check login status
     });
+
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+      useEffect(() => {
+        const storedEmail = localStorage.getItem("userEmail");
+        if (storedEmail) {
+          setUser({ email: storedEmail });
+        }
+      }, []);
   
     useEffect(() => {
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -191,7 +203,7 @@ const removeFromCart = async (productId) => {
 
   return (
     <div className="Collections">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
       <Categories />
       
       {isMobile && (
