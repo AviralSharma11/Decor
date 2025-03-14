@@ -29,8 +29,8 @@ const Categories = () => {
         >
          <defs>
             <radialGradient id="gradient" cx="50%" cy="50%" r="50%" gradientTransform="rotate(90, 0.5, 0.5)">
-              <stop offset="30%" stop-color="#4a4a4a" />
-              <stop offset="100%" stop-color="#333" />
+              <stop offset="30%" stopColor="#4a4a4a" />
+              <stop offset="100%" stopColor="#333" />
             </radialGradient>
           </defs>
           <path fill="url(#gradient)" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
@@ -79,8 +79,8 @@ const Categories = () => {
         >
            <defs>
             <radialGradient id="gradient" cx="50%" cy="50%" r="50%" gradientTransform="rotate(90, 0.5, 0.5)">
-              <stop offset="30%" stop-color="#4a4a4a" />
-              <stop offset="100%" stop-color="#333" />
+              <stop offset="30%" stopColor="#4a4a4a" />
+              <stop offset="100%" stopColor="#333" />
             </radialGradient>
           </defs>
           <path fill="url(#gradient)" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>

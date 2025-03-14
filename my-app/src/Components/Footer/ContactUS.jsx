@@ -3,6 +3,7 @@ import "../../Styles/Footer/FooterLinks.css";
 import "../../Styles/Footer/ContactUS.css";
 import Header from "../Header";
 import Footer from "../Footer";
+import LoginModal from "../LoginModal";
 
 export default function ContactUS() {
 
@@ -43,29 +44,6 @@ export default function ContactUS() {
             setUser({ email: storedEmail });
           }
         }, []);
-
-          // Add product to cart
-  const addToCart = (product) => {
-    if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
-      return;
-    }
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
-  
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
-      }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
-    });
-  };
 
         const removeFromCart = async (productId) => {
           if (!isAuthenticated) return;
@@ -238,6 +216,18 @@ export default function ContactUS() {
         </form>
       </div>  
     </div>
+    {isLoginModalOpen && (
+              <LoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLogin={() => {
+                  setIsAuthenticated(true);
+                  localStorage.setItem("isAuthenticated", "true");
+                  setIsLoginModalOpen(false); // Close modal after login
+                  window.location.reload();
+                }}
+              />
+            )}
     <Footer />
     </>
   );
