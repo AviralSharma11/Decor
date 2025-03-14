@@ -85,7 +85,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
                 <li><Link>Sharma</Link></li>
               </ul>
               {user ? (
-                <div className="profileViewer show" onClick={() => navigate("/profile")}>
+                <div className="profileViewer show"  onClick={openModal}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="33"
@@ -98,7 +98,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
                   <span>{user.email}</span>
                 </div>
               ) : (   
-                <div className="profileViewer show" onClick={() => navigate("/profile")}>
+                <div className="profileViewer show"  onClick={openModal}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   height="33"
