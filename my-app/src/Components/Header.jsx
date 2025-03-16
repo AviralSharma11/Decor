@@ -3,12 +3,17 @@ import {Link, useNavigate} from "react-router-dom";
 import "../Styles/Header.css";
 import LoginModal from "./LoginModal";
 
-const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use the cart prop
+const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) => { // Use the cart prop
   const [isHidden, setIsHidden] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const lastScrollY = useRef(0); //  Use useRef instead of a regular variable
 
+  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY.current) {
@@ -25,6 +30,43 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Toggle search bar
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+
+  // Handle search input
+  const handleSearch = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      setSuggestions([]);
+      setFilteredProducts([]);
+      return;
+    }
+
+    // ✅ Filter suggestions (first 5 matches)
+    const newSuggestions = products
+      .map((product) => product.name)
+      .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
+      .slice(0, 5);
+
+    // Filter products (based on full name match)
+    const newFilteredProducts = products.filter((product) =>
+      product.name.toLowerCase().includes(term.toLowerCase())
+    );
+
+    setSuggestions(newSuggestions);
+    setFilteredProducts(newFilteredProducts);
+  };
+
+  // Handle clicking suggestion
+  const handleSuggestionClick = (suggestion) => {
+    setSearchTerm(suggestion);
+    setSuggestions([]);
+  };
+
+  
 
   const toggleMenu = () => {
     const newMenuState = !isMenuOpen;
@@ -116,7 +158,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
           </nav>
 
           <div className="icons-grid">
-            <div className="icons search">
+            <div className="icons search" onClick={toggleSearch}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -225,6 +267,60 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user}) => { // Use 
     </div>
   </div>
 )}
+
+
+      {/* ✅ Search Bar */}
+      {isSearchOpen && (
+        <div className="search-bar">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search for products..."
+          />
+          <button onClick={toggleSearch}>×</button>
+
+          {/* ✅ Suggestions */}
+          {suggestions.length > 0 && (
+            <div className="suggestions">
+              <div className="title">SUGGESTIONS</div>
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={index}
+                  className="suggestion"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  dangerouslySetInnerHTML={{
+                    __html: suggestion.replace(
+                      new RegExp(`(${searchTerm})`, "gi"),
+                      "<b>$1</b>"
+                    ),
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* ✅ Products */}
+          {filteredProducts.length > 0 && (
+            <div className="products">
+              <div className="title">PRODUCTS</div>
+              {filteredProducts.map((product) => (
+                <Link
+                  key={product.id}
+                  to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="product-item"
+                >
+                  <img src={product.image[0]} alt={product.name} />
+                  <div>
+                    <p className="product-name">{product.name}</p>
+                    <p className="product-price">₹{formatPrice(product.discountedPrice)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
 
     </>

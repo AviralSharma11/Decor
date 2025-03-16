@@ -29,6 +29,7 @@ export const filters = [
       isDraggable: false,
       preview: "PREVIEW",
       frameImageURL: "animeframe1.jpg",
+      tags: ["painting", "furniture", "table", "handmade"],
     },
 
     
@@ -53,6 +54,7 @@ export const filters = [
       customisable: true,
       giftingguide: "HER",
       type: "Wooden Art",
+      tags: ["wood", "wedding", "heart" , "batches" , "pins", "handmade"],
     },
     {
       id: 3,

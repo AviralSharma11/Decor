@@ -203,7 +203,7 @@ const removeFromCart = async (productId) => {
 
   return (
     <div className="Collections">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
       <Categories />
       
       {isMobile && (
