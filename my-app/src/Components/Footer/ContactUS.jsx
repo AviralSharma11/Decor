@@ -20,11 +20,37 @@ export default function ContactUS() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Add form submission logic here
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert('Message sent successfully!');
+        setFormData({
+          fullName: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to submit the form. Try again later.');
+    }
   };
+  
     const [cart, setCart] = useState(() => {
       const savedCart = localStorage.getItem("cart");
       return savedCart ? JSON.parse(savedCart) : [];

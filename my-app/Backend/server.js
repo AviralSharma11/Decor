@@ -1,11 +1,17 @@
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const xlsx = require('xlsx');
 const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+
+const FILE_NAME = 'ContactData.xlsx';
 
 // MySQL Database Connection
 const db = mysql.createConnection({
@@ -213,6 +219,44 @@ app.post("/api/cart/update", (req, res) => {
     );
 });
 
+app.post('/api/contact', (req, res) => {
+    const { fullName, email, subject, message } = req.body;
+
+    if (!fullName || !email || !subject || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    let workbook;
+    if (fs.existsSync(FILE_NAME)) {
+        // Load existing file
+        workbook = xlsx.readFile(FILE_NAME);
+    } else {
+        // Create new workbook
+        workbook = xlsx.utils.book_new();
+    }
+
+    let worksheet;
+    if (workbook.SheetNames.includes('Contacts')) {
+        worksheet = workbook.Sheets['Contacts'];
+    } else {
+        worksheet = xlsx.utils.aoa_to_sheet([['Full Name', 'Email', 'Subject', 'Message']]);
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Contacts');
+    }
+
+    // Get existing data and add new row
+    const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+    data.push([fullName, email, subject, message]);
+    const newWorksheet = xlsx.utils.aoa_to_sheet(data);
+
+    workbook.Sheets['Contacts'] = newWorksheet;
+
+    // Write to file
+    xlsx.writeFile(workbook, FILE_NAME);
+
+    res.status(200).json({ message: 'Contact saved successfully' });
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
