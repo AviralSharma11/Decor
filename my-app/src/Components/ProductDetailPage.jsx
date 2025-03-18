@@ -112,6 +112,7 @@ const ProductDetailPage = () => {
             )
           }
           user={user}
+          products={products}
         />
         <div className="product-detail-container">
           <div className="product-image-gallery">

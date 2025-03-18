@@ -9,7 +9,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  // const [suggestions, setSuggestions] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const lastScrollY = useRef(0); //  Use useRef instead of a regular variable
 
@@ -40,31 +40,31 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
     setSearchTerm(term);
 
     if (term.trim() === "") {
-      setSuggestions([]);
+      // setSuggestions([]);
       setFilteredProducts([]);
       return;
     }
 
     //  Filter suggestions (first 5 matches)
-    const newSuggestions = products
-      .map((product) => product.name)
-      .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
-      .slice(0, 5);
+    // const newSuggestions = products
+    //   .map((product) => product.name)
+    //   .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
+    //   .slice(0, 5);
 
     // Filter products (based on full name match)
     const newFilteredProducts = products.filter((product) =>
       product.name.toLowerCase().includes(term.toLowerCase())
     );
 
-    setSuggestions(newSuggestions);
+    // setSuggestions(newSuggestions);
     setFilteredProducts(newFilteredProducts);
   };
 
   // Handle clicking suggestion
-  const handleSuggestionClick = (suggestion) => {
-    setSearchTerm(suggestion);
-    setSuggestions([]);
-  };
+  // const handleSuggestionClick = (suggestion) => {
+  //   setSearchTerm(suggestion);
+  //   setSuggestions([]);
+  // };
 
   
 
