@@ -1,5 +1,5 @@
-import React , {useState , useEffect} from "react";
-import { useLocation , useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "../Styles/ProductDetailPage.css";
 import Header from "./Header";
 import SocialMediaBadges from "./SocialMediaBadges";
@@ -8,26 +8,85 @@ import { products } from "../List/product";
 import LoginModal from "./LoginModal";
 
 const ProductDetailPage = () => {
+  const { productName } = useParams();
+  const navigate = useNavigate();
+
+  // Convert URL product name back to actual product name (assuming case-insensitivity)
+  const formattedProductName = productName.replace(/-/g, " ").toLowerCase();
+
+  // Find product based on name
+  const product = products.find(
+    (p) => p.name.toLowerCase() === formattedProductName
+  );
+
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-  
+
   useEffect(() => {
-    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
+    if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
 
-  const [isCustomisedOpen , setIsCustomisedOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const product = location.state?.product || products; // Get product data from state
-  const [selectedImage, setSelectedImage] = useState(product.image[0]);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+  const [selectedImage, setSelectedImage] = useState(product.image[0] || "");
+  const [isCustomisedOpen, setIsCustomisedOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    localStorage.getItem("isAuthenticated") === "true"
+  );
+
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
   });
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) {
+      setUser({ email: storedEmail });
+    }
+  }, []);
+
+  const [openSection, setOpenSection] = useState(null);
+
+  const toggleSection = (index) => {
+    setOpenSection(openSection === index ? null : index);
+  };
+
+  const addToCart = (product) => {
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.name === product.name);
+      let updatedCart;
+
+      if (existingItem) {
+        updatedCart = prevCart.map((item) =>
+          item.name === product.name ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      } else {
+        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+      }
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      return updatedCart;
+    });
+  };
+
+  const proceedToCheckout = () => {
+    navigate("/checkout");
+  };
+
+  const toggleCustomModal = () => {
+    setIsCustomisedOpen(!isCustomisedOpen);
+    document.body.style.overflowY = !isCustomisedOpen ? "hidden" : "auto";
+  };
+
   const sections = [
     { title: "Description", content: product.description },
     { title: "Features", content: product.trending || "No features available" },
@@ -37,89 +96,25 @@ const ProductDetailPage = () => {
     },
   ];
 
-    const [user, setUser] = useState(() => {
-      const savedUser = localStorage.getItem("user");
-      return savedUser ? JSON.parse(savedUser) : null;
-    });
-    
-      useEffect(() => {
-        const storedEmail = localStorage.getItem("userEmail");
-        if (storedEmail) {
-          setUser({ email: storedEmail });
-        }
-      }, []);
-  
-  
-  const [openSection, setOpenSection] = useState(null);
-
-  const toggleSection = (index) => {
-    setOpenSection(openSection === index ? null : index);
-  };
-  if (!product) {
-    return <h2>Product not found</h2>;
-  }
-  
-  const addToCart = (product) => {
-    if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
-      return;
-    }
-
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
-  
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
-      }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
-    });
-  };
-  
-
-  // Remove product from cart
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
-  };
-  
-  // update quantity
-  const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      );
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
-  };
-  
-
-  const proceedToCheckout = () =>{
-    navigate( "/checkout");
-  };
-
-  const toggleCustomModal = () => {
-    setIsCustomisedOpen(!isCustomisedOpen);
-    document.body.style.overflowY = !isCustomisedOpen ? "hidden" : "auto";
-  };
-
-
   return (
     <>
       <div className="product-detail-page">
-        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
+        <Header
+          cart={cart}
+          onRemoveFromCart={(productId) =>
+            setCart(cart.filter((item) => item.id !== productId))
+          }
+          updateQuantity={(productId, newQuantity) =>
+            setCart(
+              cart.map((item) =>
+                item.id === productId ? { ...item, quantity: newQuantity } : item
+              )
+            )
+          }
+          user={user}
+        />
         <div className="product-detail-container">
-        <div className="product-image-gallery">
+          <div className="product-image-gallery">
             <div className="thumbnail-container">
               {product.image.map((img, index) => (
                 <img
@@ -148,13 +143,26 @@ const ProductDetailPage = () => {
               </button>
             )}
             <div className="product-prices">
-              <span className="discountedPrice">₹{product.discountedPrice.toLocaleString()}</span>
-              <span className="originalPrice">₹{product.originalPrice.toLocaleString()}</span>
-              <span className="discount">{Math.round(((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100)}% Off</span>
+              <span className="discountedPrice">
+                ₹{product.discountedPrice.toLocaleString()}
+              </span>
+              <span className="originalPrice">
+                ₹{product.originalPrice.toLocaleString()}
+              </span>
+              <span className="discount">
+                {Math.round(
+                  ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100
+                )}
+                % Off
+              </span>
             </div>
             <div className="buttons">
-              <button className="buy-now" onClick={proceedToCheckout}>Buy Now</button>
-              <button className="add-to-cart" onClick={() => addToCart(product)}>Add to Cart</button>
+              <button className="buy-now" onClick={proceedToCheckout}>
+                Buy Now
+              </button>
+              <button className="add-to-cart" onClick={() => addToCart(product)}>
+                Add to Cart
+              </button>
             </div>
             <div className="accordion">
               {sections.map((section, index) => (
@@ -194,18 +202,17 @@ const ProductDetailPage = () => {
       )}
 
       {isLoginModalOpen && (
-              <LoginModal
-                isOpen={isLoginModalOpen}
-                onClose={() => setIsLoginModalOpen(false)}
-                onLogin={() => {
-                  setIsAuthenticated(true);
-                  localStorage.setItem("isAuthenticated", "true");
-                  setIsLoginModalOpen(false); // Close modal after login
-                  window.location.reload();
-                }}
-              />
-            )}
-
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={() => {
+            setIsAuthenticated(true);
+            localStorage.setItem("isAuthenticated", "true");
+            setIsLoginModalOpen(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </>
   );
 };

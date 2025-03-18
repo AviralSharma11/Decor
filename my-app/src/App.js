@@ -54,7 +54,7 @@ function App() {
           <Route path="/material/resins" element={<ResinsMaterialPage />} />
 
           {/* Product Pages */}
-          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/product/:productName" element={<ProductDetailPage />} />
           <Route path="/products" element={<ProductComponent products={products} addToCart={() => {}} />} />
 
           {/* Footer Links */}

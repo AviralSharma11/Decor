@@ -287,7 +287,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
           <button onClick={toggleSearch}>×</button>
 
           {/* Suggestions */}
-          {suggestions.length > 0 && (
+          {/* {suggestions.length > 0 && (
             <div className="suggestions">
               <div className="title">SUGGESTIONS</div>
               {suggestions.map((suggestion, index) => (
@@ -304,7 +304,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
                 />
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Products */}
           {filteredProducts.length > 0 && (
