@@ -4,6 +4,7 @@ import "../../Styles/Footer/ContactUS.css";
 import Header from "../Header";
 import Footer from "../Footer";
 import LoginModal from "../LoginModal";
+import { products } from "../../List/product";
 
 export default function ContactUS() {
 
@@ -113,7 +114,7 @@ export default function ContactUS() {
         };
 
   return (
-    <><Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
+    <><Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
     <div className="contact-container">
       <div className="contact-info">
         <h1>Contact Us</h1>

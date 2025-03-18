@@ -51,10 +51,10 @@ const itemsbs =[
         originalPrice: 54443.0,
         discountedPrice: 10000.0,
         image :[
-          "/Images/Spotify_Frames/1.webp",
+          "/Images/Spotify_Frames/4.webp",
           "/Images/Spotify_Frames/2.webp",
           "/Images/Spotify_Frames/3.webp",
-          "/Images/Spotify_Frames/4.webp",
+          "/Images/Spotify_Frames/1.webp",
           "/Images/Spotify_Frames/5.webp",
         ],
         customisable: true,

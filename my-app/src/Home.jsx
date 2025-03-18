@@ -7,6 +7,7 @@ import SocialMediaBadges from "./Components/SocialMediaBadges";
 import Footer from "./Components/Footer";
 import "./Home.css";
 import LoginModal from "./Components/LoginModal";
+import { products } from "./List/product";
 
 function Home() {
   const [cart, setCart] = useState(() => {
@@ -31,7 +32,7 @@ const [user, setUser] = useState(() => {
     return localStorage.getItem("isAuthenticated") === "true";
   });
 
-  // ✅ Fetch cart from MySQL on login and sync state + localStorage
+  //  Fetch cart from MySQL on login and sync state + localStorage
   const handleLogin = async (email) => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", "true");
@@ -51,8 +52,8 @@ const [user, setUser] = useState(() => {
             console.warn("Empty or invalid cart data:", cartData);
             setCart([]);
         }
-  
-        // ✅ Set user state after successful login
+
+        // Set user state after successful login
         setUser({ email });
     } catch (error) {
         console.error("Failed to fetch cart:", error.message);
@@ -220,7 +221,7 @@ const [user, setUser] = useState(() => {
 
   return (
     <div className="Home">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
       <Showcase />
       <div className="parallax1">
         <div className="parallax-text">Discover Our Collection</div>

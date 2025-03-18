@@ -213,7 +213,7 @@ export default function Trending(){
       ];
     return(
         <div className="material">
-            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} />
+            <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
             <div className="carousel-container">
                 {/* Breadcrumb Navigation */}
                 <nav className="breadcrumb">
@@ -301,7 +301,7 @@ export default function Trending(){
           <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
         </div>
                 <div className="contents">
-                <ProductComponent products={filteredProducts} addToCart={addToCart} />
+                <ProductComponent products={filteredProducts} addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen}/>
                 </div>
             </div>
             <SocialMediaBadges />

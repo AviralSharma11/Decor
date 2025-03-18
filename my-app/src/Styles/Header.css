@@ -450,17 +450,18 @@
 }
 
 .search-bar {
-  position: absolute;
-  top: 60px;
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
   padding: 10px;
   background-color: #fff;
   z-index: 999;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow-y: scroll;
 }
 
-input {
+.search-here {
   width: calc(100% - 40px);
   padding: 10px;
   font-size: 16px;
@@ -503,6 +504,10 @@ button {
   color: inherit;
 }
 
+.product-item:hover {
+  background-color: #f1f1f1;
+}
+
 .product-item img {
   width: 40px;
   height: 40px;
@@ -517,4 +522,23 @@ button {
 .product-price {
   font-size: 12px;
   color: #888;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 17px;
+  top: 0;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 45px;
+  margin-top: 36px;
+  color: #888;
+  font-family: 'Times New Roman', Times, serif
+}
+
+.clear-btn:hover {
+  color: #000;
 }

@@ -1,26 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import "../Styles/Checkout.css";
-import Header from "./Header";
 
 const Checkout = () => {
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
-    const [user, setUser] = useState(() => {
-      const savedUser = localStorage.getItem("user");
-      return savedUser ? JSON.parse(savedUser) : null;
-    });
-    
-      useEffect(() => {
-        const storedEmail = localStorage.getItem("userEmail");
-        if (storedEmail) {
-          setUser({ email: storedEmail });
-        }
-      }, []);
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
 
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
@@ -28,27 +9,9 @@ const Checkout = () => {
     setBillingSameAsShipping(e.target.value === "same");
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.filter((item) => item.id !== productId);
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    setCart((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
-      );
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart
-      return updatedCart;
-    });
-  };
 
   return (
     <div className="checkout-container">
-        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
       <h1 className="page-title">Checkout</h1>
       {/* Delivery Section */}
       <div className="format">

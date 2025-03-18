@@ -45,7 +45,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
       return;
     }
 
-    // ✅ Filter suggestions (first 5 matches)
+    //  Filter suggestions (first 5 matches)
     const newSuggestions = products
       .map((product) => product.name)
       .filter((name) => name.toLowerCase().includes(term.toLowerCase()))
@@ -197,7 +197,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
         </button>
       </div>
 
-      {/* ✅ If user is not logged in, show message */}
+      {/* If user is not logged in, show message */}
       {user ?  cart.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
@@ -269,7 +269,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
 )}
 
 
-      {/* ✅ Search Bar */}
+      {/* Search Bar */}
       {isSearchOpen && (
         <div className="search-bar">
           <input
@@ -277,10 +277,16 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
             value={searchTerm}
             onChange={handleSearch}
             placeholder="Search for products..."
+            className="search-here"
           />
+          {searchTerm && (
+              <button className="clear-btn" onClick={() => setSearchTerm("")}>
+                clear
+              </button>
+            )}
           <button onClick={toggleSearch}>×</button>
 
-          {/* ✅ Suggestions */}
+          {/* Suggestions */}
           {suggestions.length > 0 && (
             <div className="suggestions">
               <div className="title">SUGGESTIONS</div>
@@ -300,7 +306,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
             </div>
           )}
 
-          {/* ✅ Products */}
+          {/* Products */}
           {filteredProducts.length > 0 && (
             <div className="products">
               <div className="title">PRODUCTS</div>
@@ -321,8 +327,6 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
           )}
         </div>
       )}
-
-
     </>
   );
 };

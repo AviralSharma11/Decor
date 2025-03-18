@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import "../../Styles/Footer/FooterLinks.css";
 import Header from "../Header";
 import Footer from "../Footer";
-import "../../Styles/Footer/Shipping.css"
+import "../../Styles/Footer/Shipping.css";
+import { products } from "../../List/product";
+import SocialMediaBadges from "../SocialMediaBadges";
 
 export default function Shipping(){
     const shippingInfo = [
@@ -61,7 +63,7 @@ export default function Shipping(){
 
     return(
         <div className="shipping-container">
-         <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
+         <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
          <div className="shipping">
             <h3 className="page-title">Shipping</h3>
             <p className="notice">We ship across ..... .... .. . . . . . . .</p>
@@ -75,6 +77,7 @@ export default function Shipping(){
             </div>
             <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:600}}>email@gamil.com</span></p>
          </div>
+         <SocialMediaBadges />
          <Footer />   
         </div>
     );

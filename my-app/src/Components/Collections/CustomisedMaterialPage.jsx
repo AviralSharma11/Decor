@@ -212,7 +212,7 @@ const CustomisedMaterialPage = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user}/>
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={allProducts}/>
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
@@ -249,7 +249,7 @@ const CustomisedMaterialPage = () => {
         </div>
         <div className="contents">
           {filteredProducts.length > 0 ? (
-            <ProductComponent products={filteredProducts} addToCart={addToCart} />
+            <ProductComponent products={filteredProducts} addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen} />
           ) : (
             <p className="no-products">No products match your selected filters.</p>
           )}

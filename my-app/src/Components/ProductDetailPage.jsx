@@ -20,22 +20,10 @@ const ProductDetailPage = () => {
   }, [cart]);
 
   const [isCustomisedOpen , setIsCustomisedOpen] = useState(false);
-  const [width, setWidth] = useState(100)
-  const [height, setHeight] = useState(100)
-  const [frameWidth, setFrameWidth] = useState(100);
-  const [frameHeight, setFrameHeight] = useState(100); 
-  const [frameTop, setFrameTop] = useState(100);
-  const [frameLeft, setFrameLeft] = useState(160);
-  const [image, setImage] = useState(null);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 50, y: 50 });
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(products[0]);
   const product = location.state?.product || products; // Get product data from state
   const [selectedImage, setSelectedImage] = useState(product.image[0]);
-  const [frameUrl, setFrameUrl] = useState(selectedProduct.frame);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("isAuthenticated") === "true"; // Check login status
@@ -61,24 +49,6 @@ const ProductDetailPage = () => {
         }
       }, []);
   
-  const handleProductChange = (product) => {
-    setSelectedProduct(product);
-  };
-  
-  useEffect(() => {
-    if (product) {
-      handleProductChange(product);
-    }
-  }, [product]);
-
-  useEffect(() => {
-    setFrameUrl(`/Images/Frames/${selectedProduct.frameImageURL}`);
-  }, [selectedProduct.frameImageURL]);
-  
-  useEffect(() => {
-    console.log("Selected product changed:", selectedProduct);
-    console.log("Frame Image URL:", selectedProduct.frameImageURL);
-  }, [selectedProduct]);
   
   const [openSection, setOpenSection] = useState(null);
 
@@ -122,7 +92,7 @@ const ProductDetailPage = () => {
     });
   };
   
-
+  // update quantity
   const updateQuantity = (productId, newQuantity) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.map((item) =>
@@ -143,67 +113,7 @@ const ProductDetailPage = () => {
     document.body.style.overflowY = !isCustomisedOpen ? "hidden" : "auto";
   };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    setPosition({
-      x: e.clientX - offset.x,
-      y: e.clientY - offset.y,
-    });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const resetToDefault = () => {
-    setImage(null); // Clears the uploaded image
-    setWidth(100);  // Resets width to default
-    setHeight(100); // Resets height to default
-    setFrameHeight(100);
-    setFrameWidth(100);
-    setFrameTop(100);
-    setFrameLeft(160);
-  };
-
-  const sizeOptions = {
-    "Table Decors": [
-      { width: 85, height: 124, label: 'Small' , frameHeight:126 , frameWidth:89 , top: 100 , left:160 },
-      { width: 106, height: 151, label: 'Medium', frameHeight:155 , frameWidth:110, top: 85 , left:174},
-      { width: 141, height: 201, label: 'Large', frameHeight:205 , frameWidth:145, top: 60 , left:200},
-    ],
-    "Wall Art": [
-      { width: 200, height: 300, label: 'Small' },
-      { width: 300, height: 400, label: 'Medium' },
-      { width: 400, height: 500, label: 'Large' },
-    ],
-    "default": [
-      { width: 100, height: 100, label: 'Small' },
-      { width: 150, height: 150, label: 'Medium' },
-      { width: 200, height: 200, label: 'Large' },
-    ],
-  };
-  
-  const selectedSizes = sizeOptions[selectedProduct.type] || sizeOptions["default"];  
-  
   return (
     <>
       <div className="product-detail-page">
@@ -278,61 +188,6 @@ const ProductDetailPage = () => {
               <button className="close-modal" onClick={toggleCustomModal}>
                 ×
               </button>
-            </div>
-
-            {/* Added Upload and Input Fields */}
-            <div className="modal-body">
-              <div className="inputs">
-              <div className="button-container">
-                {selectedSizes.map((size, index) => (
-                  <button key={index} onClick={() => { setWidth(size.width); setHeight(size.height); setFrameHeight(size.frameHeight) ; setFrameWidth(size.frameWidth) ; setFrameTop(size.top) ; setFrameLeft(size.left) }}>
-                    {size.label}
-                  </button>
-                ))}
-              </div>
-                <label htmlFor="upload" className="custom-file-upload">Upload Photo:</label>
-                <input
-                  type="file"
-                  id="upload"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-
-                {/* Reset Button */}
-                <button className="reset-button" onClick={resetToDefault}>
-                  Reset
-                </button>
-              </div>
-              
-              <div className="image-container" style={{
-                backgroundImage: `url(${selectedProduct.backgroundImage})`,
-              }}>
-              <div
-                  className="frame"
-                  style={{
-                    backgroundImage: `url(${frameUrl})`,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    width: `${frameWidth}px`,
-                    height: `${frameHeight}px`,
-                    top: `${frameTop}px`,
-                    left: `${frameLeft}px`,
-                    cursor: selectedProduct.isDraggable ? "grab" : "default",
-                  }}
-                  onMouseDown={selectedProduct.isDraggable ? handleMouseDown : undefined}
-                  onMouseMove={selectedProduct.isDraggable ? handleMouseMove : undefined}
-                  onMouseUp={selectedProduct.isDraggable ? handleMouseUp : undefined}
-                  onMouseLeave={selectedProduct.isDraggable ? handleMouseUp : undefined}
-                >
-                  {image && (
-                    <div style={{ width: `${width}px`, height: `${height}px`, position: "relative", display:"flex", justifyContent:"center" }}>
-                      <img src={image} className="photo" alt="Preview" style={{ width: `${width}px`, height: `${height}px` }} />
-                      <div className="preview-text">{selectedProduct.preview}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         </div>

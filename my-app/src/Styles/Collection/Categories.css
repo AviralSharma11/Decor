@@ -34,11 +34,15 @@
 }
 
 .splide__arrow {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0);
   color: white;
   border-radius: 50%;
   width: 40px;
   height: 40px;
+}
+
+.splide__arrow svg{
+  color: white;
 }
 
 .splide__arrow:hover {
