@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import "../Styles/ProductDetailPage.css";
 import Header from "./Header";
 import SocialMediaBadges from "./SocialMediaBadges";
@@ -114,6 +114,11 @@ const ProductDetailPage = () => {
           user={user}
           products={products}
         />
+         <nav className="breadcrumb product-page">
+              <Link to="/">Home</Link> &gt;
+              <Link to="/collections">Collections</Link> &gt;
+              <Link to='/product/:productName'><strong>{product.name}</strong></Link>
+            </nav>
         <div className="product-detail-container">
           <div className="product-image-gallery">
             <div className="thumbnail-container">

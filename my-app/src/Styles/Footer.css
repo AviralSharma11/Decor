@@ -93,7 +93,7 @@
 
     .footer{
       position: relative;
-      z-index: 1000;
+      z-index: 999;
     }
   
     .footer-section {
