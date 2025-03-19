@@ -450,7 +450,7 @@
 }
 
 .search-bar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -459,6 +459,7 @@
   z-index: 999;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   overflow-y: scroll;
+  max-height: 63vh;
 }
 
 .search-here {
@@ -515,7 +516,7 @@ button {
   margin-right: 10px;
 }
 
-.product-name {
+p.product-name {
   font-size: 14px;
 }
 
@@ -542,3 +543,5 @@ button {
 .clear-btn:hover {
   color: #000;
 }
+
+

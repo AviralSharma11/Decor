@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const xlsx = require('xlsx');
 const nodemailer = require("nodemailer");
+require("dotenv").config();
+const Razorpay = require("razorpay");
 
 const app = express();
 app.use(cors());
@@ -15,11 +17,12 @@ const FILE_NAME = 'ContactData.xlsx';
 
 // MySQL Database Connection
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "S_a570P/?z",
-    database: "decorlogindb"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
+
 
 db.connect((err) => {
     if (err) {
@@ -33,10 +36,11 @@ db.connect((err) => {
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-        user: "aviral0201sharma@gmail.com",
-        pass: "feqs zzqa etvu pvrv",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
 });
+
 
 // Generate a random OTP
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -256,7 +260,94 @@ app.post('/api/contact', (req, res) => {
     res.status(200).json({ message: 'Contact saved successfully' });
 });
 
+// Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Create Razorpay Order
+app.post("/create-order", async (req, res) => {
+  const { amount, currency } = req.body;
+
+  try {
+    const options = {
+      amount: amount * 100, // Convert to paise
+      currency,
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1, // Auto capture payment
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Save Order After Payment
+app.post("/save-order", (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    city,
+    state,
+    pinCode,
+    country,
+    amount,
+    paymentStatus,
+    paymentId,
+  } = req.body;
+
+  const query = `
+    INSERT INTO orders 
+    (first_name, last_name, email, phone, address, city, state, pin_code, country, amount, payment_status, payment_id) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    query,
+    [
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      pinCode,
+      country,
+      amount,
+      paymentStatus,
+      paymentId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error saving order:", err);
+        res.status(500).json({ error: "Failed to save order" });
+      } else {
+        res.status(200).json({ message: "Order saved successfully" });
+      }
+    }
+  );
+});
+
+// Get All Orders
+app.get("/get-orders", (req, res) => {
+  db.query("SELECT * FROM orders", (err, results) => {
+    if (err) {
+      console.error("Error fetching orders:", err);
+      res.status(500).json({ error: "Failed to fetch orders" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-

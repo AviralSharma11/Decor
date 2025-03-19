@@ -90,3 +90,12 @@
     color: #000;
   }
   
+  @media (max-width: 517px){
+    .product-title{
+      font-size: 14px;
+    }
+
+    div.product-prices{
+      font-size: 13px;
+    }
+  }

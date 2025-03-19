@@ -65,7 +65,7 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Top Categories</h3>
           <ul className="footer-list">
-            {["Home Decors", "Gifts", "Personalised Jewelry", "Custom Art", "Wooden Art", "Luxury"].map(
+            {["Home Decors", "Gifts", "Personalised Jewellary", "Custom Art", "Wooden Art", "Luxury"].map(
               (item) => (
                 <li key={item}>{item}</li>
               )
