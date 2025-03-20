@@ -87,6 +87,53 @@ const ProductDetailPage = () => {
     document.body.style.overflowY = !isCustomisedOpen ? "hidden" : "auto";
   };
 
+  const [uploadedPhoto, setUploadedPhoto] = useState(null);
+  const [customText1, setCustomText1] = useState("");
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedPhoto(reader.result); // Save base64 to state
+        console.log("Uploaded Photo:", reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleResetCustomisation = () => {
+    setUploadedPhoto(null);
+    setCustomText1("");
+  };
+
+  const handleSaveCustomisation = () => {
+    // Add custom data to the product in the cart
+    const customProduct = {
+      ...product,
+      uploadedPhoto,
+      customText1,
+    };
+
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.name === product.name);
+      let updatedCart;
+
+      if (existingItem) {
+        updatedCart = prevCart.map((item) =>
+          item.name === product.name ? { ...item, ...customProduct } : item
+        );
+      } else {
+        updatedCart = [...prevCart, { ...customProduct, quantity: 1 }];
+      }
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      return updatedCart;
+    });
+
+    toggleCustomModal(); // Close modal after saving
+  };
+
   const sections = [
     { title: "Description", content: product.description },
     { title: "Features", content: product.trending || "No features available" },
@@ -199,13 +246,62 @@ const ProductDetailPage = () => {
           <div className="modal-content">
             <div className="modal-top">
               <h4>Set according to your needs</h4>
-              <button className="close-modal" onClick={toggleCustomModal}>
-                ×
+              <button className="close-modal" onClick={toggleCustomModal}>×</button>
+            </div>
+
+            <div className="customised-fields">
+              {/* Photo Upload with Preview */}
+              {product.photo && (
+                <div className="custom-field">
+                  <label>Upload Photo:</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                  />
+                  <div className="photo-upload">
+                    {uploadedPhoto && (
+                      <img 
+                        src={uploadedPhoto} 
+                        alt="Preview" 
+                        className="uploaded-preview"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Text Input */}
+              {product.text1 && (
+                <div className="custom-field">
+                  <label>Custom Text 1:</label>
+                  <textarea
+                    type="text"
+                    placeholder="Enter text"
+                    value={customText1}
+                    onChange={(e) => setCustomText1(e.target.value)}
+                  />
+                  <div className="instructions">
+                    <p>{product.instruction}</p>
+                  </div>
+                </div>
+                
+              )}
+            </div>
+
+            <div className="custom-modal-buttons">
+              <button onClick={handleResetCustomisation} className="reset-btn">
+                Reset
+              </button>
+              <button onClick={handleSaveCustomisation} className="save-btn">
+                Save
               </button>
             </div>
           </div>
         </div>
       )}
+
+
 
       {isLoginModalOpen && (
         <LoginModal

@@ -30,6 +30,7 @@ export const filters = [
       preview: "PREVIEW",
       frameImageURL: "animeframe1.jpg",
       tags: ["painting", "furniture", "table", "handmade"],
+      photo: true,
     },
 
     
@@ -55,6 +56,8 @@ export const filters = [
       giftingguide: "HER",
       type: "Wooden Art",
       tags: ["wood", "wedding", "heart" , "batches" , "pins", "handmade"],
+      text1: true,
+      instruction:"Write Names ....... blah blah blah ...... ."
     },
     {
       id: 3,
@@ -79,7 +82,10 @@ export const filters = [
       ],
       backgroundImage: "/Images/background.jpg",
       giftingguide: "HIM",
-      type: "Wooden Art , Table Decors , Wall Art"
+      type: "Wooden Art , Table Decors , Wall Art",
+      photo: true,
+      text1: true,
+      instruction: "blah balh blah blah ...... .... . .. . ."
     },
     {
       id: 4,
