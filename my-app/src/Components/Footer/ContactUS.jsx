@@ -5,6 +5,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import LoginModal from "../LoginModal";
 import { products } from "../../List/product";
+import Swal from "sweetalert2";
 
 export default function ContactUS() {
 
@@ -24,10 +25,10 @@ export default function ContactUS() {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -35,19 +36,35 @@ export default function ContactUS() {
       const data = await response.json();
   
       if (response.ok) {
-        alert('Message sent successfully!');
+        Swal.fire({
+          icon: "success",
+          title: "Message Sent!",
+          text: "We will get back to you soon.",
+          confirmButtonColor: "#3085d6",
+        });
+  
         setFormData({
-          fullName: '',
-          email: '',
-          subject: '',
-          message: '',
+          fullName: "",
+          email: "",
+          subject: "",
+          message: "",
         });
       } else {
-        alert(`Error: ${data.error}`);
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: data.error || "Failed to send message.",
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Failed to submit the form. Try again later.');
+      console.error("Error submitting form:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "There was an issue submitting your message. Please try again later.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
   
