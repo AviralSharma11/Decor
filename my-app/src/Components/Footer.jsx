@@ -19,8 +19,8 @@ const Footer = () => {
         <div className="footer-section">
           <div className="footer-contact">
           <Link to="/" style={{textDecoration: 'none'}}>
-            <h1 className="title">TITLE</h1>
-            <span className="subtitle">Sub Title</span>
+            <h1 className="title">OceanWays</h1>
+            <span className="subtitle">Navigating Creativity, Inspiring Spaces</span>
             </Link>
             <div className="contact-us">
                 <div className="icons insta">

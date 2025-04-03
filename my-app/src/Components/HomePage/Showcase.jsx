@@ -22,8 +22,8 @@ const Showcase = () => {
         </div>
       </div>
       <div className="text-section hidden">
-        <h2>A PIECE FROM YOU A PIECE FROM US</h2>
-        <p>CRAFTED IN PURE FUTURE</p>
+        <h2>PERSONALIZED ART, PERFECTED SPACES</h2>
+        <p>Bringing your vision to life, one masterpiece at a time</p>
       </div>
     </section>
   );

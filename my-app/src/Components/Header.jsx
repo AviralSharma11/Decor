@@ -113,8 +113,8 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
           </div>
           <div className="logo">
             <Link to="/" style={{textDecoration: 'none'}}>
-            <h1 className="company-name">TITLE</h1>
-            <span className="subtitle">Sub Title</span>
+            <h1 className="company-name">OceanWays</h1>
+            <span className="subtitle">Navigating Creativity, Inspiring Spaces</span>
             </Link>
           </div>
           <nav className={`nav ${isMenuOpen ? "open" : ""}`}>

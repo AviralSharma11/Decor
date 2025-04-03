@@ -266,6 +266,10 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+app.get("/api/razorpay-key", (req, res) => {
+    res.json({ key: process.env.RAZORPAY_KEY_ID });
+  });
+
 // Create Razorpay Order
 app.post("/create-order", async (req, res) => {
   const { amount, currency } = req.body;
