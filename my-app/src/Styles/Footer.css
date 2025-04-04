@@ -1,6 +1,6 @@
 .footer {
     background: linear-gradient(to bottom, #f5f1ea, #f8e6c7);
-    padding: 10px;
+    padding: 26px;
     font-size: 14px;
     line-height: 1.8;
   } 
@@ -24,6 +24,7 @@
   h1{
     color: #000;
     margin: 0;
+    font-size: 18px;
   }
   
   .footer-button {
@@ -57,7 +58,7 @@
   }
 
   .subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: #1f1f1f;
   }
 
@@ -115,8 +116,23 @@
       font-size: smaller;
     }
   }
-
   
+  @media (max-width: 481px){
+    h1{
+      font-size: 16px;
+    }
+
+    .subtitle{
+      font-size: 9px;
+    }
+  }
+  
+  @media (max-width: 390px) {
+    div.footer-contact{
+      position: relative;
+      left: -20px;
+    }
+  }
   
   
   

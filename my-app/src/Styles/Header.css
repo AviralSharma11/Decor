@@ -20,7 +20,8 @@
     justify-content: space-between;
     padding: 5px  20px;
   }
-  
+
+
   .logo h1 {
     font-size: 24px;
     font-weight: bold;
@@ -433,10 +434,17 @@
       display: flex; /* Show hamburger menu */
     }
 
-    .logo{
-      position: relative;
-      left: 35%;
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
+
 
     .hidden{
       display: none;
@@ -543,4 +551,32 @@ p.product-name {
   color: #000;
 }
 
+@media (max-width: 801px){
+  .logo .subtitle{
+    font-size: 10px;
+  }
+}
 
+@media (max-width: 549px){
+  .logo{
+    left: 45%;
+  }
+  
+  .logo h1{
+    font-size: 18px;
+  }
+
+  .logo .subtitle{
+    font-size: 8px;
+  }
+}
+
+@media (max-width:452px){
+  .logo h1{
+    font-size: 16px;
+  }
+
+  .logo .subtitle{
+    font-size: 8px;
+  }
+}

@@ -248,7 +248,7 @@ const [user, setUser] = useState(() => {
       <div className="parallax3"></div>
       <div className="content-section">
         <SocialMediaBadges />
-        <Footer />
+        
       </div>
 
       {isLoginModalOpen && (
@@ -258,6 +258,7 @@ const [user, setUser] = useState(() => {
           onLogin={handleLogin} // Pass `handleLogin` correctly
         />
       )}
+      <Footer />
     </div>
   );
 }
