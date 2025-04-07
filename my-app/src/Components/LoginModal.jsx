@@ -12,7 +12,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem("savedCart")) || []);
   const [resendTimer, setResendTimer] = useState(0);
 
-  // ✅ Load cart from localStorage on mount
+  // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("savedCart"));
     if (savedCart) {
@@ -21,7 +21,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   }, []);
 
-  // ✅ Resend timer countdown
+  //  Resend timer countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -31,7 +31,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
   if (!isOpen) return null;
 
-  // ✅ Send OTP
+  //  Send OTP
   const handleSendOtp = async () => {
     setError("");
 
@@ -55,7 +55,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   };
 
-  // ✅ Verify OTP
+  // Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
 
@@ -78,14 +78,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       setEmail("");
       setOtp("");
 
-      // ✅ Fetch cart data after login
+      //  Fetch cart data after login
       const cartResponse = await axios.get(`http://localhost:5000/api/cart/${email}`);
       console.log("Full cart response:", cartResponse);
 
       const cartData = cartResponse.data.cart || cartResponse.data;
 
       if (cartData?.length > 0) {
-        // ✅ Ensure cart data format is consistent
+        //  Ensure cart data format is consistent
         const updatedCart = cartData.map((item) => ({
           ...item,
           image: Array.isArray(item.image) ? item.image[0] : item.image || "", // Ensure image is a string
@@ -106,10 +106,10 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   };
 
-  // ✅ Logout
+  //  Logout
   const handleLogout = async () => {
     try {
-      // ✅ Save cart to MySQL before logging out
+      // Save cart to MySQL before logging out
       for (const item of cart) {
         await axios.post("http://localhost:5000/api/cart/update", {
           email: userEmail,
@@ -118,7 +118,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         });
       }
 
-      // ✅ Clear user data from localStorage
+      //  Clear user data from localStorage
       localStorage.removeItem("userEmail");
       localStorage.removeItem("token");
       localStorage.removeItem("isAuthenticated");
@@ -127,10 +127,10 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       setUserEmail(null);
       setCart([]); // Clear cart state
 
-      // ✅ Short delay to let state updates propagate
+      //  Short delay to let state updates propagate
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // ✅ Redirect to home after logout
+      // Redirect to home after logout
       window.location.href = "/";
     } catch (err) {
       console.error("Failed to save cart before logout:", err);
@@ -138,7 +138,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   };
   
 
-  // ✅ Handle "Enter" keypress
+  // Handle "Enter" keypress
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();

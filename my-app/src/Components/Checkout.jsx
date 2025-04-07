@@ -1,4 +1,5 @@
 import React, { useState , useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "../Styles/Checkout.css";
 
 const Checkout = () => {
@@ -12,7 +13,9 @@ const Checkout = () => {
     state: "",
     pinCode: "",
     phone: "",
+    billingAddress: "", 
   });
+  
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
@@ -25,9 +28,12 @@ const Checkout = () => {
   
   useEffect(() => {
     const allFieldsFilled = Object.values(formFields).every((value) => value.trim() !== "");
-    setIsFormValid(allFieldsFilled);
+    const validPin = /^[1-9][0-9]{5}$/.test(formFields.pinCode);
+    const validPhone = /^[6-9]\d{9}$/.test(formFields.phone);
+  
+    setIsFormValid(allFieldsFilled && validPin && validPhone);
   }, [formFields]);
-
+  
 
   const handleBillingAddressChange = (e) => {
     setBillingSameAsShipping(e.target.value === "same");
@@ -36,6 +42,10 @@ const Checkout = () => {
   const handleChange = (e) => {
     setFormFields({ ...formFields, [e.target.name]: e.target.value });
   };
+
+  const location = useLocation();
+  const { productPrice, productName } = location.state || {};
+
 
   const handlePayment = async () => {
     try {
@@ -50,26 +60,29 @@ const Checkout = () => {
       if (!data.key) {
         throw new Error("Razorpay key not received from backend");
       }
+      const fullName = `${formFields.firstName} ${formFields.lastName}`;
+      const email = localStorage.getItem("userEmail") || "guest@example.com";
   
       const options = {
-        key: data.key, // Now fetched from backend
-        amount: 10000,
+        key: data.key,
+        amount: productPrice * 100, // in paise
         currency: "INR",
-        name: "Your Company Name",
-        description: "Purchase Description",
-        image: "https://your-logo-url.com/logo.png",
+        name: "OceanWays",
+        description: productName,
+        // image: "https://your-logo-url.com/logo.png",
         handler: function (response) {
           alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
         },
         prefill: {
-          name: "John Doe",
-          email: "johndoe@example.com",
-          contact: "9999999999",
+          name: fullName,
+          email: email,
+          contact: formFields.phone,
         },
         theme: {
           color: "#3399cc",
         },
       };
+      
   
       const rzp = new window.Razorpay(options);
       rzp.open();
@@ -237,10 +250,17 @@ const Checkout = () => {
               <div className="billing-details">
                 <label>
                   Billing Address
-                  <input type="text" placeholder="Billing Address" />
+                  <input 
+                    type="text" 
+                    placeholder="Billing Address" 
+                    name="billingAddress"
+                    value={formFields.billingAddress}
+                    onChange={handleChange}
+                  />
                 </label>
               </div>
             )}
+
           </div>
         </div>
       </div>

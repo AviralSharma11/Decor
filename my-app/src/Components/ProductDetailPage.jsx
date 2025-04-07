@@ -60,27 +60,46 @@ const ProductDetailPage = () => {
       setIsLoginModalOpen(true);
       return;
     }
-
+  
+    const customProduct = {
+      ...product,
+      uploadedPhoto,
+      customText1,
+    };
+  
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.name === product.name);
       let updatedCart;
-
+  
       if (existingItem) {
         updatedCart = prevCart.map((item) =>
-          item.name === product.name ? { ...item, quantity: item.quantity + 1 } : item
+          item.name === product.name ? { ...item, ...customProduct, quantity: item.quantity + 1 } : item
         );
       } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        updatedCart = [...prevCart, { ...customProduct, quantity: 1 }];
       }
-
+  
       localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
 
   const proceedToCheckout = () => {
-    navigate("/checkout");
+    const customProduct = {
+      ...product,
+      uploadedPhoto,
+      customText1,
+    };
+  
+    navigate("/checkout", {
+      state: {
+        product: customProduct,
+        productPrice: customProduct.discountedPrice,
+        productName: customProduct.name,
+      },
+    });
   };
+  
 
   const toggleCustomModal = () => {
     setIsCustomisedOpen(!isCustomisedOpen);

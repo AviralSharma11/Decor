@@ -99,7 +99,11 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
   const navigate = useNavigate();
 
   const proceedToCheckout = () =>{
-    navigate( "/checkout");
+    navigate( "/checkout",{
+      state: {
+        productPrice: calculateDiscountedTotal(),
+      }
+    });
   };
 
   return (
