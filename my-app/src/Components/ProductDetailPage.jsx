@@ -84,21 +84,42 @@ const ProductDetailPage = () => {
     });
   };
 
-  const proceedToCheckout = () => {
+  const proceedToCheckout = async () => {
     const customProduct = {
       ...product,
       uploadedPhoto,
       customText1,
     };
   
-    navigate("/checkout", {
-      state: {
-        product: customProduct,
-        productPrice: customProduct.discountedPrice,
-        productName: customProduct.name,
-      },
-    });
+    const orderData = {
+      email: user?.email,
+      fullName: user?.fullName || "Guest", // get from user input or session
+      phone: user?.phone || "N/A",         // get from user input or session
+      productName: customProduct.name,
+      price: customProduct.discountedPrice,
+      customText1,
+      uploadedPhoto,
+    };
+  
+    try {
+      await fetch("http://localhost:5000/api/save-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+  
+      navigate("/checkout", {
+        state: {
+          product: customProduct,
+          productPrice: customProduct.discountedPrice,
+          productName: customProduct.name,
+        },
+      });
+    } catch (error) {
+      console.error("Error saving order:", error);
+    }
   };
+  
   
 
   const toggleCustomModal = () => {

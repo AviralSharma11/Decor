@@ -12,8 +12,7 @@ const Checkout = () => {
     city: "",
     state: "",
     pinCode: "",
-    phone: "",
-    billingAddress: "", 
+    phone: "", 
   });
   
   const [isFormValid, setIsFormValid] = useState(false);
@@ -31,8 +30,14 @@ const Checkout = () => {
     const validPin = /^[1-9][0-9]{5}$/.test(formFields.pinCode);
     const validPhone = /^[6-9]\d{9}$/.test(formFields.phone);
   
+    console.log("Fields:", formFields);
+    console.log("All fields filled:", allFieldsFilled);
+    console.log("Valid PIN:", validPin);
+    console.log("Valid phone:", validPhone);
+  
     setIsFormValid(allFieldsFilled && validPin && validPhone);
   }, [formFields]);
+  
   
 
   const handleBillingAddressChange = (e) => {
@@ -48,8 +53,10 @@ const Checkout = () => {
 
 
   const handlePayment = async () => {
+    console.log("handlePayment called");
     try {
       const response = await fetch("http://localhost:5000/api/razorpay-key");
+      console.log("api response", response)
   
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -266,9 +273,22 @@ const Checkout = () => {
       </div>
 
       {/* Pay Now Button */}
-      <button className="pay-now" onClick={handlePayment} disabled={!razorpayLoaded || !isFormValid}>
-        {razorpayLoaded ? "Pay now" : "Loading Payment..."}
-      </button>
+      <button
+  className="pay-now"
+  onClick={() => {
+    console.log("razorpayLoaded:", razorpayLoaded);
+    console.log("isFormValid:", isFormValid);
+    if (!razorpayLoaded || !isFormValid) {
+      alert("Can't proceed: Razorpay not loaded or form invalid.");
+      return;
+    }
+    handlePayment();
+  }}
+>
+  {razorpayLoaded ? "Pay now" : "Loading Payment..."}
+</button>
+
+
     </div>
   );
 };

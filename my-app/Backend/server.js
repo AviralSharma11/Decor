@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const xlsx = require('xlsx');
+const path = require("path");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const Razorpay = require("razorpay");
@@ -351,6 +352,68 @@ app.get("/get-orders", (req, res) => {
     }
   });
 });
+
+const FILE_PATH = path.join(__dirname, "orders.xlsx");
+
+// Ensure file exists or create new workbook
+const ensureWorkbook = () => {
+  if (!fs.existsSync(FILE_PATH)) {
+    const wb = xlsx.utils.book_new();
+    const ws = xlsx.utils.aoa_to_sheet([
+      [
+        "Email",
+        "Full Name",
+        "Phone",
+        "Product Name",
+        "Price",
+        "Custom Text",
+        "Photo (Base64)",
+        "Date",
+      ],
+    ]);
+    xlsx.utils.book_append_sheet(wb, ws, "Orders");
+    xlsx.writeFile(wb, FILE_PATH);
+  }
+};
+
+// Route to save order
+app.post("/api/save-order", (req, res) => {
+  ensureWorkbook();
+
+  const {
+    email,
+    fullName,
+    phone,
+    productName,
+    price,
+    customText1,
+    uploadedPhoto,
+  } = req.body;
+
+  const wb = xlsx.readFile(FILE_PATH);
+  const ws = wb.Sheets["Orders"];
+
+  const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
+
+  data.push([
+    email,
+    fullName,
+    phone,
+    productName,
+    price,
+    customText1,
+    uploadedPhoto,
+    new Date().toLocaleString(),
+  ]);
+
+  const newWs = xlsx.utils.aoa_to_sheet(data);
+  wb.Sheets["Orders"] = newWs;
+
+  xlsx.writeFile(wb, FILE_PATH);
+
+  res.status(200).json({ message: "Order saved successfully to Excel." });
+});
+
 
 
 const PORT = 5000;

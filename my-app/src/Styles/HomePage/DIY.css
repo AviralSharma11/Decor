@@ -1,10 +1,7 @@
 .wizard-container {
-    max-width: 500px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffffff;
+    margin-top: 104px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 12px;
+    border-radius: 5px;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
   
@@ -38,8 +35,7 @@
   }
   
   .wizard-result {
-    background-color: #f5f5f5;
-    padding: 1rem;
+    padding: 10px;
     border-radius: 8px;
     text-align: center;
     font-size: 1.1rem;
