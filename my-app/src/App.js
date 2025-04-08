@@ -23,6 +23,9 @@ import DIYPage from "./Components/HomePage/GiftingGuide/DIYPage";
 import ScrollToTop from "./Components/ScrollToTop";
 import Shipping from "./Components/Footer/Shipping";
 import ContactUS from "./Components/Footer/ContactUS";
+import TermsConditions from "./Components/Footer/TermsConditions";
+import PrivacyPolicy from "./Components/Footer/PrivacyPolicy";
+import ReturnPolicy from "./Components/Footer/ReturnPolicy";
 
 function App() {
   return (
@@ -60,6 +63,9 @@ function App() {
           {/* Footer Links */}
           <Route path="/shipping" element={<Shipping/>}/>
           <Route path="/contact-us" element={<ContactUS />}/>
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/return-policy" element={<ReturnPolicy/>} />
+          <Route path="/terms-conditions" element = {<TermsConditions />} />
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />
