@@ -128,7 +128,6 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
                 <li><Link to="/collections/customised-products">Customisable</Link></li>
                 <li><Link to="/material/wood">Wood</Link></li>
                 <li><Link to="/material/acrylic">Acrylic</Link></li>
-                <li><Link>Sharma</Link></li>
               </ul>
               {user ? (
                 <div className="profileViewer show"  onClick={openModal}>
