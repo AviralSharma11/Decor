@@ -99,8 +99,6 @@
     background-size: contain;
     padding: 244px; /* adjust based on the scroll size */
     border: none;
-    border-radius: 12px; /* optional - scrolls might not be sharp-cornered */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     max-width: 700px;
     margin: auto;
     font-family: 'Georgia', serif;

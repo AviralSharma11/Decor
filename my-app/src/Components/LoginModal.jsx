@@ -58,54 +58,66 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   // Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-
+  
     if (!otpSent) {
       setError("Please request an OTP first.");
       return;
     }
-
+  
     setError("");
-
+  
     try {
+      console.log("Entered try block...");
       const response = await axios.post("http://localhost:5000/verify-email-otp", { email, otp });
-
+  
+      console.log("OTP verified, response:", response.data);
+  
       localStorage.setItem("userEmail", email);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("isAuthenticated", "true");
-
+  
       setUserEmail(email);
       setOtpSent(false);
       setEmail("");
       setOtp("");
-
-      //  Fetch cart data after login
+  
       const cartResponse = await axios.get(`http://localhost:5000/api/cart/${email}`);
       console.log("Full cart response:", cartResponse);
-
+  
       const cartData = cartResponse.data.cart || cartResponse.data;
-
+  
       if (cartData?.length > 0) {
-        //  Ensure cart data format is consistent
         const updatedCart = cartData.map((item) => ({
           ...item,
-          image: Array.isArray(item.image) ? item.image[0] : item.image || "", // Ensure image is a string
+          image: Array.isArray(item.image) ? item.image[0] : item.image || "",
         }));
-
+  
         setCart(updatedCart);
         localStorage.setItem("savedCart", JSON.stringify(updatedCart));
         console.log("Cart saved to localStorage:", updatedCart);
       } else {
         console.warn("No cart data found.");
       }
-
-      onLogin();
-      window.location.reload(); // force it without waiting
-
-
+  
+      if (typeof onLogin === "function") {
+        onLogin();
+        console.log("Reloading...");
+      } else {
+        console.warn("onLogin is not a function or was not provided.");
+      }
+      
+      onClose();
+      setTimeout(() => {
+        console.log("Actually reloading...");
+        window.location.reload();
+      }, 100);
+  
     } catch (err) {
+      console.error("Error during OTP verification:", err);
       setError("Invalid OTP. Please try again.");
     }
   };
+  
 
   //  Logout
   const handleLogout = async () => {

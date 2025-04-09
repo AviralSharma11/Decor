@@ -19,7 +19,8 @@
   width: 400px;
   text-align: center;
   position: relative;
-  height: 40vh;
+  min-height: 240px;
+  max-height: 330px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
@@ -108,6 +109,6 @@ button.close-button:hover{
 
 @media (max-width: 750px){
   .modal-container{
-    height: 45vh;
+    height: 35vh;
   }
 }
