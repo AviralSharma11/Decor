@@ -27,6 +27,7 @@ import TermsConditions from "./Components/Footer/TermsConditions";
 import PrivacyPolicy from "./Components/Footer/PrivacyPolicy";
 import ReturnPolicy from "./Components/Footer/ReturnPolicy";
 
+
 function App() {
   return (
     <div className="App">

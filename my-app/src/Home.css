@@ -17,6 +17,8 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    display: flex;
+    flex-direction: column;
   }
 
   .parallax2{
@@ -35,64 +37,116 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
-
-
   .parallax-text {
-    position: absolute;
-    top:10vh;
-    left: 4vw;
-    opacity: 0;
-    padding: 5px  40px;
-    transform: translateX(-100%);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    text-align: left;
-    text-shadow: 2px 2px 4px #000000;
+    font-family: 'Cormorant Garamond', serif; /* or a similar elegant serif */
+    font-size: 3rem;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    text-shadow: 5px 5px 8px rgba(0, 0, 0, 1);
+    margin-top: 27vh;
   }
+  
+  .parallax-subtext {
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    font-family: 'Lora', serif; /* complementary serif font */
+    letter-spacing: 0.05em;
+    text-shadow: 4px 4px 7px rgba(0, 0, 0, 2);
+    font-weight: 400;
+  }
+  
+  .parallax-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: inline-block;
+  }
+  
+  .parallax-list li {
+    margin: 0.5rem 0;
+  }
+  
   
   .parallax-text.show {
     opacity: 1;
     transform: translateX(0);
   }
 
-  .parallax-subtext {
-    position: absolute;
-    right: 15vw;
-    bottom: 7vh;
-    opacity: 0;
-    padding: 5px  40px;
-    transform: translateX(-100%);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    text-align: right;
-    font-size: 1rem;
-    font-weight: 400;
-    text-shadow: 4px 4px 8px #000000;
-  }
-
   .parallax-subtext.show {
     opacity: 1;
     transform: translateX(0);
   }
-
-  .parallax-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 10px;
-    text-align: left;
-  }
-  
-  .parallax-list li {
-    font-size: 1.2rem;
-    margin: 5px 0;
-    display: flex;
-    align-items: center;
-  }
   
   .parallax-list li::before {
-    content: "➤"; /* Arrow Symbol */
+    content: "•"; /* Arrow Symbol */
     color: rgb(255, 255, 255); /* Customize Arrow Color */
-    font-size: 0.9rem;
+    font-size: 1.5rem;
     margin-right: 10px;
   }
 
+
+  .feedback-form {
+    background: url('../public/Images/feedback_bg_500x622.png') no-repeat center center;
+    background-size: contain;
+    padding: 244px; /* adjust based on the scroll size */
+    border: none;
+    border-radius: 12px; /* optional - scrolls might not be sharp-cornered */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 700px;
+    margin: auto;
+    font-family: 'Georgia', serif;
+    color: #4a3c1a;
+  }
+  
+  .feedback-form h2 {
+    font-weight: bold;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #5c4520;
+  }
+  
+  .form{
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+  }
+
+  .feedback-form input,
+  .feedback-form textarea {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid #c2a167;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    max-width: 400px;
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+  }
+  
+  .feedback-form button {
+    background-color: #c2a167;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .feedback-form button:hover {
+    background-color: #a3824f;
+  }
+  

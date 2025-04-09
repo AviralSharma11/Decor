@@ -8,6 +8,7 @@ import Footer from "./Components/Footer";
 import "./Home.css";
 import LoginModal from "./Components/LoginModal";
 import { products } from "./List/product";
+import Swal from "sweetalert2";
 
 function Home() {
   const [cart, setCart] = useState(() => {
@@ -25,6 +26,63 @@ const [user, setUser] = useState(() => {
   return savedUser ? JSON.parse(savedUser) : null;
 });
 
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Message Sent!",
+          text: "Thank You For Your Time",
+          confirmButtonColor: "#3085d6",
+        });
+  
+        setFormData({
+          fullName: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: data.error || "Failed to send message.",
+          confirmButtonColor: "#d33",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "There was an issue submitting your message. Please try again later.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
 
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -224,13 +282,11 @@ const [user, setUser] = useState(() => {
       <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
       <Showcase />
       <div className="parallax1">
-        <div className="parallax-text">Discover Our Collection</div>
+        <div className="parallax-text">DISCOVER OUR COLLECTION</div>
         <div className="parallax-subtext">
           <ul className="parallax-list">
-            <li>Premium Quality Pr oducts</li>
-            <li>Handcrafted Gifts</li>
-            <li>Exclusive Discounts</li>
-            <li>Fast & Safe Delivery</li>
+            <li>PREMIUM QUALITY PRODUCTS</li>
+            <li>HANDCRAFTED GIFTS</li>
           </ul>
         </div>
       </div>
@@ -245,7 +301,37 @@ const [user, setUser] = useState(() => {
         setIsLoginModalOpen={setIsLoginModalOpen} 
       />
       </div>
-      <div className="parallax3"></div>
+      <div className="parallax3">
+      <div className="feedback-form">
+        <h2> FEEDBACK</h2>
+        <form onSubmit={handleSubmit} className="form">
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            value={formData.fullName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            name="message"
+            placeholder="Message"
+            value={formData.message}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="send-btn">SEND</button>
+        </form>
+      </div>  
+      </div>
       <div className="content-section">
         <SocialMediaBadges />
         

@@ -77,7 +77,7 @@ const Footer = () => {
         <div className="footer-section">
           <h3>About Us</h3>
           <ul className="footer-list">
-            {["Our Story", "Blog", "Careers", "Designer Affiliate Program"].map((item) => (
+            {["Our Story", "Blog", "Careers", "Sell on OceanWays"].map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>

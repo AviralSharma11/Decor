@@ -217,7 +217,7 @@ const PrivacyPolicy = () => {
       <section>
         <h2>9. Grievance Officer</h2>
         <p>
-          Name: [Insert Officer's Name] <br />
+          Name: Adnan Khan <br />
           Email: <a href="mailto:privacy@oceanways.in">privacy@oceanways.in</a> <br />
           Designation: Grievance Officer
         </p>
@@ -227,7 +227,7 @@ const PrivacyPolicy = () => {
         <h2>10. Governing Law & Jurisdiction</h2>
         <p>
           This Policy is governed by Indian law. Any disputes shall be exclusively
-          subject to the jurisdiction of courts in [City, India].
+          subject to the jurisdiction of courts in Indore, India.
         </p>
       </section>
       

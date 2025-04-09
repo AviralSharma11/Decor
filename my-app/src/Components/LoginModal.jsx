@@ -99,7 +99,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       }
 
       onLogin();
-      onClose();
+      window.location.reload(); // force it without waiting
+
 
     } catch (err) {
       setError("Invalid OTP. Please try again.");

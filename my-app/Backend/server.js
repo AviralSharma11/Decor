@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 const FILE_NAME = 'ContactData.xlsx';
+const FILE_NAME1 = 'Feedbacks.xlsx';
 
 // MySQL Database Connection
 const db = mysql.createConnection({
@@ -259,6 +260,43 @@ app.post('/api/contact', (req, res) => {
     xlsx.writeFile(workbook, FILE_NAME);
 
     res.status(200).json({ message: 'Contact saved successfully' });
+});
+
+app.post('/api/feedback', (req, res) => {
+  const { fullName, email, message } = req.body;
+
+  if (!fullName || !email || !message) {
+      return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  let workbook;
+  if (fs.existsSync(FILE_NAME1)) {
+      // Load existing file
+      workbook = xlsx.readFile(FILE_NAME1);
+  } else {
+      // Create new workbook
+      workbook = xlsx.utils.book_new();
+  }
+
+  let worksheet;
+  if (workbook.SheetNames.includes('Feedbacks')) {
+      worksheet = workbook.Sheets['Feedbacks'];
+  } else {
+      worksheet = xlsx.utils.aoa_to_sheet([['Full Name', 'Email', 'Message']]);
+      xlsx.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
+  }
+
+  // Get existing data and add new row
+  const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+  data.push([fullName, email, message]);
+  const newWorksheet = xlsx.utils.aoa_to_sheet(data);
+
+  workbook.Sheets['Feedbacks'] = newWorksheet;
+
+  // Write to file
+  xlsx.writeFile(workbook, FILE_NAME1);
+
+  res.status(200).json({ message: 'Contact saved successfully' });
 });
 
 // Razorpay instance
