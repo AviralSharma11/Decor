@@ -110,13 +110,16 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
     <>
       <header className={`header ${isHidden ? "hidden" : ""}`}>
         <div className="header-container">
-          <div className="hamburger" onClick={toggleMenu}>
+          <div className="hamburger" onClick={() => {
+              console.log("hamburger clicked");
+              toggleMenu();
+            }}>
             <span className="line"></span>
             <span className="line"></span>
             <span className="line"></span>
           </div>
           <div className="logo">
-            <Link to="/" style={{textDecoration: 'none'}}>
+            <Link to="/" style={{textDecoration: 'none'}} className="C-Name">
             <h1 className="company-name">OceanWays</h1>
             <span className="subtitle">Navigating Creativity, Inspiring Spaces</span>
             </Link>
