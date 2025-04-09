@@ -440,7 +440,7 @@
       width: 100%;
       position: absolute;
       left: 45%;
-      top: 7px;
+      top: 12px;
       transform: translateX(-50%);
     }
 
@@ -559,6 +559,10 @@ p.product-name {
 @media (max-width: 549px){
   .logo{
     left: 45%;
+  }
+
+  .C-Name{
+    top:21px;
   }
   
   .logo h1{

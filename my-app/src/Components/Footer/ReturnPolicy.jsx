@@ -103,9 +103,9 @@ const ReturnPolicy = () => {
           <strong>Damaged Products:</strong> If your product arrives damaged, please email us at care@oceanways.in within 24 hours with a photo of the damaged item and box. We will resolve it promptly.
         </li>
         <li>
-          <strong>Return Eligibility:</strong> Return within 7 days of delivery. Mention the item(s) clearly. Hand over only the return items.
+          <strong>Return Eligibility:</strong> Return within 7 days of delivery (Not applicable on personalised products). Mention the item(s) clearly. Hand over only the return items.
           <ul>
-            <li><strong>a)</strong> Free return shipping. Store credit issued after pickup. Shipping charges are non-refundable.</li>
+            <li><strong>a)</strong> Free return shipping. Shipping charges are non-refundable.</li>
             <li><strong>b)</strong> Multiple returns from the same account may be denied or charged.</li>
           </ul>
         </li>
@@ -114,11 +114,9 @@ const ReturnPolicy = () => {
         <li><strong>Missing Products / Tampering:</strong> Record video while unboxing. Contact support within 24 hours.</li>
         <li><strong>Shipping Delays:</strong> OceanWays is not liable for courier delays.</li>
         <li><strong>Order Cancellations:</strong> No cancellations after 4 hours. Packed orders are returnable only. Prepaid returns may incur two-way shipping fees.</li>
-        <li><strong>Return Processing:</strong> Returns processed within 10 days. Contact care@oceanways.in or WhatsApp us.</li>
+        <li><strong>Return Processing:</strong> Returns processed within 10 days. Contact care@oceanways.in or WhatsApp us +91 7509202484.</li>
         <li><strong>Approval Required:</strong> All returns must be pre-approved via email/WhatsApp.</li>
-        <li><strong>Online Only:</strong> Online orders cannot be returned in physical stores.</li>
-        <li><strong>Store Credit:</strong> Valid for 3 months without restrictions.</li>
-        <li><strong>Disputes:</strong> Jurisdiction: Courts of [City], India.</li>
+        <li><strong>Disputes:</strong> Jurisdiction: Courts of Indore, India.</li>
         <li><strong>Handcrafted Products:</strong> Slight variations in handmade goods are natural and not defects.</li>
         <li><strong>Bulk / Custom Orders:</strong> Return policy does not apply. Reviewed case by case.</li>
         <li><strong>Policy Abuse:</strong> Repeated returns may be denied.</li>
