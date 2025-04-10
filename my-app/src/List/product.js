@@ -24,7 +24,8 @@ export const filters = [
       trending: "Soft Girl Aesthetic",
       customisable: true,
       giftingguide: "Family",
-      type: ["Table Decors"],
+      type: ["Table Decors", "Gift"],
+      gift: true,
       tags: ["painting", "furniture", "table", "handmade" ,"minimalist"],
       photo: true,
     },
@@ -81,6 +82,8 @@ export const filters = [
       type: ["Wooden Art", "Table Decors", "Wall Art"],
       photo: true,
       text1: true,
+      wallart: true,
+      luxury: true,
       instruction: "blah balh blah blah ...... .... . .. . ."
     },
     {
@@ -102,6 +105,7 @@ export const filters = [
       style: "Vintage",
       trending: "Coquette",
       customisable: true,
+      luxury: true,
       giftingguide: "Friends",
       type: ["Table Decors"],
     },
@@ -187,6 +191,7 @@ export const filters = [
           "/Images/Wearables/Jewellary/5.webp",
         ],
         customisable: true,
+        personalisedjewellary: true,
       },
       {
         id: 10,
