@@ -4,6 +4,7 @@ import Footer from "../Footer";
 import Header from "../Header";
 import LoginModal from "../LoginModal";
 import { products } from "../../List/product";
+import SocialMediaBadges from "../SocialMediaBadges";
 
 export default function TermsConditions() {
     const [cart, setCart] = useState(() => {
@@ -175,6 +176,7 @@ export default function TermsConditions() {
           discontinue products. We do not guarantee that products or services
           will meet your expectations or that errors will be corrected.
         </p>
+        <SocialMediaBadges />
       </div>
       {isLoginModalOpen && (
               <LoginModal

@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 
 const FILE_NAME = 'ContactData.xlsx';
 const FILE_NAME1 = 'Feedbacks.xlsx';
+const FILE_NAME2 = 'Sell On OceanWays.xlsx';
 
 // MySQL Database Connection
 const db = mysql.createConnection({
@@ -297,6 +298,43 @@ app.post('/api/feedback', (req, res) => {
   xlsx.writeFile(workbook, FILE_NAME1);
 
   res.status(200).json({ message: 'Contact saved successfully' });
+});
+
+app.post('/api/join-us', (req, res) => {
+    const { fullName, email, contact, subject, message } = req.body;
+
+    if (!fullName || !email || !contact || !subject || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    let workbook;
+    if (fs.existsSync(FILE_NAME2)) {
+        // Load existing file
+        workbook = xlsx.readFile(FILE_NAME2);
+    } else {
+        // Create new workbook
+        workbook = xlsx.utils.book_new();
+    }
+
+    let worksheet;
+    if (workbook.SheetNames.includes('Sell On OceanWays')) {
+        worksheet = workbook.Sheets['Sell On OceanWays'];
+    } else {
+        worksheet = xlsx.utils.aoa_to_sheet([['Full Name', 'Email', 'Contact' , 'Subject', 'Message']]);
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Sell On OceanWays');
+    }
+
+    // Get existing data and add new row
+    const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+    data.push([fullName, email, contact,  subject, message]);
+    const newWorksheet = xlsx.utils.aoa_to_sheet(data);
+
+    workbook.Sheets['Sell On OceanWays'] = newWorksheet;
+
+    // Write to file
+    xlsx.writeFile(workbook, FILE_NAME2);
+
+    res.status(200).json({ message: 'Contact saved successfully' });
 });
 
 // Razorpay instance

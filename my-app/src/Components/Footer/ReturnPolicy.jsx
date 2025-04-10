@@ -4,6 +4,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import LoginModal from "../LoginModal";
 import { products } from "../../List/product";
+import SocialMediaBadges from "../SocialMediaBadges";
 
 const ReturnPolicy = () => {
         const [cart, setCart] = useState(() => {
@@ -122,6 +123,7 @@ const ReturnPolicy = () => {
         <li><strong>Policy Abuse:</strong> Repeated returns may be denied.</li>
       </ol>
       <p>For questions or clarifications, reach out to care@oceanways.in – we’re happy to assist!</p>
+      <SocialMediaBadges />
     </div>
     {isLoginModalOpen && (
               <LoginModal
@@ -135,6 +137,7 @@ const ReturnPolicy = () => {
                 }}
               />
             )}
+            
     <Footer />
     </>
   );

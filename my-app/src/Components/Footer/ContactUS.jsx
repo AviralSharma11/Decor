@@ -6,6 +6,7 @@ import Footer from "../Footer";
 import LoginModal from "../LoginModal";
 import { products } from "../../List/product";
 import Swal from "sweetalert2";
+import SocialMediaBadges from "../SocialMediaBadges";
 
 export default function ContactUS() {
 
@@ -181,7 +182,7 @@ export default function ContactUS() {
              href="https://wa.me/qr/IMOVSX4SDTJ5M1 " // Replace with your WhatsApp link
             target="_blank"
             rel="noopener noreferrer"> 
-               <p>+91 9903504754</p>
+               <p>+91 7509202484</p>
             </a>
           </div>
         </div>
@@ -260,6 +261,7 @@ export default function ContactUS() {
         </form>
       </div>  
     </div>
+    <SocialMediaBadges />
     {isLoginModalOpen && (
               <LoginModal
                 isOpen={isLoginModalOpen}

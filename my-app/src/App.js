@@ -26,6 +26,15 @@ import ContactUS from "./Components/Footer/ContactUS";
 import TermsConditions from "./Components/Footer/TermsConditions";
 import PrivacyPolicy from "./Components/Footer/PrivacyPolicy";
 import ReturnPolicy from "./Components/Footer/ReturnPolicy";
+import Blogs from "./Components/Footer/KnowUs/Blogs";
+import OurStory from "./Components/Footer/KnowUs/OurStory";
+import Careers from "./Components/Footer/KnowUs/Careers";
+import SellOnOceanWays from "./Components/Footer/KnowUs/SellOnOceanWays";
+import Gifts from "./Components/Footer/DirectLinks/Gifts";
+import Luxury from "./Components/Footer/DirectLinks/Luxury";
+import PersonalisedJewellary from "./Components/Footer/DirectLinks/PersonalisedJewellary";
+import WallArt from "./Components/Footer/DirectLinks/WallArt";
+import FAQ from "./Components/Footer/FAQ";
 
 
 function App() {
@@ -67,6 +76,19 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/return-policy" element={<ReturnPolicy/>} />
           <Route path="/terms-conditions" element = {<TermsConditions />} />
+          <Route path="/faqs" element={<FAQ />} />
+
+          {/* Know Us */}
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/our-story" element={<OurStory />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/sell-on-oceanways" element={<SellOnOceanWays />} />
+
+          {/* Direct Links */}
+          <Route path="/collections/gifts" element={<Gifts />} />
+          <Route path="/collections/luxury" element={<Luxury />} />
+          <Route path="/collections/personalised-jewellary" element={<PersonalisedJewellary />} />
+          <Route path="/collections/wall-art" element={<WallArt />} />
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />

@@ -13,6 +13,22 @@ const Footer = () => {
     { name: "FAQs", path: "/faqs" },
   ];
 
+  const directLinks = [
+    {name: "Home Decors" , path: "/collections"},
+    {name: "Gifts" , path: "/collections/gifts"},
+    {name: "Personalised Jewellary" , path: "/collections/personalised-jewellary"},
+    {name: "Custom Art" , path: "/collections/customised-products"},
+    {name: "Wall Art" , path: "/collections/wall-art"},
+    {name: "Luxury" , path: "/collections/luxury"},
+  ]
+
+  const knowUsLinks = [
+    {name: "Our Story" , path: "/our-story"},
+    {name: "Blogs" , path: "/blogs"},
+    {name: "Careers" , path: "/careers"},
+    {name: "Sell on OceanWays" , path: "/sell-on-oceanways"},
+  ]
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -65,11 +81,11 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Top Categories</h3>
           <ul className="footer-list">
-            {["Home Decors", "Gifts", "Personalised Jewellary", "Custom Art", "Wooden Art", "Luxury"].map(
-              (item) => (
-                <li key={item}>{item}</li>
-              )
-            )}
+            {directLinks.map((link) => (
+                <li key={link.name}>
+                  <Link style={{textDecoration: "none", color:"#1f1f1f"}} to={link.path}>{link.name} </Link>
+                </li>
+              ))}
           </ul>
         </div>
 
@@ -77,9 +93,11 @@ const Footer = () => {
         <div className="footer-section">
           <h3>About Us</h3>
           <ul className="footer-list">
-            {["Our Story", "Blog", "Careers", "Sell on OceanWays"].map((item) => (
-              <li key={item}>{item}</li>
-            ))}
+              {knowUsLinks.map((link) => (
+                    <li key={link.name}>
+                      <Link style={{textDecoration: "none", color:"#1f1f1f"}} to={link.path}>{link.name} </Link>
+                    </li>
+                  ))}
           </ul>
         </div>
 

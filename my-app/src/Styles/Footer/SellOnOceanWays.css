@@ -1,0 +1,113 @@
+.sell-container {
+    font-family: 'Segoe UI', sans-serif;
+    padding: 2rem;
+    color: #333;
+    line-height: 1.6;
+    margin: auto;
+    margin-top: 124px;
+  }
+  
+  .sell-container h1,
+  .sell-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .subheading {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+  
+  .how-it-works {
+    background-color: #f7f4ef;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .steps {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .step {
+    flex: 1;
+    min-width: 250px;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .step h3 {
+    font-size: 2rem;
+    color: #b59c67;
+  }
+  
+  .step h4 {
+    margin: 0.5rem 0;
+    color: #7c6f50;
+  }
+  
+  .about-section {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .perks {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  
+  .perks div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .perks img {
+    width: 50px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-section {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+    border-radius: 8px;
+  }
+  
+  .form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .form-section input,
+  .form-section textarea {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .form-section button {
+    background-color: #b59c67;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .form-section button:hover {
+    background-color: #9a8457;
+  }
+  

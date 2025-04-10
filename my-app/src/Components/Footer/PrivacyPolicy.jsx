@@ -4,6 +4,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import { products } from "../../List/product";
 import LoginModal from "../LoginModal";
+import SocialMediaBadges from "../SocialMediaBadges";
 
 const PrivacyPolicy = () => {
       const [cart, setCart] = useState(() => {
@@ -217,7 +218,7 @@ const PrivacyPolicy = () => {
       <section>
         <h2>9. Grievance Officer</h2>
         <p>
-          Name: Adnan Khan <br />
+          Name: Aviral Sharma <br />
           Email: <a href="mailto:privacy@oceanways.in">privacy@oceanways.in</a> <br />
           Designation: Grievance Officer
         </p>
@@ -230,7 +231,7 @@ const PrivacyPolicy = () => {
           subject to the jurisdiction of courts in Indore, India.
         </p>
       </section>
-      
+      <SocialMediaBadges />
     </div>
     {isLoginModalOpen && (
               <LoginModal

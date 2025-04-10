@@ -1,14 +1,14 @@
 import React , {useState , useEffect} from "react";
-import faqs from "../../List/faq";
-import "../../Styles/Footer/faq.css"
-import Footer from "../Footer";
-import LoginModal from "../LoginModal";
-import SocialMediaBadges from "../SocialMediaBadges";
-import Header from "../Header";
-import { products } from "../../List/product";
+import "../../../Styles/Footer/blogs.css";
+import Header from "../../Header";
+import LoginModal from "../../LoginModal";
+import { products } from "../../../List/product";
+import SocialMediaBadges from "../../SocialMediaBadges";
+import Footer from "../../Footer";
 
-export default function FAQ(){
-      const [cart, setCart] = useState(() => {
+export default function Careers(){
+
+    const [cart, setCart] = useState(() => {
         const savedCart = localStorage.getItem("cart");
         return savedCart ? JSON.parse(savedCart) : [];
       });
@@ -95,24 +95,23 @@ export default function FAQ(){
               console.error("Error updating quantity:", error);
             }
           };
-    return (
-      <>
-        <div className="faq-container">
-          <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
-          <h1 className="faq-title">Frequently Asked Questions</h1>
-          {Object.entries(faqs).map(([section, questions], i) => (
-            <div key={i} className="faq-section">
-              <h2 className="faq-section-title">{section}</h2>
-              {questions.map(({ q, a }, j) => (
-                <div key={j} className="faq-item">
-                  <p className="faq-question">{q}</p>
-                  <p className="faq-answer">{a}</p>
-                </div>
-              ))}
-            </div>
-          ))}
-          <SocialMediaBadges />
-          {isLoginModalOpen && (
+
+    return(
+        <>
+        <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
+        <div className="blog-coming-soon">
+      <div className="blog-content">
+        <h1>We will soon update about hirings</h1>
+        <p>We’ll be open for hiring soon. Stay tuned!</p>
+        <img
+          src="/Images/ComingSoon.png"
+          alt="Coming Soon"
+          className="coming-soon-img"
+        />
+      </div>
+      <SocialMediaBadges />
+    </div>
+    {isLoginModalOpen && (
               <LoginModal
                 isOpen={isLoginModalOpen}
                 onClose={() => setIsLoginModalOpen(false)}
@@ -124,9 +123,7 @@ export default function FAQ(){
                 }}
               />
             )}
-            </div>
-      <Footer />
+    <Footer />
         </>
-      );
-    };
-    
+    );
+}
