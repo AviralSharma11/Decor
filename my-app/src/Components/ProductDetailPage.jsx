@@ -176,10 +176,9 @@ const ProductDetailPage = () => {
 
   const sections = [
     { title: "Description", content: product.description },
-    { title: "Features", content: product.trending || "No features available" },
     {
       title: "Size & Material",
-      content: `Material: ${product.material}, Wood Type: ${product.woodType}`,
+      content: `Size: ${product.size}, Material: ${product.material}`,
     },
   ];
 
@@ -322,7 +321,9 @@ const ProductDetailPage = () => {
                     onChange={(e) => setCustomText1(e.target.value)}
                   />
                   <div className="instructions">
-                    <p>{product.instruction}</p>
+                    {product.instruction.map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
                   </div>
                 </div>
                 

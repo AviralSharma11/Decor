@@ -148,3 +148,8 @@
     background-color: #a3824f;
   }
   
+@media (max-width:1281px){
+  .parallax-text{
+    margin-top:20vh;
+  }
+}

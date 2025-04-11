@@ -209,7 +209,7 @@ export default function Themes(){
         { name: "NAUTICAL", image: "/Images/bystyles.jpg", link: "/themes/nautical"},
         { name: "BANJARA", image: "/Images/bymaterial.jpg", link: "/themes/banjara" },
         { name: "WELLNESS", image: "/Images/bythemes.jpg" , link: "/themes/wellness" },
-        { name: "JUNGLE SAFARI", image: "/Images/bythemes.jpg", link: "/themes/jungle-safari"},
+        { name: "SAFARI", image: "/Images/bythemes.jpg", link: "/themes/safari"},
         { name: "EARTHY", image: "/Images/bytrend.jpg", link: "/themes/earthy"},
         { name: "OFFICE ESSENTIALS", image: "/Images/bystyles.jpg", link: "/themes/office-essentials"}
       ];
