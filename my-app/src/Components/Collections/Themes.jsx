@@ -206,8 +206,6 @@ export default function Themes(){
 
     const material = [
         { name: "MODERN MINIMALIST", image: "/Images/bytrend.jpg", link: "/themes/modern-minimalist"},
-        { name: "NAUTICAL", image: "/Images/bystyles.jpg", link: "/themes/nautical"},
-        { name: "BANJARA", image: "/Images/bymaterial.jpg", link: "/themes/banjara" },
         { name: "WELLNESS", image: "/Images/bythemes.jpg" , link: "/themes/wellness" },
         { name: "SAFARI", image: "/Images/bythemes.jpg", link: "/themes/safari"},
         { name: "EARTHY", image: "/Images/bytrend.jpg", link: "/themes/earthy"},
