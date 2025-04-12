@@ -1,7 +1,7 @@
 const itemsbs =[
   {
     id: 2,
-    name: 'Wooden Heart Wedding Batches-pack of 10',
+    name: 'Wooden Heart Wedding Batches pack of 10',
     rating: 4,
     reviews: 20,
     originalPrice: 1499.0,

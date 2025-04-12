@@ -12,7 +12,9 @@ import LoginModal from "../../LoginModal";
 
 const OfficePage = () => {
   // Filter only HIM products
-  const OfficeProducts = allProducts.filter((product) => product.giftingguide === "Office");
+  const OfficeProducts = allProducts.filter((product) =>
+    product.giftingguide.includes("Office")
+  );
 
   // Use HIM as initial products state
   const [filters] = useState(initialFilters);

@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const Wellness = () => {
   // Filter only wood products
-  const wellnessProducts = allProducts.filter((product) => product.theme === "Wellness");
+  const wellnessProducts = allProducts.filter((product) =>
+    product.theme.includes("Wellness")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);

@@ -12,7 +12,9 @@ import LoginModal from "../../LoginModal";
 
 const FamilyPage = () => {
   // Filter only HIM products
-  const FamilyProducts = allProducts.filter((product) => product.giftingguide === "Family");
+  const FamilyProducts = allProducts.filter((product) =>
+    product.giftingguide.includes("Family")
+  );
 
   // Use HIM as initial products state
   const [filters] = useState(initialFilters);

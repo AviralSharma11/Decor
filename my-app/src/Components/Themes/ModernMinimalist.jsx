@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const ModernMinimalist = () => {
   // Filter only wood products
-  const modernMinimalistProducts = allProducts.filter((product) => product.theme === "ModernMinimalist");
+  const modernMinimalistProducts = allProducts.filter((product) =>
+    product.theme.includes("Modern Minimalist")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);

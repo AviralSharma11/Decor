@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const Safari = () => {
   // Filter only wood products
-  const safariProducts = allProducts.filter((product) => product.theme === "Safari");
+  const safariProducts = allProducts.filter((product) =>
+    product.theme.includes("Safari")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);

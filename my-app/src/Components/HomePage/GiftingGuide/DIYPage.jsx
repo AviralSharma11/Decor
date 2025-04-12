@@ -5,6 +5,7 @@ import Footer from "../../Footer";
 import {products} from "../../../List/product";
 import BestSeller from "../BestSeller";
 import LoginModal from "../../LoginModal";
+import ProductComponent from "../../ProductComponent";
 
 const DIY = () => {
     const [step, setStep] = useState(1);
@@ -12,7 +13,7 @@ const DIY = () => {
       recipient: "",
       occasion: "",
       budget: "",
-      style: "",
+      // style: "",
     });
   
     const handleChange = (e) => {
@@ -20,7 +21,7 @@ const DIY = () => {
     };
   
     const handleNext = () => {
-      if (step < 5) setStep(step + 1);
+      if (step < 4) setStep(step + 1);
     };
   
     const handleBack = () => {
@@ -28,23 +29,54 @@ const DIY = () => {
     };
   
     const filterProducts = () => {
-        const budget = parseInt(formData.budget);
-      
-        return products.filter((product) => {
-          const productStyle = (product.style || "").toLowerCase();
-          const productRecipient = (product.giftingguide || "").toLowerCase();
-        //   const productTypes = (product.type || "").toLowerCase().split(',').map(t => t.trim());
-      
-          const matchStyle = productStyle.includes(formData.style.toLowerCase());
-          const matchRecipient = productRecipient.includes(formData.recipient.toLowerCase());
-          const matchBudget = !isNaN(budget) ? product.discountedPrice <= budget : true;
-      
-          return matchStyle && matchRecipient && matchBudget;
-        });
-      };
+      const budget = parseInt(formData.budget);
+    
+      return products.filter((product) => {
+        // const rawStyle = product.style || "";
+        const rawRecipient = product.giftingguide || "";
+    
+        // const productStyle = Array.isArray(rawStyle)
+        //   ? rawStyle.join(", ").toLowerCase()
+        //   : String(rawStyle).toLowerCase();
+    
+        const productRecipient = Array.isArray(rawRecipient)
+          ? rawRecipient.join(", ").toLowerCase()
+          : String(rawRecipient).toLowerCase();
+    
+        // const matchStyle = productStyle.includes(formData.style.toLowerCase());
+        const matchRecipient = productRecipient.includes(formData.recipient.toLowerCase());
+        const matchBudget = !isNaN(budget) ? product.discountedPrice <= budget : true;
+    
+        return matchRecipient && matchBudget;
+      });
+    };
+    
+    
         
     const suggestedProducts = filterProducts();
 
+    const addToCart = (product) => {
+      if (!isAuthenticated) {
+        setIsLoginModalOpen(true); // Open login modal
+        return;
+      }
+      setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id === product.id);
+        let updatedCart;
+    
+        if (existingItem) {
+          updatedCart = prevCart.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          );
+        } else {
+          updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        }
+    
+        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
+        return updatedCart;
+      });
+    };
+  
         const [cart, setCart] = useState(() => {
                   const savedCart = localStorage.getItem("cart");
                   return savedCart ? JSON.parse(savedCart) : [];
@@ -138,7 +170,7 @@ const DIY = () => {
       <div>
         <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products} />
         <div className="wizard-container">
-          <h2 className="wizard-title">🎁 Custom Gifting Wizard</h2>
+          <h2 className="wizard-title">Custom Gifting Wizard</h2>
           <div className="wizard-step">
             {step === 1 && (
               <div className="wizard-input">
@@ -176,7 +208,7 @@ const DIY = () => {
               />
             </div>
           )}
-            {step === 4 && (
+            {/* {step === 4 && (
               <div className="wizard-input">
                 <label>Style Preference?</label>
                 <input
@@ -187,19 +219,22 @@ const DIY = () => {
                   onChange={handleChange}
                 />
               </div>
-            )}
-           {step === 5 && (
+            )} */}
+           {step === 4 && (
                 <div className="wizard-result">
-                    <h3>🎉 Gift Suggestions for {formData.recipient}</h3>
+                    <h3>Gift Suggestions for {formData.recipient}</h3>
                     {suggestedProducts.length > 0 ? (
                     <div className="product-suggestions">
-                        {suggestedProducts.map((product) => (
-                        <div key={product.id}>
-                            <h3>{product.name}</h3>
-                            <p>₹{product.discountedPrice}</p>
-                            <img src={product.image[0]} alt={product.name} />
-                        </div>
-                        ))}
+                        
+                          <div className="product-suggestions">
+                            <ProductComponent
+                              products={suggestedProducts}
+                              addToCart={addToCart}
+                              isAuthenticated={isAuthenticated}
+                              setIsLoginModalOpen={setIsLoginModalOpen}
+                            />
+                          </div>
+                       
                     </div>
                     ) : (
                     <div className="product-suggestions">
@@ -213,12 +248,12 @@ const DIY = () => {
           </div>
   
           <div className="wizard-buttons">
-            {step > 1 && step < 5 && (
+            {step > 1 && step < 4 && (
               <button className="back-btn" onClick={handleBack}>
                 Back
               </button>
             )}
-            {step < 5 && (
+            {step < 4 && (
               <button
                 className="next-btn"
                 onClick={handleNext}

@@ -10,11 +10,9 @@ import FilterComponent2 from "../FilterComponent2";
 import SocialMediaBadges from "../SocialMediaBadges";
 import LoginModal from "../LoginModal";
 
-const Transitional = () => {
+const SoftGirlAesthetic = () => {
   // Filter only wood products
-  const transitionalProducts = allProducts.filter((product) =>
-    product.style.includes("Transitional")
-  );
+  const softgirlProducts = allProducts.filter((product) => product.theme === "Soft Girl Aesthetic");
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);
@@ -75,7 +73,7 @@ const Transitional = () => {
 
   // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
-    return transitionalProducts.filter((product) => {
+    return softgirlProducts.filter((product) => {
       // Filter by Type
       if (
         selectedFilters.Type.length > 0 &&
@@ -216,13 +214,13 @@ const Transitional = () => {
       <nav className="breadcrumb">
         <Link to="/">Home</Link> &gt;
         <Link to="/collections">Collections</Link> &gt;
-        <Link to="/collections/themes">By Themes</Link> &gt;
-        <span>Transitional</span>
+        <Link to="/collections/trending">By Trend</Link> &gt;
+        <span>Soft Girl Aesthetic</span>
       </nav>
 
-      <h2 className="material-heading">Transitional Collection</h2>
+      <h2 className="material-heading">Soft Girl Aesthetic Collection</h2>
       <p className="material-description">
-        Discover our beautiful collection of transitional style products, crafted with elegance and durability.
+        Discover our beautiful collection of soft girl aesthetic trend products, crafted with elegance and durability.
       </p>
       {isMobile && (
         <div className="mobile-controls">
@@ -274,4 +272,4 @@ const Transitional = () => {
   );
 };
 
-export default Transitional;
+export default SoftGirlAesthetic;

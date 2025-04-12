@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const Vintage = () => {
   // Filter only wood products
-  const vintageProducts = allProducts.filter((product) => product.style === "Vintage");
+  const vintageProducts = allProducts.filter((product) =>
+    product.style.includes("Vintage")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);

@@ -12,7 +12,9 @@ import LoginModal from "../../LoginModal";
 
 const FriendsPage = () => {
   // Filter only HIM products
-  const FriendsProducts = allProducts.filter((product) => product.giftingguide === "Friends");
+  const FriendsProducts = allProducts.filter((product) =>
+    product.giftingguide.includes("Friends")
+  );
 
   // Use HIM as initial products state
   const [filters] = useState(initialFilters);

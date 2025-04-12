@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState ,useEffect} from "react";
 import { Link } from "react-router-dom";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "../../Styles/Collection/Categories.css";
@@ -12,7 +12,7 @@ import { filters as initialFilters, products as initialProducts  } from "../../L
 import "../../Collections.css";
 import LoginModal from "../LoginModal";
 
-export default function Themes(){
+export default function Style(){
     const [filters] = useState(initialFilters);
     const [products] = useState(initialProducts);
     const [filtersKey, setFiltersKey] = useState(0);
@@ -36,39 +36,40 @@ export default function Themes(){
               setUser({ email: storedEmail });
             }
           }, []);
-    
-    useEffect(() => {
-      if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
-        localStorage.setItem("cart", JSON.stringify(cart));
-      }
-    }, [cart]);
-      const [selectedFilters, setSelectedFilters] = useState({
-          Type: [],
-          Color: [],
-          Price: [],
-      });
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768);
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-      const handleFilterChange = (filterCategory, value, isChecked) => {
-          setSelectedFilters((prevFilters) => {
-            const updatedFilters = { ...prevFilters };
-            if (isChecked) {
-              updatedFilters[filterCategory] = [...updatedFilters[filterCategory], value];
-            } else {
-              updatedFilters[filterCategory] = updatedFilters[filterCategory].filter(
-                (item) => item !== value
-              );
-            }
-            return updatedFilters;
-          });
+  useEffect(() => {
+    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
+    const [selectedFilters, setSelectedFilters] = useState({
+        Type: [],
+        Color: [],
+        Price: [],
+    });
+     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    
+      useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768);
         };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
+
+    const handleFilterChange = (filterCategory, value, isChecked) => {
+        setSelectedFilters((prevFilters) => {
+          const updatedFilters = { ...prevFilters };
+          if (isChecked) {
+            updatedFilters[filterCategory] = [...updatedFilters[filterCategory], value];
+          } else {
+            updatedFilters[filterCategory] = updatedFilters[filterCategory].filter(
+              (item) => item !== value
+            );
+          }
+          return updatedFilters;
+        });
+      };
 
       const applyFilters = () => {
         return products.filter((product) => {
@@ -203,13 +204,13 @@ export default function Themes(){
           console.error("Error updating quantity:", error);
         }
       };
-
+      
     const material = [
-        { name: "MODERN MINIMALIST", image: "/Images/bytrend.jpg", link: "/themes/modern-minimalist"},
-        { name: "WELLNESS", image: "/Images/bythemes.jpg" , link: "/themes/wellness" },
-        { name: "SAFARI", image: "/Images/bythemes.jpg", link: "/themes/safari"},
         { name: "EARTHY", image: "/Images/bytrend.jpg", link: "/themes/earthy"},
-        { name: "OFFICE ESSENTIALS", image: "/Images/bystyles.jpg", link: "/themes/office-essentials"}
+        { name: "WELLNESS", image: "/Images/bystyles.jpg", link: "/themes/wellness"},
+        { name: "MODERN MINIMALIST", image: "/Images/bymaterial.jpg", link: "/themes/modern-minimalist" },
+        { name: "SAFARI", image: "/Images/bythemes.jpg" , link: "/themes/safari" },
+        { name: "OFFICE ESSENTIAL", image: "/Images/bythemes.jpg", link: "/themes/office-essential"}
       ];
     return(
         <div className="material">
@@ -219,64 +220,64 @@ export default function Themes(){
                 <nav className="breadcrumb">
                     <Link to="/">Home</Link> &gt;
                     <Link to="/collections"> Collections</Link> &gt;
-                    <Link to="/collections/themes"> <strong>Shop By Themes</strong></Link>
+                    <Link to="/collections/themes"> <strong>Shop By Theme</strong></Link>
                 </nav>
             
                 {/* Categories Section */}
-                <div className="slider-wave">
-                                        <svg
-                                          version="1.1"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          viewBox="0 0 804 50.167"
-                                          preserveAspectRatio="none"
-                                        >
-                                          <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
-                                        </svg>
-                                      </div>
-                                
-                                      {/* Splide Carousel */}
-                                      <div className="sliders">
-                                      <Splide
-                                        className="screen"
-                                        options={{
-                                          type: "loop",
-                                          perPage: 4,
-                                          focus: "center",
-                                          autoplay: true,
-                                          interval: 3000,
-                                          pauseOnHover: false,
-                                          pagination: false,
-                                          arrows: true,
-                                          breakpoints: {
-                                            1024: { perPage: 3 },
-                                            768: { perPage: 2 },
-                                            480: { perPage: 1 },
-                                          },
-                                        }}
-                                      >
-                                        {material.map((category, index) => (
-                                          <SplideSlide key={index}>
-                                            <Link to={category.link} className="slide">
-                                              <img src={category.image} alt={`Slide ${index + 1}`} className="curved-image" />
-                                              </Link>
-                                              <p className="category-name" style={{textDecoration: "none"}}>{category.name}</p>
-                                           
-                                          </SplideSlide>
-                                        ))}
-                                      </Splide>
-                                
-                                      {/* Lower wave */}
-                                      <div className="slider-wave2">
-                                        <svg
-                                          version="1.1"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          viewBox="0 0 804 50.167"
-                                          preserveAspectRatio="none"
-                                        >
-                                          <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
-                                        </svg>
-                                      </div>
-                                      </div>
+           <div className="slider-wave">
+                                   <svg
+                                     version="1.1"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 804 50.167"
+                                     preserveAspectRatio="none"
+                                   >
+                                     <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
+                                   </svg>
+                                 </div>
+                           
+                                 {/* Splide Carousel */}
+                                 <div className="sliders">
+                                 <Splide
+                                   className="screen"
+                                   options={{
+                                     type: "loop",
+                                     perPage: 4,
+                                     focus: "center",
+                                     autoplay: true,
+                                     interval: 3000,
+                                     pauseOnHover: false,
+                                     pagination: false,
+                                     arrows: true,
+                                     breakpoints: {
+                                       1024: { perPage: 3 },
+                                       768: { perPage: 2 },
+                                       480: { perPage: 1 },
+                                     },
+                                   }}
+                                 >
+                                   {material.map((category, index) => (
+                                     <SplideSlide key={index}>
+                                       <Link to={category.link} className="slide">
+                                         <img src={category.image} alt={`Slide ${index + 1}`} className="curved-image" />
+                                         </Link>
+                                         <p className="category-name">{category.name}</p>
+                                       
+                                     </SplideSlide>
+                                   ))}
+                                 </Splide>
+                           
+                                 {/* Lower wave */}
+                                 <div className="slider-wave2">
+                                   <svg
+                                     version="1.1"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 804 50.167"
+                                     preserveAspectRatio="none"
+                                   >
+                                     <path fill="#333" d="M804,0v16.671c0,0-204.974,33.496-401.995,33.496C204.974,50.167,0,16.671,0,16.671V0H804z"/>
+                                   </svg>
+                                 </div>
+                                 </div>
             </div>
             {isMobile && (
         <div className="mobile-controls">
@@ -308,18 +309,18 @@ export default function Themes(){
             <Footer />
 
             {isLoginModalOpen && (
-              <LoginModal
-                isOpen={isLoginModalOpen}
-                onClose={() => setIsLoginModalOpen(false)}
-                onLogin={() => {
-                  setIsAuthenticated(true);
-                  localStorage.setItem("isAuthenticated", "true");
-                  setIsLoginModalOpen(false); // Close modal after login
-                  window.location.reload();
-                }}
-              />
-            )}
-            
+            <LoginModal
+              isOpen={isLoginModalOpen}
+              onClose={() => setIsLoginModalOpen(false)}
+              onLogin={() => {
+                setIsAuthenticated(true);
+                localStorage.setItem("isAuthenticated", "true");
+                setIsLoginModalOpen(false); // Close modal after login
+                window.location.reload();
+              }}
+            />
+          )}
+
         </div>
     );
 };

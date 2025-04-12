@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const Earthy = () => {
   // Filter only wood products
-  const earthyProducts = allProducts.filter((product) => product.theme === "Earthy");
+  const earthyProducts = allProducts.filter((product) =>
+    product.theme.includes("Earthy")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);

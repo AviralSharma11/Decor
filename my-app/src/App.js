@@ -35,7 +35,19 @@ import Luxury from "./Components/Footer/DirectLinks/Luxury";
 import PersonalisedJewellary from "./Components/Footer/DirectLinks/PersonalisedJewellary";
 import WallArt from "./Components/Footer/DirectLinks/WallArt";
 import FAQ from "./Components/Footer/FAQ";
-
+import Coquette from "./Components/Trending/Coquette";
+import Dopamine from "./Components/Trending/Dopamine";
+import SoftGirlAesthetic from "./Components/Trending/SoftGirlAesthetic";
+import Earthy from "./Components/Themes/Earthy";
+import ModernMinimalist from "./Components/Themes/ModernMinimalist";
+import Safari from "./Components/Themes/Safari";
+import Wellness from "./Components/Themes/Wellness";
+import OfficeEssential from "./Components/Themes/Wellness";
+import Transitional from "./Components/Style/Transitional";
+import Traditional from "./Components/Style/Traditional";
+import Bohemian from "./Components/Style/Bohemian";
+import Vintage from "./Components/Style/Vintage";
+import Modern from "./Components/Style/Modern";
 
 function App() {
   return (
@@ -65,6 +77,25 @@ function App() {
           <Route path="/material/wood" element={<WoodMaterialPage />} />
           <Route path="/material/acrylic" element={<AcrylicMaterialPage />} />
           <Route path="/material/resins" element={<ResinsMaterialPage />} />
+
+          {/* Trending Pages */}
+          <Route path="/trending/dopamine" element={<Dopamine />} />
+          <Route path="/trending/coquette" element={<Coquette />} />
+          <Route path="/trending/soft-girl-aesthetic" element={<SoftGirlAesthetic />} />
+
+          {/* Theme pages */}
+          <Route path="/themes/earthy" element={<Earthy />} />
+          <Route path="/themes/modern-minimalist" element={<ModernMinimalist />} />
+          <Route path="/themes/office-essential" element={<OfficeEssential/>} />
+          <Route path="/themes/safari" element={<Safari />} />
+          <Route path="/themes/wellness" element={<Wellness />}/>
+
+          {/* Style pages */}
+          <Route path="/style/bohemian" element={<Bohemian />} />
+          <Route path="/style/modern" element={<Modern />} />
+          <Route path="/style/traditional" element={<Traditional />} />
+          <Route path="/style/vintage" element={<Vintage />}/>
+          <Route path="/style/transitional" element={<Transitional />} />
 
           {/* Product Pages */}
           <Route path="/product/:productName" element={<ProductDetailPage />} />

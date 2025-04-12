@@ -36,7 +36,7 @@ export const filters = [
     
     {
       id: 2,
-      name: 'Wooden Heart Wedding Batches-pack of 10',
+      name: 'Wooden Heart Wedding Batches pack of 10',
       rating: 4,
       reviews: 20,
       originalPrice: 1499.0,
@@ -75,7 +75,6 @@ export const filters = [
       material: "Wood",
       style: "Transitional",
       customisable: true,
-      description: "Wooden engraved wedding hearts, wedding save the date, laser engraving initial pins, unique wedding boutonniere, wedding gift for guest",
       trending: ["Dopamine" , "Coquette" , "Soft Girl Aesthetic"],
       theme: "Modern Minimilast",
       image: [
@@ -335,7 +334,6 @@ export const filters = [
         ],
         customisable: true,
         material: "Acrylic",
-        customisable: true,
         style: ["Modern"],
         trending: ["Dopamine" , "Soft Girl Aesthetic" , "Coquette"],
         giftingguide:["Friends" , "HER" , "HIM" , "Family"],

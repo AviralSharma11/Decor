@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const OfficeEssential = () => {
   // Filter only wood products
-  const officeEssentialProducts = allProducts.filter((product) => product.theme === "Office Essential");
+  const officeEssentialProducts = allProducts.filter((product) =>
+    product.theme.includes("Office Essential")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);
