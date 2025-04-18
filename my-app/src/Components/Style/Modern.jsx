@@ -12,8 +12,8 @@ import LoginModal from "../LoginModal";
 
 const Modern = () => {
   // Filter only wood products
-  const modernProducts = allProducts.filter((product) =>
-    product.style.includes("Modern")
+  const modernProducts = allProducts.filter(
+    (product) => Array.isArray(product.style) && product.style.includes("Modern")
   );
 
   // Use acrylicProducts as initial products state
@@ -77,12 +77,12 @@ const Modern = () => {
   const applyFilters = () => {
     return modernProducts.filter((product) => {
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+          return false;
+        }
       }
+      
 
       // Filter by Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {

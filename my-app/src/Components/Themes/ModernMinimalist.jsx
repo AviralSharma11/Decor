@@ -12,8 +12,8 @@ import LoginModal from "../LoginModal";
 
 const ModernMinimalist = () => {
   // Filter only wood products
-  const modernMinimalistProducts = allProducts.filter((product) =>
-    product.theme.includes("Modern Minimalist")
+  const modernMinimalistProducts = allProducts.filter(
+    (product) => Array.isArray(product.theme) && product.theme.includes("Modern Minimalist")
   );
 
   // Use acrylicProducts as initial products state
@@ -77,12 +77,12 @@ const ModernMinimalist = () => {
   const applyFilters = () => {
     return modernMinimalistProducts.filter((product) => {
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+          return false;
+        }
       }
+      
 
       // Filter by Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {

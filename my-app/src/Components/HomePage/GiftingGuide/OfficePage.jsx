@@ -78,10 +78,10 @@ const OfficePage = () => {
   
       // Filter by Type
       if (selectedFilters.Type.length > 0) {
-        if (!product.type || !selectedFilters.Type.includes(product.type)) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
           return false;
         }
-      }
+      }      
   
       // Filter by Price
       if (selectedFilters.Price.length > 0) {

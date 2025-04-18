@@ -12,7 +12,9 @@ import LoginModal from "../LoginModal";
 
 const SoftGirlAesthetic = () => {
   // Filter only wood products
-  const softgirlProducts = allProducts.filter((product) => product.theme === "Soft Girl Aesthetic");
+  const softgirlProducts = allProducts.filter(
+    (product) => Array.isArray(product.trending) && product.trending.includes("Soft Gir; Aesthetic")
+  );
 
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);
@@ -75,12 +77,12 @@ const SoftGirlAesthetic = () => {
   const applyFilters = () => {
     return softgirlProducts.filter((product) => {
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+          return false;
+        }
       }
+      
 
       // Filter by Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {

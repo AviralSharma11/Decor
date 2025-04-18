@@ -12,10 +12,9 @@ import LoginModal from "../LoginModal";
 
 const OfficeEssential = () => {
   // Filter only wood products
-  const officeEssentialProducts = allProducts.filter((product) =>
-    product.theme.includes("Office Essential")
+  const officeEssentialProducts = allProducts.filter(
+    (product) => Array.isArray(product.theme) && product.theme.includes("Office Essentials")
   );
-
   // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
@@ -77,12 +76,12 @@ const OfficeEssential = () => {
   const applyFilters = () => {
     return officeEssentialProducts.filter((product) => {
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+          return false;
+        }
       }
+      
 
       // Filter by Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {

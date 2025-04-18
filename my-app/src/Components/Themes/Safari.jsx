@@ -12,8 +12,8 @@ import LoginModal from "../LoginModal";
 
 const Safari = () => {
   // Filter only wood products
-  const safariProducts = allProducts.filter((product) =>
-    product.theme.includes("Safari")
+  const safariProducts = allProducts.filter(
+    (product) => Array.isArray(product.theme) && product.theme.includes("Safari")
   );
 
   // Use acrylicProducts as initial products state
@@ -77,12 +77,12 @@ const Safari = () => {
   const applyFilters = () => {
     return safariProducts.filter((product) => {
       // Filter by Type
-      if (
-        selectedFilters.Type.length > 0 &&
-        !selectedFilters.Type.includes(product.name.split(" ")[0])
-      ) {
-        return false;
+      if (selectedFilters.Type.length > 0) {
+        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+          return false;
+        }
       }
+      
 
       // Filter by Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {
