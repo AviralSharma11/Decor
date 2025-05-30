@@ -83,8 +83,25 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const menuRef = useRef(null);
 
 
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsMenuOpen(false);
+      document.body.style.overflowY = "auto"; // re-enable scrolling
+    }
+  };
+
+  if (isMenuOpen) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [isMenuOpen]);
   
 
   // Calculate total price of the cart
@@ -124,7 +141,7 @@ const Header = ({ cart , onRemoveFromCart , updateQuantity , user , products}) =
             <span className="subtitle">Navigating Creativity, Inspiring Spaces</span>
             </Link>
           </div>
-          <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
+          <nav ref={menuRef} className={`nav ${isMenuOpen ? "open" : ""}`}>
             <div className="hamburgerContent">
               <ul className="nav-links content">
                 <li><Link to="/collections">Collections</Link></li>

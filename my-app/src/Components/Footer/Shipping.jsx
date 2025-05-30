@@ -66,7 +66,7 @@ export default function Shipping(){
          <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
          <div className="shipping">
             <h3 className="page-title">Shipping</h3>
-            <p className="notice">We ship across ..... .... .. . . . . . . .</p>
+            <p className="notice">We ship across all over India</p>
             <div className="shipping-table"></div>
             <div className="shipping-info">
                 <ul className="info-list">
@@ -75,7 +75,7 @@ export default function Shipping(){
                 ))}
                 </ul>
             </div>
-            <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:600}}>email@gamil.com</span></p>
+            <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:600}}>support@oceanways.in</span></p>
          </div>
          <SocialMediaBadges />
          <Footer />   

@@ -98,7 +98,9 @@ const Checkout = () => {
     }
   };
   
-  
+  const validPin = /^[1-9][0-9]{5}$/.test(formFields.pinCode);
+  const validPhone = /^[6-9]\d{9}$/.test(formFields.phone);
+
 
   return (
     <div className="checkout-container">
@@ -119,7 +121,7 @@ const Checkout = () => {
               <label>
                 First Name
                 <span className="compulsory">*</span>
-                <input type="text" name="firstName" placeholder="First name"  value={formFields.firstName}  onChange={handleChange}/>
+                <input type="text" name="firstName" placeholder="First name"  value={formFields.firstName}  onChange={handleChange} />
               </label>
               <label>
                 Last Name
@@ -188,14 +190,36 @@ const Checkout = () => {
               <label>
                 PIN Code
                 <span className="compulsory">*</span>
-                <input type="text" name="pinCode" placeholder="PIN code" value={formFields.pinCode}  onChange={handleChange} />
+                <input
+                  type="text"
+                  name="pinCode"
+                  placeholder="PIN code"
+                  value={formFields.pinCode}
+                  className={!validPin ? "invalid-input" : ""}
+                  onChange={handleChange}
+                />
+                {!validPin && formFields.pinCode.length > 0 && (
+                  <div className="error-message">INVALID</div>
+                )}
               </label>
+
             </div>
-            <label>
+           <label>
               Phone
               <span className="compulsory">*</span>
-              <input type="text" name="phone" placeholder="Phone"  value={formFields.phone}  onChange={handleChange} />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone"
+                value={formFields.phone}
+                className={!validPhone ? "invalid-input" : ""}
+                onChange={handleChange}
+              />
+              {!validPhone && formFields.phone.length > 0 && (
+                <div className="error-message">INVALID</div>
+              )}
             </label>
+
             {/* <label>
               <input type="checkbox" /> Save this information for next time
             </label> */}

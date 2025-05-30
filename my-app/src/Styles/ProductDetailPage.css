@@ -181,6 +181,8 @@
     background-color: #f6f2ea;
     color: #333;
     font-size: 12px;
+    text-shadow: 0.2px 0.2px 0.2px white;
+    font-weight: 600;
   }
   
   .accordion-icon {

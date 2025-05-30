@@ -96,3 +96,20 @@
     background-color: #a68d5b;
   }
   
+
+  @media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+    gap: 24px; /* smaller gap */
+    padding: 20px; /* smaller padding */
+  }
+
+  .contact-info,
+  .contact-form {
+    width: 90%; /* full width */
+  }
+
+  .contact-form {
+    padding: 16px; /* reduce padding */
+  }
+}
