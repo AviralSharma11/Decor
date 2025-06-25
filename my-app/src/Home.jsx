@@ -42,7 +42,7 @@ const [user, setUser] = useState(() => {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/api/feedback", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/feedback`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ const [user, setUser] = useState(() => {
     localStorage.setItem("userEmail", email);
   
     try {
-        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/${email}`);
         if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
         
         const cartData = await response.json();
@@ -150,7 +150,7 @@ const [user, setUser] = useState(() => {
         console.log("Sending product to server:", JSON.stringify(payload, null, 2));
   
         try {
-          const res = await fetch("http://localhost:5000/api/cart", {
+          const res = await fetch(`${process.env.REACT_APP_API_URL}/api/cart`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -197,7 +197,7 @@ const [user, setUser] = useState(() => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/remove`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ const [user, setUser] = useState(() => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch('http://localhost:5000/api/cart/update', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
