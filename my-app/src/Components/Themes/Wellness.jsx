@@ -146,7 +146,7 @@ const Wellness = () => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/remove`, {
+      const response = await fetch('http://localhost:5000/api/cart/remove', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ const Wellness = () => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/update`, {
+      const response = await fetch('http://localhost:5000/api/cart/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

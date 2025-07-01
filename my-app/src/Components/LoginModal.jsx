@@ -45,7 +45,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     setLoading(true);
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/send-email-otp`, { email });
+      await axios.post("http://localhost:5000/send-email-otp", { email });
       setLoading(false);
       setOtpSent(true);
       setResendTimer(30); // Start 30-second countdown
@@ -68,7 +68,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   
     try {
       console.log("Entered try block...");
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/verify-email-otp`, { email, otp });
+      const response = await axios.post("http://localhost:5000/verify-email-otp", { email, otp });
   
       console.log("OTP verified, response:", response.data);
   
@@ -81,7 +81,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       setEmail("");
       setOtp("");
   
-      const cartResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/${email}`);
+      const cartResponse = await axios.get(`http://localhost:5000/api/cart/${email}`);
       console.log("Full cart response:", cartResponse);
   
       const cartData = cartResponse.data.cart || cartResponse.data;
@@ -124,7 +124,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     try {
       // Save cart to MySQL before logging out
       for (const item of cart) {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/update`, {
+        await axios.post("http://localhost:5000/api/cart/update", {
           email: userEmail,
           productId: item.id,
           quantity: item.quantity,

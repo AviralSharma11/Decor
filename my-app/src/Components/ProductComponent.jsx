@@ -13,8 +13,8 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
-        setIsLoginModalOpen(true);
-        return;
+      setIsLoginModalOpen(true);
+      return;
     }
 
     addToCart(product);
@@ -23,85 +23,109 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
     const email = localStorage.getItem("userEmail");
 
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email,
-                product: {
-                    id: product.id,
-                    name: product.name,
-                    image: product.image,
-                    price: product.discountedPrice, // Use discounted price for cart
-                },
-            }),
-        });
+      const response = await fetch("http://localhost:5000/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          product: {
+            id: product.id,
+            name: product.name,
+            image: product.image,
+            price: product.discountedPrice,
+          },
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error(`Failed to add to cart: ${response.statusText}`);
-        }
+      if (!response.ok) {
+        throw new Error(`Failed to add to cart: ${response.statusText}`);
+      }
     } catch (err) {
-        console.error("Failed to save cart:", err);
+      console.error("Failed to save cart:", err);
     }
 
     setTimeout(() => {
-        setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
+      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 3000);
-};
-
+  };
 
   return (
     <div className="product-container">
-      {products.map((product) => (
-        <div key={product.id} className="product-card">
-          <Link
-            to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")}
-            state={{ product }}
-            style={{ textDecoration: "none" }}
-          >
-            <div
-              className="product-image"
-              onMouseEnter={() =>
-                setCurrentImage((prev) => ({
-                  ...prev,
-                  [product.id]: product.image[1],
-                }))
-              }
-              onMouseLeave={() =>
-                setCurrentImage((prev) => ({
-                  ...prev,
-                  [product.id]: product.image[0],
-                }))
-              }
-            >
-              <img src={currentImage[product.id]} alt={product.name} />
-            </div>
-            <div className="product-rating">
-              {"★".repeat(Math.floor(product.rating))}
-              {"☆".repeat(5 - Math.floor(product.rating))}
-              <span className="reviews">({product.reviews})</span>
-            </div>
-            <div className="product-detail">
-              <div className="product-prices">
-                <span className="discounted-prices">
-                  ₹{product.discountedPrice.toLocaleString()}
-                </span>
-                <span className="original-prices">
-                  ₹{product.originalPrice.toLocaleString()}
-                </span>
-              </div>
-              <h3 className="product-titles">{product.name}</h3>
-            </div>
-          </Link>
-          <button
-            className={`addtocart ${addedToCart[product.id] ? "added" : ""}`}
-            onClick={() => handleAddToCart(product)}
-            disabled={addedToCart[product.id]}
-          >
-            {addedToCart[product.id] ? "Added to Cart" : "Add to Cart"}
-          </button>
-        </div>
-      ))}
+      {[...products]
+        .sort((a, b) => (a.comingSoon === b.comingSoon ? 0 : a.comingSoon ? 1 : -1))
+        .map((product) => {
+
+        const isComingSoon = product.comingSoon;
+
+        return (
+          <div key={product.id} className="product-card">
+            {isComingSoon ? (
+              <>
+                <div className="product-image">
+                  <img src={product.image?.[0]} alt={product.name} />
+                  {/* <div className="coming-soon-overlay">Coming Soon</div> */}
+                </div>
+                <div className="product-detail">
+                  <h3 className="product-titles">{product.name}</h3>
+                  <div className="product-prices coming-soon-text">Launching Soon</div>
+                </div>
+                <button className="addtocart disabled" disabled>
+                  Coming Soon
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")}
+                  state={{ product }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <div
+                    className="product-image"
+                    onMouseEnter={() =>
+                      setCurrentImage((prev) => ({
+                        ...prev,
+                        [product.id]: product.image[1],
+                      }))
+                    }
+                    onMouseLeave={() =>
+                      setCurrentImage((prev) => ({
+                        ...prev,
+                        [product.id]: product.image[0],
+                      }))
+                    }
+                  >
+                    <img src={currentImage[product.id]} alt={product.name} />
+                  </div>
+                  <div className="product-rating">
+                    {"★".repeat(Math.floor(product.rating))}
+                    {"☆".repeat(5 - Math.floor(product.rating))}
+                    <span className="reviews">({product.reviews})</span>
+                  </div>
+                  <div className="product-detail">
+                    <div className="product-prices">
+                      <span className="discounted-prices">
+                        ₹{product.discountedPrice.toLocaleString()}
+                      </span>
+                      <span className="original-prices">
+                        ₹{product.originalPrice.toLocaleString()}
+                      </span>
+                    </div>
+                    <h3 className="product-titles">{product.name}</h3>
+                  </div>
+                </Link>
+                <button
+                  className={`addtocart ${addedToCart[product.id] ? "added" : ""}`}
+                  onClick={() => handleAddToCart(product)}
+                  disabled={addedToCart[product.id]}
+                >
+                  {addedToCart[product.id] ? "Added to Cart" : "Add to Cart"}
+                </button>
+              </>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
