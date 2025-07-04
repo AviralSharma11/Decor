@@ -12,7 +12,6 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem("savedCart")) || []);
   const [resendTimer, setResendTimer] = useState(0);
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("savedCart"));
     if (savedCart) {
@@ -21,7 +20,6 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   }, []);
 
-  //  Resend timer countdown
   useEffect(() => {
     if (resendTimer > 0) {
       const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -31,137 +29,126 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
   if (!isOpen) return null;
 
-  //  Send OTP
   const handleSendOtp = async () => {
     setError("");
 
-    // Validate email format
+    const cleanedEmail = email.trim().toLowerCase();
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email)) {
+
+    if (!emailPattern.test(cleanedEmail)) {
       setError("Invalid email address.");
       return;
     }
 
     setLoading(true);
-
     try {
-      await axios.post("http://localhost:5000/send-email-otp", { email });
+      await axios.post("http://localhost:5000/send-email-otp", { email: cleanedEmail });
       setLoading(false);
       setOtpSent(true);
-      setResendTimer(30); // Start 30-second countdown
+      setResendTimer(30);
     } catch (err) {
+      console.error("OTP sending failed:", err);
       setError("Failed to send OTP. Try again.");
       setLoading(false);
     }
   };
 
-  // Verify OTP
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-  
-    if (!otpSent) {
-      setError("Please request an OTP first.");
-      return;
-    }
-  
-    setError("");
-  
-    try {
-      console.log("Entered try block...");
-      const response = await axios.post("http://localhost:5000/verify-email-otp", { email, otp });
-  
-      console.log("OTP verified, response:", response.data);
-  
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("isAuthenticated", "true");
-  
-      setUserEmail(email);
-      setOtpSent(false);
-      setEmail("");
-      setOtp("");
-  
-      const cartResponse = await axios.get(`http://localhost:5000/api/cart/${email}`);
-      console.log("Full cart response:", cartResponse);
-  
-      const cartData = cartResponse.data.cart || cartResponse.data;
-  
-      if (cartData?.length > 0) {
-        const updatedCart = cartData.map((item) => ({
-          ...item,
-          image: Array.isArray(item.image) ? item.image[0] : item.image || "",
-        }));
-  
-        setCart(updatedCart);
-        localStorage.setItem("savedCart", JSON.stringify(updatedCart));
-        console.log("Cart saved to localStorage:", updatedCart);
-      } else {
-        console.warn("No cart data found.");
-      }
-  
-      if (typeof onLogin === "function") {
-        onLogin();
-        console.log("Reloading...");
-      } else {
-        console.warn("onLogin is not a function or was not provided.");
-      }
-      
-      onClose();
-      setTimeout(() => {
-        console.log("Actually reloading...");
-        window.location.reload();
-      }, 100);
-  
-    } catch (err) {
-      console.error("Error during OTP verification:", err);
-      setError("Invalid OTP. Please try again.");
-    }
-  };
-  
+ const handleVerifyOtp = async (e) => {
+  e.preventDefault();
 
-  //  Logout
+  if (!otpSent) {
+    setError("Please request an OTP first.");
+    return;
+  }
+
+  const cleanedEmail = email.trim().toLowerCase();
+  setError("");
+
+  try {
+    const response = await axios.post("http://localhost:5000/verify-email-otp", {
+      email: cleanedEmail,
+      otp,
+    });
+
+    console.log("OTP verified, response:", response.data);
+
+    // Set session state early
+    localStorage.setItem("userEmail", cleanedEmail);
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("isAuthenticated", "true");
+    setUserEmail(cleanedEmail);
+
+    // Reset inputs and state
+    setOtpSent(false);
+    setEmail("");
+    setOtp("");
+
+    localStorage.removeItem("savedCart");
+    setCart([]);
+
+    const cartResponse = await axios.get(`http://localhost:5000/api/cart/${cleanedEmail}`);
+    const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
+
+    if (cartData.length > 0) {
+      const updatedCart = cartData.map((item) => ({
+        ...item,
+        image: Array.isArray(item.image) ? item.image[0] : item.image || "",
+      }));
+
+      setCart(updatedCart);
+      localStorage.setItem("savedCart", JSON.stringify(updatedCart));
+      console.log("New cart loaded and saved:", updatedCart);
+    } else {
+      console.log("Cart is empty for new user.");
+    }
+
+    if (typeof onLogin === "function") {
+      onLogin();
+    }
+
+    onClose();
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  } catch (err) {
+    console.error("Error verifying OTP:", err);
+    setError("Invalid OTP. Please try again.");
+  }
+};
+
+
   const handleLogout = async () => {
-    try {
-      // Save cart to MySQL before logging out
-      for (const item of cart) {
-        await axios.post("http://localhost:5000/api/cart/update", {
-          email: userEmail,
-          productId: item.id,
-          quantity: item.quantity,
-        });
-      }
-
-      //  Clear user data from localStorage
-      localStorage.removeItem("userEmail");
-      localStorage.removeItem("token");
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("savedCart");
-
-      setUserEmail(null);
-      setCart([]); // Clear cart state
-
-      //  Short delay to let state updates propagate
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Redirect to home after logout
-      window.location.href = "/";
-    } catch (err) {
-      console.error("Failed to save cart before logout:", err);
+  try {
+    // Save cart to DB before logout
+    for (const item of cart) {
+      await axios.post("http://localhost:5000/api/cart/update", {
+        email: userEmail,
+        productId: item.id,
+        quantity: item.quantity,
+      });
     }
-  };
-  
 
-  // Handle "Enter" keypress
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (!otpSent) {
-        handleSendOtp();
-      } else {
-        handleVerifyOtp(e);
-      }
-    }
-  };
+    // Clear storage and cart
+    localStorage.clear(); 
+    setUserEmail(null);
+    setCart([]);
+
+    await new Promise((res) => setTimeout(res, 100));
+    window.location.href = "/";
+  } catch (err) {
+    console.error("Failed to save cart before logout:", err);
+  }
+};
+
+
+const handleKeyPress = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();          // stop the form’s default submit
+    otpSent ? handleVerifyOtp(e) // if OTP field visible, verify
+           : handleSendOtp();    // else send OTP
+  }
+};
+
 
   return (
     <div className="modal-overlay">

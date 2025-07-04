@@ -63,8 +63,8 @@ const itemsbs =[
         name: 'Personalised Spotify Frame',
         rating: 4.5,
         reviews: 38,
-        originalPrice: 54443.0,
-        discountedPrice: 10000.0,
+        originalPrice: 2999.0,
+        discountedPrice: 1499.0,
         image :[
           "/Images/Spotify_Frames/4.webp",
           "/Images/Spotify_Frames/2.webp",
