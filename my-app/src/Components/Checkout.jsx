@@ -68,7 +68,7 @@ const Checkout = () => {
         throw new Error("Razorpay key not received from backend");
       }
       const fullName = `${formFields.firstName} ${formFields.lastName}`;
-      const email = localStorage.getItem("userEmail") || "guest@example.com";
+      const email = localStorage.getItem("userEmail") || "aviral@example.com";
   
       const options = {
         key: data.key,
