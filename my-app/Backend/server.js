@@ -235,10 +235,8 @@ app.post('/api/contact', (req, res) => {
 
     let workbook;
     if (fs.existsSync(FILE_NAME)) {
-        // Load existing file
         workbook = xlsx.readFile(FILE_NAME);
     } else {
-        // Create new workbook
         workbook = xlsx.utils.book_new();
     }
 
@@ -250,14 +248,12 @@ app.post('/api/contact', (req, res) => {
         xlsx.utils.book_append_sheet(workbook, worksheet, 'Contacts');
     }
 
-    // Get existing data and add new row
     const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
     data.push([fullName, email, subject, message]);
     const newWorksheet = xlsx.utils.aoa_to_sheet(data);
 
     workbook.Sheets['Contacts'] = newWorksheet;
 
-    // Write to file
     xlsx.writeFile(workbook, FILE_NAME);
 
     res.status(200).json({ message: 'Contact saved successfully' });
@@ -272,10 +268,8 @@ app.post('/api/feedback', (req, res) => {
 
   let workbook;
   if (fs.existsSync(FILE_NAME1)) {
-      // Load existing file
       workbook = xlsx.readFile(FILE_NAME1);
   } else {
-      // Create new workbook
       workbook = xlsx.utils.book_new();
   }
 
@@ -287,14 +281,12 @@ app.post('/api/feedback', (req, res) => {
       xlsx.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
   }
 
-  // Get existing data and add new row
   const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
   data.push([fullName, email, message]);
   const newWorksheet = xlsx.utils.aoa_to_sheet(data);
 
   workbook.Sheets['Feedbacks'] = newWorksheet;
 
-  // Write to file
   xlsx.writeFile(workbook, FILE_NAME1);
 
   res.status(200).json({ message: 'Contact saved successfully' });
@@ -309,10 +301,10 @@ app.post('/api/join-us', (req, res) => {
 
     let workbook;
     if (fs.existsSync(FILE_NAME2)) {
-        // Load existing file
+   
         workbook = xlsx.readFile(FILE_NAME2);
     } else {
-        // Create new workbook
+
         workbook = xlsx.utils.book_new();
     }
 
@@ -324,20 +316,18 @@ app.post('/api/join-us', (req, res) => {
         xlsx.utils.book_append_sheet(workbook, worksheet, 'Sell On OceanWays');
     }
 
-    // Get existing data and add new row
     const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
     data.push([fullName, email, contact,  subject, message]);
     const newWorksheet = xlsx.utils.aoa_to_sheet(data);
 
     workbook.Sheets['Sell On OceanWays'] = newWorksheet;
 
-    // Write to file
     xlsx.writeFile(workbook, FILE_NAME2);
 
     res.status(200).json({ message: 'Contact saved successfully' });
 });
 
-// Razorpay instance
+// Razorpay 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -347,16 +337,16 @@ app.get("/api/razorpay-key", (req, res) => {
     res.json({ key: process.env.RAZORPAY_KEY_ID });
   });
 
-// Create Razorpay Order
+
 app.post("/create-order", async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
     const options = {
-      amount: amount * 100, // Convert to paise
+      amount: amount * 100, 
       currency,
       receipt: `receipt_${Date.now()}`,
-      payment_capture: 1, // Auto capture payment
+      payment_capture: 1, 
     };
 
     const order = await razorpay.orders.create(options);
@@ -367,7 +357,7 @@ app.post("/create-order", async (req, res) => {
   }
 });
 
-// Save Order After Payment
+// Save Order 
 app.post("/save-order", (req, res) => {
   const {
     firstName,
@@ -417,7 +407,7 @@ app.post("/save-order", (req, res) => {
   );
 });
 
-// Get All Orders
+// Get
 app.get("/get-orders", (req, res) => {
   db.query("SELECT * FROM orders", (err, results) => {
     if (err) {
@@ -452,7 +442,7 @@ const ensureWorkbook = () => {
   }
 };
 
-// Route to save order
+
 app.post("/api/save-order", (req, res) => {
   ensureWorkbook();
 
