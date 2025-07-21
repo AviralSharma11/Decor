@@ -124,7 +124,7 @@ app.post("/verify-email-otp", (req, res) => {
 });
 
 //  Add items to cart
-app.post("/api/cart", (req, res) => {
+app.post("/cart", (req, res) => {
     const { email, product } = req.body;
 
     console.log(`Received request to add to cart. Email: ${email}, Product:`, product);
@@ -159,7 +159,7 @@ app.post("/api/cart", (req, res) => {
 });
 
 //  Fetch cart items
-app.get("/api/cart/:email", (req, res) => {
+app.get("/cart/:email", (req, res) => {
     const email = req.params.email;
 
     if (!email) {
@@ -185,7 +185,7 @@ app.get("/api/cart/:email", (req, res) => {
 });
 
 // Remove item from cart
-app.post("/api/cart/remove", (req, res) => {
+app.post("/cart/remove", (req, res) => {
     const { email, productId } = req.body;
 
     if (!email || !productId) {
@@ -206,7 +206,7 @@ app.post("/api/cart/remove", (req, res) => {
     );
 });
 
-app.post("/api/cart/update", (req, res) => {
+app.post("/cart/update", (req, res) => {
     const { email, productId, quantity } = req.body;
 
     if (!email || !productId || quantity === undefined) {
@@ -226,7 +226,7 @@ app.post("/api/cart/update", (req, res) => {
     );
 });
 
-app.post('/api/contact', (req, res) => {
+app.post('/contact', (req, res) => {
     const { fullName, email, subject, message } = req.body;
 
     if (!fullName || !email || !subject || !message) {
@@ -259,7 +259,7 @@ app.post('/api/contact', (req, res) => {
     res.status(200).json({ message: 'Contact saved successfully' });
 });
 
-app.post('/api/feedback', (req, res) => {
+app.post('/feedback', (req, res) => {
   const { fullName, email, message } = req.body;
 
   if (!fullName || !email || !message) {
@@ -292,7 +292,7 @@ app.post('/api/feedback', (req, res) => {
   res.status(200).json({ message: 'Contact saved successfully' });
 });
 
-app.post('/api/join-us', (req, res) => {
+app.post('/join-us', (req, res) => {
     const { fullName, email, contact, subject, message } = req.body;
 
     if (!fullName || !email || !contact || !subject || !message) {
@@ -333,7 +333,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-app.get("/api/razorpay-key", (req, res) => {
+app.get("/razorpay-key", (req, res) => {
     res.json({ key: process.env.RAZORPAY_KEY_ID });
   });
 
@@ -443,7 +443,7 @@ const ensureWorkbook = () => {
 };
 
 
-app.post("/api/save-order", (req, res) => {
+app.post("/save-order", (req, res) => {
   ensureWorkbook();
 
   const {
