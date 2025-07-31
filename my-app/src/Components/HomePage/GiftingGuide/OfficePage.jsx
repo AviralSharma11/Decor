@@ -2,7 +2,7 @@ import React, { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../../Styles/MaterialPage.css"; 
 import ProductComponent from "../../ProductComponent";
-import { filters as initialFilters, products as allProducts } from "../../../List/product"; 
+import {filters as initialFilters} from "../../../List/filter"; 
 import Header from "../../Header";
 import Footer from "../../Footer";
 import FilterComponent from "../../FilterComponent";
@@ -11,12 +11,7 @@ import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
 
 const OfficePage = () => {
-  // Filter only HIM products
-  const OfficeProducts = allProducts.filter((product) =>
-    product.giftingguide.includes("Office")
-  );
-
-  // Use HIM as initial products state
+  const [products, setProducts] = useState([]);
   const [filters] = useState(initialFilters);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filtersKey, setFiltersKey] = useState(0);
@@ -39,11 +34,13 @@ const OfficePage = () => {
           setUser({ email: storedEmail });
         }
       }, []); 
-  useEffect(() => {
-    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
+
+       useEffect(() => {
+          if (cart.length > 0) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+          }
+        }, [cart]);
+
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
@@ -58,6 +55,24 @@ const OfficePage = () => {
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+      useEffect(() => {
+        const fetchProducts = async () => {
+          try {
+            const res = await fetch("http://localhost:5000/api/products");
+            const data = await res.json();
+            const OfficeProducts = data.filter((product) =>
+              product.giftingguide?.toLowerCase().includes("Office")
+            );
+            setProducts(OfficeProducts);
+          } catch (err) {
+            console.error("Failed to fetch products:", err);
+          }
+        };
+    
+        fetchProducts();
+      }, []);
+
   // Handle filter changes
   const handleFilterChange = (filterCategory, value, isChecked) => {
     setSelectedFilters((prevFilters) => {
@@ -74,7 +89,7 @@ const OfficePage = () => {
   };
 
   const applyFilters = () => {
-    return OfficeProducts.filter((product) => {
+    return products.filter((product) => {
   
       // Filter by Type
       if (selectedFilters.Type.length > 0) {
@@ -103,7 +118,7 @@ const OfficePage = () => {
   };
   
 
-  const filteredProducts = applyFilters();
+  const filtered = applyFilters();
 
   // Add product to cart
   const addToCart = (product) => {
@@ -206,7 +221,7 @@ const OfficePage = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={allProducts}/>
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
@@ -241,8 +256,8 @@ const OfficePage = () => {
           <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
         </div>
         <div className="contents">
-          {filteredProducts.length > 0 ? (
-            <ProductComponent products={filteredProducts} addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen} />
+          {filtered.length > 0 ? (
+            <ProductComponent products={filtered} addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen} />
           ) : (
             <p className="no-products">No products match your selected filters.</p>
           )}

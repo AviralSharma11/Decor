@@ -2,7 +2,7 @@ import React, { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../../Styles/MaterialPage.css"; 
 import ProductComponent from "../../ProductComponent";
-import { filters as initialFilters, products as allProducts } from "../../../List/product"; 
+import {filters as initialFilters} from "../../../List/filter";
 import Header from "../../Header";
 import Footer from "../../Footer";
 import FilterComponent from "../../FilterComponent";
@@ -11,10 +11,7 @@ import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
 
 const WallArt = () => {
-  // Filter only wood products
-  const wallartProducts = allProducts.filter((product) => product.wallart === true);
-
-  // Use acrylicProducts as initial products state
+  const [allProducts, setAllProducts] = useState([]);
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,23 +28,26 @@ const WallArt = () => {
             return savedUser ? JSON.parse(savedUser) : null;
           });
           
-            useEffect(() => {
-              const storedEmail = localStorage.getItem("userEmail");
-              if (storedEmail) {
-                setUser({ email: storedEmail });
-              }
-            }, []);
-  useEffect(() => {
-    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
+
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
     Price: [],
   });
    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+     useEffect(() => {
+       const storedEmail = localStorage.getItem("userEmail");
+       if (storedEmail) setUser({ email: storedEmail });
+   
+       fetch("http://localhost:5000/api/products")
+         .then((res) => res.json())
+         .then((data) => {
+           const wallartOnly = data.filter((product) => product.wallart === 1 || product.wallart === true);
+           setAllProducts(wallartOnly);
+         })
+         .catch((err) => console.error("Failed to fetch products:", err));
+     }, []);
   
     useEffect(() => {
       const handleResize = () => {
@@ -56,6 +56,12 @@ const WallArt = () => {
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+      useEffect(() => {
+    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
   // Handle filter changes
   const handleFilterChange = (filterCategory, value, isChecked) => {
     setSelectedFilters((prevFilters) => {
@@ -73,7 +79,7 @@ const WallArt = () => {
 
   // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
-    return wallartProducts.filter((product) => {
+    return allProducts.filter((product) => {
       // Filter by Type
       if (
         selectedFilters.Type.length > 0 &&

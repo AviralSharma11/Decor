@@ -2,7 +2,6 @@ import React , {useEffect , useState} from "react";
 import "../../Styles/Footer/FooterLinks.css";
 import Header from "../Header";
 import Footer from "../Footer";
-import { products } from "../../List/product";
 import LoginModal from "../LoginModal";
 import SocialMediaBadges from "../SocialMediaBadges";
 
@@ -20,6 +19,9 @@ const PrivacyPolicy = () => {
             const savedUser = localStorage.getItem("user");
             return savedUser ? JSON.parse(savedUser) : null;
           });
+
+          
+            const [products, setProducts] = useState([]);
           
             useEffect(() => {
               const storedEmail = localStorage.getItem("userEmail");
@@ -27,6 +29,24 @@ const PrivacyPolicy = () => {
                 setUser({ email: storedEmail });
               }
             }, []);
+
+              useEffect(() => {
+                const fetchProducts = async () => {
+                  try {
+                    const response = await fetch("http://localhost:5000/api/products");
+                    const data = await response.json();
+                    if (response.ok) {
+                      setProducts(data);
+                    } else {
+                      console.error("Failed to fetch products:", data.message);
+                    }
+                  } catch (error) {
+                    console.error("Error fetching products:", error);
+                  }
+                };
+            
+                fetchProducts();
+              }, []);
     
             const removeFromCart = async (productId) => {
               if (!isAuthenticated) return;

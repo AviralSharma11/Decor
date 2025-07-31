@@ -3,7 +3,6 @@ import "../../Styles/Footer/FooterLinks.css";
 import Header from "../Header";
 import Footer from "../Footer";
 import "../../Styles/Footer/Shipping.css";
-import { products } from "../../List/product";
 import SocialMediaBadges from "../SocialMediaBadges";
 
 export default function Shipping(){
@@ -25,11 +24,32 @@ export default function Shipping(){
         const savedCart = localStorage.getItem("cart");
         return savedCart ? JSON.parse(savedCart) : [];
       });
+
+        const [products, setProducts] = useState([]);
     
       useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
       }, [cart]);
     
+
+        useEffect(() => {
+          const fetchProducts = async () => {
+            try {
+              const response = await fetch("http://localhost:5000/api/products");
+              const data = await response.json();
+              if (response.ok) {
+                setProducts(data);
+              } else {
+                console.error("Failed to fetch products:", data.message);
+              }
+            } catch (error) {
+              console.error("Error fetching products:", error);
+            }
+          };
+      
+          fetchProducts();
+        }, []);
+      
     
       const removeFromCart = (productId) => {
         setCart((prevCart) => {

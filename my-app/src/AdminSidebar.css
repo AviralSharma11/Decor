@@ -1,0 +1,20 @@
+.admin-sidebar {
+  width: 220px;
+  background-color: #E6CFC0; /* Slightly lighter pink */
+  padding: 1.5rem 1rem;
+}
+
+.sidebar-links .links {
+  display: block;            /* Makes entire area clickable */
+  padding: 12px 20px;
+  margin: 8px 0;
+  text-decoration: none;
+  color: #2d2d2d;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+.sidebar-links .links:hover {
+  background-color: #9c7350;
+  color: white;
+}

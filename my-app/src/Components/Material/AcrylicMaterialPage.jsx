@@ -1,8 +1,8 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../../Styles/MaterialPage.css"; 
+import "../../Styles/MaterialPage.css";
 import ProductComponent from "../ProductComponent";
-import { filters as initialFilters, products as allProducts } from "../../List/product"; 
+import { filters as initialFilters } from "../../List/filter";
 import Header from "../Header";
 import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
@@ -11,10 +11,6 @@ import SocialMediaBadges from "../SocialMediaBadges";
 import LoginModal from "../LoginModal";
 
 const AcrylicMaterialPage = () => {
-  // Filter only wood products
-  const acrylicProducts = allProducts.filter((product) => product.material === "Acrylic");
-
-  // Use acrylicProducts as initial products state
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,41 +18,56 @@ const AcrylicMaterialPage = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
-      const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
-      const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem("isAuthenticated") === "true"; // Check login status
-      });  
-          const [user, setUser] = useState(() => {
-            const savedUser = localStorage.getItem("user");
-            return savedUser ? JSON.parse(savedUser) : null;
-          });
-          
-            useEffect(() => {
-              const storedEmail = localStorage.getItem("userEmail");
-              if (storedEmail) {
-                setUser({ email: storedEmail });
-              }
-            }, []);
+
+  const [allProducts, setAllProducts] = useState([]);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
   useEffect(() => {
-    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) setUser({ email: storedEmail });
+  }, []);
+
+  useEffect(() => {
+    if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
+        setAllProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
     Price: [],
   });
-   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768);
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
-  // Handle filter changes
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleFilterChange = (filterCategory, value, isChecked) => {
     setSelectedFilters((prevFilters) => {
       const updatedFilters = { ...prevFilters };
@@ -71,33 +82,35 @@ const AcrylicMaterialPage = () => {
     });
   };
 
-  // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
+    const acrylicProducts = allProducts.filter(
+      (product) => product.material && product.material.toLowerCase() === "acrylic"
+    );
+
     return acrylicProducts.filter((product) => {
-      // Filter by Type
+      // Type
       if (selectedFilters.Type.length > 0) {
-        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+        if (!product.type || !product.type.some((t) => selectedFilters.Type.includes(t))) {
           return false;
         }
       }
-      
-      // Filter by Color
+
+      // Color
       if (selectedFilters.Color.length > 0 && !selectedFilters.Color.includes(product.color)) {
         return false;
       }
 
-      // Filter by Price
+      // Price
       if (selectedFilters.Price.length > 0) {
-        const priceRange = selectedFilters.Price.find((range) => {
+        const match = selectedFilters.Price.some((range) => {
           if (range === "Under ₹1,000") return product.discountedPrice < 1000;
-          if (range === "₹1,000 - ₹3,000") return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
+          if (range === "₹1,000 - ₹3,000")
+            return product.discountedPrice >= 1000 && product.discountedPrice <= 3000;
           if (range === "Above ₹3,000") return product.discountedPrice > 3000;
           return false;
         });
 
-        if (!priceRange) {
-          return false;
-        }
+        if (!match) return false;
       }
 
       return true;
@@ -107,109 +120,103 @@ const AcrylicMaterialPage = () => {
   const filteredProducts = applyFilters();
 
   const resetFilters = () => {
-  
     filters.forEach((filter) => {
       filter.options.forEach((option) => handleFilterChange(filter.label, option, false));
     });
     setFiltersKey((prevKey) => prevKey + 1);
   };
 
-  // Add product to cart
   const addToCart = (product) => {
     if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
+      setIsLoginModalOpen(true);
       return;
     }
+
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+      const exists = prevCart.find((item) => item.id === product.id);
       let updatedCart;
-  
-      if (existingItem) {
+
+      if (exists) {
         updatedCart = prevCart.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
         updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
       return updatedCart;
     });
   };
 
-  // Remove product from cart
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
-  
+
     try {
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch("http://localhost:5000/api/cart/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'), // Assuming email is stored in localStorage
+          email: localStorage.getItem("userEmail"),
           productId,
         }),
       });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
+
+      const data = await res.json();
+
+      if (res.ok) {
         setCart((prevCart) => {
-          const updatedCart = prevCart.filter((item) => item.id !== productId);
-          localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
-          return updatedCart;
+          const updated = prevCart.filter((item) => item.id !== productId);
+          localStorage.setItem("cart", JSON.stringify(updated));
+          return updated;
         });
-        console.log(data.message);
       } else {
-        console.error('Failed to remove from cart:', data.message);
+        console.error("Remove failed:", data.message);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      console.error("Remove error:", err);
     }
   };
-  
 
   const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return; // Prevent setting quantity to less than 1
-  
+    if (newQuantity < 1) return;
+
     try {
-      const response = await fetch('http://localhost:5000/api/cart/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch("http://localhost:5000/api/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'),
+          email: localStorage.getItem("userEmail"),
           productId,
           quantity: newQuantity,
         }),
       });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to update quantity: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
+
+      if (!res.ok) throw new Error("Update failed");
+
+      const data = await res.json();
       console.log(data.message);
-  
-      // Update cart state if successful
-      setCart((prevCart) => 
+
+      setCart((prevCart) =>
         prevCart.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item
         )
       );
-    } catch (error) {
-      console.error("Error updating quantity:", error);
+    } catch (err) {
+      console.error("Update quantity error:", err);
     }
   };
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={allProducts}/>
+      <Header
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
+        updateQuantity={updateQuantity}
+        user={user}
+        products={allProducts}
+      />
 
-      {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">
         <Link to="/">Home</Link> &gt;
         <Link to="/collections">Collections</Link> &gt;
@@ -221,31 +228,46 @@ const AcrylicMaterialPage = () => {
       <p className="material-description">
         Discover our beautiful collection of acrylic products, crafted with elegance and durability.
       </p>
+
       {isMobile && (
         <div className="mobile-controls">
-          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>Filters</button>
-          <button className="filter-btn filter2" onClick={resetFilters}>Reset Filters</button>
+          <button className="filter-btn" onClick={() => setIsModalOpen(true)}>
+            Filters
+          </button>
+          <button className="filter-btn filter2" onClick={resetFilters}>
+            Reset Filters
+          </button>
         </div>
       )}
 
-      <FilterComponent2 
-        key={filtersKey} 
-        filters={filters} 
-        onFilterChange={handleFilterChange} 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <FilterComponent2
+        key={filtersKey}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         selectedFilters={selectedFilters}
       />
 
-
       <div className="product">
         <div className="sidebar">
-          <FilterComponent filters={filters} onFilterChange={handleFilterChange}  selectedFilters={selectedFilters}/>
-          <button className="filter-btn" onClick={resetFilters}>Reset Filters</button>
+          <FilterComponent
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            selectedFilters={selectedFilters}
+          />
+          <button className="filter-btn" onClick={resetFilters}>
+            Reset Filters
+          </button>
         </div>
         <div className="contents">
           {filteredProducts.length > 0 ? (
-            <ProductComponent products={filteredProducts} addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen}/>
+            <ProductComponent
+              products={filteredProducts}
+              addToCart={addToCart}
+              isAuthenticated={isAuthenticated}
+              setIsLoginModalOpen={setIsLoginModalOpen}
+            />
           ) : (
             <p className="no-products">No products match your selected filters.</p>
           )}
@@ -262,7 +284,7 @@ const AcrylicMaterialPage = () => {
           onLogin={() => {
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
-            setIsLoginModalOpen(false); // Close modal after login
+            setIsLoginModalOpen(false);
             window.location.reload();
           }}
         />

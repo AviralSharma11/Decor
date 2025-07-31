@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/ProductComponent.css";
 
-const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModalOpen }) => {
+const ProductComponent = ({ isAuthenticated, setIsLoginModalOpen, addToCart }) => {
+  const [products, setProducts] = useState([]);
   const [addedToCart, setAddedToCart] = useState({});
-  const [currentImage, setCurrentImage] = useState(
-    products.reduce((acc, product) => {
-      acc[product.id] = product.image[0];
-      return acc;
-    }, {})
-  );
+  const [currentImage, setCurrentImage] = useState({});
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
+        setProducts(data);
+
+        // Initialize image states
+        const imageMap = {};
+        data.forEach(product => {
+          imageMap[product.id] = product.image[0];
+        });
+        setCurrentImage(imageMap);
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
@@ -18,7 +35,7 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
     }
 
     addToCart(product);
-    setAddedToCart((prev) => ({ ...prev, [product.id]: true }));
+    setAddedToCart(prev => ({ ...prev, [product.id]: true }));
 
     const email = localStorage.getItem("userEmail");
 
@@ -45,7 +62,7 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
     }
 
     setTimeout(() => {
-      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
+      setAddedToCart(prev => ({ ...prev, [product.id]: false }));
     }, 3000);
   };
 
@@ -54,78 +71,76 @@ const ProductComponent = ({ products, addToCart, isAuthenticated, setIsLoginModa
       {[...products]
         .sort((a, b) => (a.comingSoon === b.comingSoon ? 0 : a.comingSoon ? 1 : -1))
         .map((product) => {
+          const isComingSoon = product.comingSoon;
 
-        const isComingSoon = product.comingSoon;
-
-        return (
-          <div key={product.id} className="product-card">
-            {isComingSoon ? (
-              <>
-                <div className="product-image">
-                  <img src={product.image?.[0]} alt={product.name} />
-                  {/* <div className="coming-soon-overlay">Coming Soon</div> */}
-                </div>
-                <div className="product-detail">
-                  <h3 className="product-titles">{product.name}</h3>
-                  <div className="product-prices coming-soon-text">Launching Soon</div>
-                </div>
-                <button className="addtocart disabled" disabled>
-                  Coming Soon
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")}
-                  state={{ product }}
-                  style={{ textDecoration: "none" }}
-                >
-                  <div
-                    className="product-image"
-                    onMouseEnter={() =>
-                      setCurrentImage((prev) => ({
-                        ...prev,
-                        [product.id]: product.image[1],
-                      }))
-                    }
-                    onMouseLeave={() =>
-                      setCurrentImage((prev) => ({
-                        ...prev,
-                        [product.id]: product.image[0],
-                      }))
-                    }
-                  >
-                    <img src={currentImage[product.id]} alt={product.name} />
-                  </div>
-                  <div className="product-rating">
-                    {"★".repeat(Math.floor(product.rating))}
-                    {"☆".repeat(5 - Math.floor(product.rating))}
-                    <span className="reviews">({product.reviews})</span>
+          return (
+            <div key={product.id} className="product-card">
+              {isComingSoon ? (
+                <>
+                  <div className="product-image">
+                    <img src={product.image?.[0]} alt={product.name} />
                   </div>
                   <div className="product-detail">
-                    <div className="product-prices">
-                      <span className="discounted-prices">
-                        ₹{product.discountedPrice.toLocaleString()}
-                      </span>
-                      <span className="original-prices">
-                        ₹{product.originalPrice.toLocaleString()}
-                      </span>
-                    </div>
                     <h3 className="product-titles">{product.name}</h3>
+                    <div className="product-prices coming-soon-text">Launching Soon</div>
                   </div>
-                </Link>
-                <button
-                  className={`addtocart ${addedToCart[product.id] ? "added" : ""}`}
-                  onClick={() => handleAddToCart(product)}
-                  disabled={addedToCart[product.id]}
-                >
-                  {addedToCart[product.id] ? "Added to Cart" : "Add to Cart"}
-                </button>
-              </>
-            )}
-          </div>
-        );
-      })}
+                  <button className="addtocart disabled" disabled>
+                    Coming Soon
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to={`/product/${product.name}`.toLowerCase().replace(/\s+/g, "-")}
+                    state={{ product }}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div
+                      className="product-image"
+                      onMouseEnter={() =>
+                        setCurrentImage((prev) => ({
+                          ...prev,
+                          [product.id]: product.image?.[1] || product.image?.[0],
+                        }))
+                      }
+                      onMouseLeave={() =>
+                        setCurrentImage((prev) => ({
+                          ...prev,
+                          [product.id]: product.image?.[0],
+                        }))
+                      }
+                    >
+                      <img src={currentImage[product.id]} alt={product.name} />
+                    </div>
+                    <div className="product-rating">
+                      {"★".repeat(Math.floor(product.rating))}
+                      {"☆".repeat(5 - Math.floor(product.rating))}
+                      <span className="reviews">({product.reviews})</span>
+                    </div>
+                    <div className="product-detail">
+                      <div className="product-prices">
+                        <span className="discounted-prices">
+                          ₹{product.discountedPrice.toLocaleString()}
+                        </span>
+                        <span className="original-prices">
+                          ₹{product.originalPrice.toLocaleString()}
+                        </span>
+                      </div>
+                      <h3 className="product-titles">{product.name}</h3>
+                    </div>
+                  </Link>
+                  <button
+                    className={`addtocart ${addedToCart[product.id] ? "added" : ""}`}
+                    onClick={() => handleAddToCart(product)}
+                    disabled={addedToCart[product.id]}
+                  >
+                    {addedToCart[product.id] ? "Added to Cart" : "Add to Cart"}
+                  </button>
+                </>
+              )}
+            </div>
+          );
+        })}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Styles/Modal.css";
 
@@ -11,6 +12,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem("savedCart")) || []);
   const [resendTimer, setResendTimer] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("savedCart"));
@@ -42,7 +44,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/send-email-otp", { email: cleanedEmail });
+      await axios.post("http://localhost:5000/api/send-email-otp", { email: cleanedEmail });
       setLoading(false);
       setOtpSent(true);
       setResendTimer(30);
@@ -53,7 +55,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
   };
 
- const handleVerifyOtp = async (e) => {
+const handleVerifyOtp = async (e) => {
   e.preventDefault();
 
   if (!otpSent) {
@@ -65,20 +67,20 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   setError("");
 
   try {
-    const response = await axios.post("http://localhost:5000/verify-email-otp", {
+    const response = await axios.post("http://localhost:5000/api/verify-email-otp", {
       email: cleanedEmail,
       otp,
     });
 
     console.log("OTP verified, response:", response.data);
 
-    // Set session state early
+    // Set session state
     localStorage.setItem("userEmail", cleanedEmail);
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("isAuthenticated", "true");
     setUserEmail(cleanedEmail);
 
-    // Reset inputs and state
+    // Clear inputs and reset OTP state
     setOtpSent(false);
     setEmail("");
     setOtp("");
@@ -86,8 +88,11 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     localStorage.removeItem("savedCart");
     setCart([]);
 
+    // Fetch cart data from backend
     const cartResponse = await axios.get(`http://localhost:5000/api/cart/${cleanedEmail}`);
     const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
+    console.log("Cart fetch response:", cartResponse.data);
+
 
     if (cartData.length > 0) {
       const updatedCart = cartData.map((item) => ({
@@ -107,9 +112,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     }
 
     onClose();
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+
+    // Redirect without reload
+    if (cleanedEmail === "aviral0201sharma@gmail.com") {
+      navigate("/admin-dashboard");
+    } else {
+      navigate("/"); // or navigate to the shop/home page
+    }
+
   } catch (err) {
     console.error("Error verifying OTP:", err);
     setError("Invalid OTP. Please try again.");

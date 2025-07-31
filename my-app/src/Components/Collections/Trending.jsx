@@ -8,13 +8,14 @@ import SocialMediaBadges from "../SocialMediaBadges";
 import ProductComponent from "../ProductComponent";
 import FilterComponent from "../FilterComponent";
 import FilterComponent2 from "../FilterComponent2";
-import { filters as initialFilters, products as initialProducts  } from "../../List/product";
+import {filters as initialFilters} from "../../List/filter";
 import "../../Collections.css";
 import LoginModal from "../LoginModal";
 
 export default function Trending(){
     const [filters] = useState(initialFilters);
-    const [products] = useState(initialProducts);
+    const [allProducts, setAllProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [filtersKey, setFiltersKey] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
       const [cart, setCart] = useState(() => {
@@ -39,6 +40,17 @@ export default function Trending(){
     });
      const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     
+      // Fetch products from backend
+       useEffect(() => {
+         fetch("http://localhost:5000/api/products")
+           .then((res) => res.json())
+           .then((data) => {
+             setAllProducts(data);
+             setProducts(data); // Start with full list
+           })
+           .catch((err) => console.error("Error fetching products:", err));
+       }, []);
+
       useEffect(() => {
         const handleResize = () => {
           setIsMobile(window.innerWidth <= 768);
@@ -73,7 +85,7 @@ export default function Trending(){
             }, []);
 
       const applyFilters = () => {
-        return products.filter((product) => {
+        return allProducts.filter((product) => {
           // Filter by Type
           if (selectedFilters.Type.length > 0) {
             if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {

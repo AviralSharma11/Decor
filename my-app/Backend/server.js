@@ -8,7 +8,7 @@ const path = require("path");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const Razorpay = require("razorpay");
-
+const ExcelJS = require("exceljs");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -35,6 +35,7 @@ db.connect((err) => {
     }
 });
 
+
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -49,7 +50,7 @@ const transporter = nodemailer.createTransport({
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // Send OTP via Email
-app.post("/send-email-otp", (req, res) => {
+app.post("/api/send-email-otp", (req, res) => {
     const { email } = req.body;
     if (!email) {
         return res.status(400).json({ message: "Email is required" });
@@ -86,7 +87,7 @@ app.post("/send-email-otp", (req, res) => {
 });
 
 // Verify OTP
-app.post("/verify-email-otp", (req, res) => {
+app.post("/api/verify-email-otp", (req, res) => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
@@ -124,7 +125,7 @@ app.post("/verify-email-otp", (req, res) => {
 });
 
 //  Add items to cart
-app.post("/cart", (req, res) => {
+app.post("/api/cart", (req, res) => {
     const { email, product } = req.body;
 
     console.log(`Received request to add to cart. Email: ${email}, Product:`, product);
@@ -136,7 +137,8 @@ app.post("/cart", (req, res) => {
 
     const { id, name, price } = product;
 
-    const image = product.image || '';
+    const image = JSON.stringify(product.image || []);
+
 
     const quantity = 1; // Default to 1 for new products
 
@@ -159,7 +161,7 @@ app.post("/cart", (req, res) => {
 });
 
 //  Fetch cart items
-app.get("/cart/:email", (req, res) => {
+app.get("/api/cart/:email", (req, res) => {
     const email = req.params.email;
 
     if (!email) {
@@ -177,6 +179,18 @@ app.get("/cart/:email", (req, res) => {
                 return res.status(500).json({ message: "Database error" });
             }
 
+              results.forEach(item => {
+                try {
+                  item.image = JSON.parse(item.image);
+                  if (!Array.isArray(item.image)) {
+                    item.image = [item.image];
+                  }
+                } catch (e) {
+                  item.image = [item.image]; // fallback for malformed data
+                }
+              });
+
+
             console.log("Cart data retrieved:", results);
 
             res.json(results);
@@ -185,7 +199,7 @@ app.get("/cart/:email", (req, res) => {
 });
 
 // Remove item from cart
-app.post("/cart/remove", (req, res) => {
+app.post("/api/cart/remove", (req, res) => {
     const { email, productId } = req.body;
 
     if (!email || !productId) {
@@ -206,7 +220,7 @@ app.post("/cart/remove", (req, res) => {
     );
 });
 
-app.post("/cart/update", (req, res) => {
+app.post("/api/cart/update", (req, res) => {
     const { email, productId, quantity } = req.body;
 
     if (!email || !productId || quantity === undefined) {
@@ -226,7 +240,7 @@ app.post("/cart/update", (req, res) => {
     );
 });
 
-app.post('/contact', (req, res) => {
+app.post('/api/contact', (req, res) => {
     const { fullName, email, subject, message } = req.body;
 
     if (!fullName || !email || !subject || !message) {
@@ -333,12 +347,12 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-app.get("/razorpay-key", (req, res) => {
+app.get("/api/razorpay-key", (req, res) => {
     res.json({ key: process.env.RAZORPAY_KEY_ID });
   });
 
 
-app.post("/create-order", async (req, res) => {
+app.post("/api/create-order", async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
@@ -358,7 +372,7 @@ app.post("/create-order", async (req, res) => {
 });
 
 // Save Order 
-app.post("/save-order", (req, res) => {
+app.post("/api/save-order", (req, res) => {
   const {
     firstName,
     lastName,
@@ -408,7 +422,7 @@ app.post("/save-order", (req, res) => {
 });
 
 // Get
-app.get("/get-orders", (req, res) => {
+app.get("/api/get-orders", (req, res) => {
   db.query("SELECT * FROM orders", (err, results) => {
     if (err) {
       console.error("Error fetching orders:", err);
@@ -443,7 +457,7 @@ const ensureWorkbook = () => {
 };
 
 
-app.post("/save-order", (req, res) => {
+app.post("/api/save-order", (req, res) => {
   ensureWorkbook();
 
   const {
@@ -480,7 +494,151 @@ app.post("/save-order", (req, res) => {
   res.status(200).json({ message: "Order saved successfully to Excel." });
 });
 
+//Admin Dashboard
+// API: Get all users
+app.get("/api/users", (req, res) => {
+  const sql = "SELECT id, email FROM users";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ message: "Failed to fetch users" });
+    }
+    res.json(results);
+  });
+});
 
+// API: Export users to Excel
+app.get("/api/users/export", async (req, res) => {
+  const sql = "SELECT id, email FROM users";
+
+  db.query(sql, async (err, results) => {
+    if (err) {
+      console.error("Error fetching users for export:", err);
+      return res.status(500).send("Failed to export users");
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Users");
+
+    worksheet.columns = [
+      { header: "ID", key: "id", width: 10 },
+      { header: "Email", key: "email", width: 30 },
+    ];
+
+    worksheet.addRows(results);
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  });
+});
+
+// GET all orders
+app.get("/api/orders", (req, res) => {
+  const query = "SELECT * FROM orders";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching orders:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.json(results); // <--- return just the array, not { orders: results }
+  });
+});
+
+
+// Export to Excel
+app.get("/api/orders/export", async (req, res) => {
+  const query = `
+    SELECT o.id, o.user_email, p.name AS product, o.quantity, o.total, o.order_date
+    FROM orders o
+    JOIN products p ON o.product_id = p.id
+    ORDER BY o.order_date DESC
+  `;
+
+  db.query(query, async (err, orders) => {
+    if (err) {
+      console.error("Error exporting orders:", err);
+      return res.status(500).send("Error exporting orders.");
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Orders");
+
+    worksheet.columns = [
+      { header: "ID", key: "id", width: 10 },
+      { header: "User Email", key: "user_email", width: 30 },
+      { header: "Product", key: "product", width: 25 },
+      { header: "Quantity", key: "quantity", width: 10 },
+      { header: "Total", key: "total", width: 15 },
+      { header: "Order Date", key: "order_date", width: 20 },
+    ];
+
+    orders.forEach((order) => worksheet.addRow(order));
+
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  });
+});
+
+// Add product
+app.post('/api/products', (req, res) => {
+  const p = req.body;
+  const query = `INSERT INTO products
+    (name, rating, reviews, originalPrice, discountedPrice, image, material, style, trending,
+     customisable, giftingguide, type, theme, gift, text1, photo, size, luxury, description, personalisedJewellary, comingSoon, instruction, wallart)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(query, [
+    p.name, p.rating, p.reviews, p.originalPrice, p.discountedPrice, JSON.stringify(p.image),
+    p.material, p.style, p.trending, p.customisable, JSON.stringify(p.giftingguide),
+    JSON.stringify(p.type), JSON.stringify(p.theme), p.gift, p.text1,
+    p.photo, p.size, p.luxury, p.description, p.personalisedjewellary, p.comingSoon, JSON.stringify(p.instruction), p.wallart
+  ], (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Product added successfully!' });
+  });
+});
+
+// Get all products
+app.get('/api/products', (req, res) => {
+  db.query('SELECT * FROM products', (err, results) => {
+    if (err) return res.status(500).send(err);
+
+    const safeParse = (value) => {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value; // fallback: return as-is if not JSON
+      }
+    };
+
+    const products = results.map(row => ({
+      ...row,
+      image: safeParse(row.image),
+      type: safeParse(row.type),
+      theme: safeParse(row.theme),
+      giftingguide: safeParse(row.giftingguide),
+      instruction: safeParse(row.instruction)
+    }));
+
+    res.send(products);
+  });
+});
+
+
+
+// Delete product
+app.delete('/api/products/:id', (req, res) => {
+  db.query('DELETE FROM products WHERE id = ?', [req.params.id], (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send({ message: 'Product deleted successfully!' });
+  });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

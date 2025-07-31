@@ -2,7 +2,7 @@ import React, { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/MaterialPage.css"; 
 import ProductComponent from "../ProductComponent";
-import { filters as initialFilters, products as allProducts } from "../../List/product"; 
+import {filters as initialFilters} from "../../List/filter";
 import Header from "../Header";
 import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
@@ -11,12 +11,7 @@ import SocialMediaBadges from "../SocialMediaBadges";
 import LoginModal from "../LoginModal";
 
 const Safari = () => {
-  // Filter only wood products
-  const safariProducts = allProducts.filter(
-    (product) => Array.isArray(product.theme) && product.theme.includes("Safari")
-  );
-
-  // Use acrylicProducts as initial products state
+  const [products , setProducts] = useState([]);
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,6 +34,12 @@ const Safari = () => {
                 setUser({ email: storedEmail });
               }
             }, []);
+              useEffect(() => {
+                fetch("http://localhost:5000/api/products/theme/Safari")
+                  .then((res) => res.json())
+                  .then((data) => setProducts(data))
+                  .catch((err) => console.error("Failed to fetch products:", err));
+              }, []);
   useEffect(() => {
     if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -75,7 +76,7 @@ const Safari = () => {
 
   // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
-    return safariProducts.filter((product) => {
+    return products.filter((product) => {
       // Filter by Type
       if (selectedFilters.Type.length > 0) {
         if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
@@ -210,7 +211,7 @@ const Safari = () => {
 
   return (
     <div className="material-page">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={allProducts}/>
+      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
 
       {/* Breadcrumb Navigation */}
       <nav className="breadcrumb">

@@ -7,25 +7,26 @@ import SocialMediaBadges from "./Components/SocialMediaBadges";
 import Footer from "./Components/Footer";
 import "./Home.css";
 import LoginModal from "./Components/LoginModal";
-import { products } from "./List/product";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom"; 
 
 function Home() {
+  const navigate = useNavigate();
+
   const [cart, setCart] = useState(() => {
     try {
-        const savedCart = localStorage.getItem("cart");
-        return savedCart ? JSON.parse(savedCart) : [];
+      const savedCart = localStorage.getItem("cart");
+      return savedCart ? JSON.parse(savedCart) : [];
     } catch (error) {
-        console.error("Failed to load cart from localStorage:", error);
-        return [];
+      console.error("Failed to load cart from localStorage:", error);
+      return [];
     }
-});
+  });
 
-const [user, setUser] = useState(() => {
-  const savedUser = localStorage.getItem("user");
-  return savedUser ? JSON.parse(savedUser) : null;
-});
-
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -33,108 +34,72 @@ const [user, setUser] = useState(() => {
     message: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const response = await fetch("http://localhost:5000/api/feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Message Sent!",
-          text: "Thank You For Your Time",
-          confirmButtonColor: "#3085d6",
-        });
-  
-        setFormData({
-          fullName: "",
-          email: "",
-          message: "",
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error!",
-          text: data.error || "Failed to send message.",
-          confirmButtonColor: "#d33",
-        });
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Submission Failed",
-        text: "There was an issue submitting your message. Please try again later.",
-        confirmButtonColor: "#d33",
-      });
-    }
-  };
-
-
+  const [products, setProducts] = useState([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("isAuthenticated") === "true";
   });
 
-  //  Fetch cart from MySQL on login and sync state + localStorage
+  //  Login handler
   const handleLogin = async (email) => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", "true");
     localStorage.setItem("userEmail", email);
-  
-    try {
-        const response = await fetch(`http://localhost:5000/api/cart/${email}`);
-        if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
-        
-        const cartData = await response.json();
-  
-        if (Array.isArray(cartData) && cartData.length > 0) {
-            console.log("Fetched cart data:", cartData);
-            setCart([...cartData]);
-            localStorage.setItem("savedCart", JSON.stringify(cartData));
-        } else {
-            console.warn("Empty or invalid cart data:", cartData);
-            setCart([]);
-        }
+    setUser({ email });
 
-        // Set user state after successful login
-        setUser({ email });
+    // Redirect if admin
+    if (email === "admin@example.com") {
+      navigate("/admin-dashboard");
+      return;
+    }
+
+    // Fetch cart after login
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${email}`);
+      const cartData = await response.json();
+
+      if (Array.isArray(cartData)) {
+        //  Parse image if it's a JSON string
+        const fixedCart = cartData.map((item) => {
+          try {
+            item.image = JSON.parse(item.image);
+          } catch {
+            item.image = [item.image]; // fallback
+          }
+          return item;
+        });
+
+        setCart(fixedCart);
+        localStorage.setItem("cart", JSON.stringify(fixedCart));
+      } else {
+        console.warn("Invalid cart format", cartData);
+        setCart([]);
+      }
     } catch (error) {
-        console.error("Failed to fetch cart:", error.message);
-        alert("Failed to fetch cart data. Please try again.");
+      console.error("Error fetching cart:", error);
     }
-    
+
     setIsLoginModalOpen(false);
-    window.location.reload();
   };
-  
-  
+
+  //  Fetch products
   useEffect(() => {
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedEmail) {
-      setUser({ email: storedEmail });
-    }
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/products");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
   }, []);
-  
-  // Save cart to MySQL when it updates
+
+  //  Sync cart to backend
   useEffect(() => {
     if (isAuthenticated && cart.length > 0) {
       const email = localStorage.getItem("userEmail");
-  
       cart.forEach(async (product) => {
         const payload = {
           email,
@@ -146,133 +111,124 @@ const [user, setUser] = useState(() => {
             image: product.image || "",
           },
         };
-  
-        console.log("Sending product to server:", JSON.stringify(payload, null, 2));
-  
         try {
-          const res = await fetch("http://localhost:5000/api/cart", {
+          await fetch("http://localhost:5000/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-  
-          if (!res.ok) {
-            const data = await res.json();
-            console.error(`Failed to add product: ${data.message}`);
-          } else {
-            console.log("Product added to cart successfully");
-          }
         } catch (err) {
           console.error("Failed to save product to cart:", err);
         }
       });
     }
   }, [cart, isAuthenticated]);
-  
 
+  //  Cart handlers
   const addToCart = (product) => {
     if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
+      setIsLoginModalOpen(true);
       return;
     }
+
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
-  
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
+      const existing = prevCart.find((item) => item.id === product.id);
+      let updated;
+      if (existing) {
+        updated = prevCart.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        updated = [...prevCart, { ...product, quantity: 1 }];
       }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
+      localStorage.setItem("cart", JSON.stringify(updated));
+      return updated;
     });
   };
-  
 
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
-  
     try {
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch("http://localhost:5000/api/cart/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'), // Assuming email is stored in localStorage
+          email: localStorage.getItem("userEmail"),
           productId,
         }),
       });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        setCart((prevCart) => {
-          const updatedCart = prevCart.filter((item) => item.id !== productId);
-          localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
-          return updatedCart;
-        });
-        console.log(data.message);
+      const data = await res.json();
+      if (res.ok) {
+        const updated = cart.filter((item) => item.id !== productId);
+        setCart(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
       } else {
-        console.error('Failed to remove from cart:', data.message);
+        console.error(data.message);
       }
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (err) {
+      console.error("Error removing from cart:", err);
     }
   };
-  
 
   const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return; // Prevent setting quantity to less than 1
-  
+    if (newQuantity < 1) return;
     try {
-      const response = await fetch('http://localhost:5000/api/cart/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch("http://localhost:5000/api/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'),
+          email: localStorage.getItem("userEmail"),
           productId,
           quantity: newQuantity,
         }),
       });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to update quantity: ${response.statusText}`);
+      if (res.ok) {
+        setCart((prev) =>
+          prev.map((item) =>
+            item.id === productId ? { ...item, quantity: newQuantity } : item
+          )
+        );
       }
-  
-      const data = await response.json();
-      console.log(data.message);
-  
-      // Update cart state if successful
-      setCart((prevCart) => 
-        prevCart.map((item) =>
-          item.id === productId ? { ...item, quantity: newQuantity } : item
-        )
-      );
-    } catch (error) {
-      console.error("Error updating quantity:", error);
+    } catch (err) {
+      console.error("Error updating quantity:", err);
     }
   };
-  
 
+  //  Feedback form
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:5000/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        Swal.fire("Message Sent!", "Thank you for your time", "success");
+        setFormData({ fullName: "", email: "", message: "" });
+      } else {
+        Swal.fire("Error!", data.error || "Submission failed", "error");
+      }
+    } catch (err) {
+      Swal.fire("Submission Failed", "Try again later.", "error");
+    }
+  };
+
+  //  Parallax
   useEffect(() => {
     const handleScroll = () => {
-      const texts = document.querySelectorAll(".parallax-text, .parallax-subtext");
-      texts.forEach((text) => {
-        const textPosition = text.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
-        if (textPosition < screenHeight * 0.8) {
+      document.querySelectorAll(".parallax-text, .parallax-subtext").forEach((text) => {
+        if (text.getBoundingClientRect().top < window.innerHeight * 0.8) {
           text.classList.add("show");
         }
       });
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -295,54 +251,24 @@ const [user, setUser] = useState(() => {
       </div>
       <div className="parallax2"></div>
       <div className="content-section">
-      <BestSeller 
-        addToCart={addToCart} 
-        isAuthenticated={isAuthenticated} 
-        setIsLoginModalOpen={setIsLoginModalOpen} 
-      />
+        <BestSeller addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen} />
       </div>
       <div className="parallax3">
-      <div className="feedback-form">
-        <h2> FEEDBACK</h2>
-        <form onSubmit={handleSubmit} className="form">
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <textarea
-            name="message"
-            placeholder="Message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit" className="send-btn">SEND</button>
-        </form>
-      </div>  
+        <div className="feedback-form">
+          <h2> FEEDBACK</h2>
+          <form onSubmit={handleSubmit} className="form">
+            <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required />
+            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+            <textarea name="message" placeholder="Message" value={formData.message} onChange={handleChange} required />
+            <button type="submit" className="send-btn">SEND</button>
+          </form>
+        </div>
       </div>
       <div className="content-section">
         <SocialMediaBadges />
-        
       </div>
-
       {isLoginModalOpen && (
-        <LoginModal
-          isOpen={isLoginModalOpen}
-          onClose={() => setIsLoginModalOpen(false)}
-          onLogin={handleLogin} // Pass `handleLogin` correctly
-        />
+        <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
       )}
       <Footer />
     </div>

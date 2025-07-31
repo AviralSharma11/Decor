@@ -8,13 +8,14 @@ import SocialMediaBadges from "../SocialMediaBadges";
 import ProductComponent from "../ProductComponent";
 import FilterComponent from "../FilterComponent";
 import FilterComponent2 from "../FilterComponent2";
-import { filters as initialFilters, products as initialProducts  } from "../../List/product";
+import {filters as initialFilters} from "../../List/filter";
 import "../../Collections.css";
 import LoginModal from "../LoginModal";
 
 export default function Style(){
+    const [allProducts, setAllProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [filters] = useState(initialFilters);
-    const [products] = useState(initialProducts);
     const [filtersKey, setFiltersKey] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cart, setCart] = useState(() => {
@@ -30,24 +31,35 @@ export default function Style(){
           return savedUser ? JSON.parse(savedUser) : null;
         });
         
-          useEffect(() => {
-            const storedEmail = localStorage.getItem("userEmail");
-            if (storedEmail) {
-              setUser({ email: storedEmail });
-            }
-          }, []);
-
-  useEffect(() => {
-    if (cart.length > 0) {  // Prevent overwriting with an empty array on first load
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
     const [selectedFilters, setSelectedFilters] = useState({
         Type: [],
         Color: [],
         Price: [],
     });
      const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+      // Fetch products from backend
+       useEffect(() => {
+         fetch("http://localhost:5000/api/products")
+           .then((res) => res.json())
+           .then((data) => {
+             setAllProducts(data);
+             setProducts(data); // Start with full list
+           })
+           .catch((err) => console.error("Error fetching products:", err));
+       }, []);
+     
+       useEffect(() => {
+         if (cart.length > 0) {
+           localStorage.setItem("cart", JSON.stringify(cart));
+         }
+       }, [cart]);
+     
+       useEffect(() => {
+         const storedEmail = localStorage.getItem("userEmail");
+         if (storedEmail) setUser({ email: storedEmail });
+       }, []);
+     
     
       useEffect(() => {
         const handleResize = () => {
@@ -72,7 +84,7 @@ export default function Style(){
       };
 
       const applyFilters = () => {
-        return products.filter((product) => {
+        return allProducts.filter((product) => {
           // Filter by Type
           if (selectedFilters.Type.length > 0) {
             if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {

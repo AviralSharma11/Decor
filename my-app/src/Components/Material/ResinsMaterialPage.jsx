@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../Styles/MaterialPage.css"; 
 import ProductComponent from "../ProductComponent";
-import { filters as initialFilters, products as allProducts } from "../../List/product"; 
+import {filters as initialFilters} from "../../List/filter";
 import Header from "../Header";
 import Footer from "../Footer";
 import FilterComponent from "../FilterComponent";
@@ -11,10 +11,6 @@ import SocialMediaBadges from "../SocialMediaBadges";
 import LoginModal from "../LoginModal";
 
 const ResinsMaterialPage = () => {
-  // Filter only wood products
-  const resinsProducts = allProducts.filter((product) => product.material === "Resins");
-
-  // Use resinsProducts as initial products state
   const [filters] = useState(initialFilters);
   const [filtersKey, setFiltersKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +18,7 @@ const ResinsMaterialPage = () => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  const [allProducts, setAllProducts] = useState([]);
       const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
       const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return localStorage.getItem("isAuthenticated") === "true"; // Check login status
@@ -42,6 +39,20 @@ const ResinsMaterialPage = () => {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
+
+    useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/api/products");
+          const data = await res.json();
+          setAllProducts(data);
+        } catch (err) {
+          console.error("Failed to fetch products", err);
+        }
+      };
+      fetchProducts();
+    }, []);
+
   const [selectedFilters, setSelectedFilters] = useState({
     Type: [],
     Color: [],
@@ -73,10 +84,14 @@ const ResinsMaterialPage = () => {
 
   // Apply selected filters (now only applies to wood products)
   const applyFilters = () => {
-    return resinsProducts.filter((product) => {
-      // Filter by Type
+    const resinProducts = allProducts.filter(
+      (product) => product.material && product.material.toLowerCase() === "resin"
+    );
+
+    return resinProducts.filter((product) => {
+      // Type
       if (selectedFilters.Type.length > 0) {
-        if (!product.type || !product.type.some(type => selectedFilters.Type.includes(type))) {
+        if (!product.type || !product.type.some((t) => selectedFilters.Type.includes(t))) {
           return false;
         }
       }

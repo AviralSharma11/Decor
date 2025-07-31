@@ -1,0 +1,28 @@
+.admin-dashboard {
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #F9F4EE; /* Light cream */
+}
+
+.admin-header {
+  background-color: #DDBEA9; /* Soft blush pink */
+  color: #3E3E3E; /* Dark text */
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.admin-body {
+  display: flex;
+  flex: 1;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+  background-color: #FDF8F3; /* Subtle contrast background */
+  color: #3E3E3E;
+}

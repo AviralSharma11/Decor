@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from './Home';
+import AdminDashboard from './AdminDashboard';
 import Collections from "./Collections";
 import MaterialPage from "./Components/MaterialPage";
 import Trending from "./Components/Collections/Trending";
@@ -12,7 +13,6 @@ import AcrylicMaterialPage from "./Components/Material/AcrylicMaterialPage";
 import ResinsMaterialPage from "./Components/Material/ResinsMaterialPage";
 import ProductDetailPage from "./Components/ProductDetailPage";
 import ProductComponent from "./Components/ProductComponent";
-import { products } from "./List/product";
 import CustomisedMaterialPage from "./Components/Collections/CustomisedMaterialPage";
 import HIMPage from "./Components/HomePage/GiftingGuide/HIMPage";
 import HERPage from "./Components/HomePage/GiftingGuide/HERPage";
@@ -48,6 +48,11 @@ import Traditional from "./Components/Style/Traditional";
 import Bohemian from "./Components/Style/Bohemian";
 import Vintage from "./Components/Style/Vintage";
 import Modern from "./Components/Style/Modern";
+import Users from "./Components/AdminDashboard/Users";
+import Orders from "./Components/AdminDashboard/Orders";
+import Settings from "./Components/AdminDashboard/Settings";
+import Products from "./Components/AdminDashboard/Products";
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 function App() {
   return (
@@ -57,6 +62,23 @@ function App() {
         <Routes>
           {/* Default Route */}
           <Route path="/" element={<Home />} />
+
+          {/* Admin Dashboard */}
+         <Route
+          path="/admin-dashboard/*"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        >
+          <Route path="products" element={<Products />} />
+          <Route path="users" element={<Users />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+
+
 
           {/* Collections */}
           <Route path="/collections" element={<Collections />} />
@@ -99,7 +121,7 @@ function App() {
 
           {/* Product Pages */}
           <Route path="/product/:productName" element={<ProductDetailPage />} />
-          <Route path="/products" element={<ProductComponent products={products} addToCart={() => {}} />} />
+          <Route path="/products" element={<ProductComponent addToCart={() => {}} />} />
 
           {/* Footer Links */}
           <Route path="/shipping" element={<Shipping/>}/>
