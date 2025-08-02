@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../Styles/AdminDashboard/Product.css';
 import axios from 'axios';
-import AdminSidebar from '../../AdminSidebar';
 
 const initialProduct = {
   name: '',
@@ -16,12 +15,17 @@ const initialProduct = {
   customisable: false,
   giftingguide: '',
   type: [],
+  theme: [],
   gift: false,
-  tags: [],
+  text1: false,
   photo: false,
   size: '',
   luxury: false,
   description: '',
+  personalisedJewellary: false,
+  comingSoon: false,
+  instruction: [],
+  wallart: false,
 };
 
 export default function Products() {
@@ -61,8 +65,6 @@ export default function Products() {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <AdminSidebar />
     <div className="admin-container">
       <h2 className="section-title">Add New Product</h2>
       <div className="form-grid">
@@ -77,14 +79,19 @@ export default function Products() {
         <input className="input" name="trending" placeholder="Trending" value={product.trending} onChange={handleChange} />
         <input className="input" name="giftingguide" placeholder="Gifting Guide" value={product.giftingguide} onChange={handleChange} />
         <input className="input" placeholder="Type (comma separated)" onChange={(e) => handleArrayChange(e, 'type')} />
-        <input className="input" placeholder="Tags (comma separated)" onChange={(e) => handleArrayChange(e, 'tags')} />
+        <input className="input" placeholder="Theme (comma separated)" onChange={(e) => handleArrayChange(e, 'theme')} />
         <input className="input" name="size" placeholder="Size" value={product.size} onChange={handleChange} />
         <textarea className="textarea" name="description" placeholder="Description" value={product.description} onChange={handleChange} />
+        <textarea className="textarea" name="instructions" placeholder='Instructions' value={product.instruction} onChange={handleChange} />
         <div className="checkbox-group">
           <label><input type="checkbox" name="customisable" checked={product.customisable} onChange={handleChange} /> Customisable</label>
           <label><input type="checkbox" name="gift" checked={product.gift} onChange={handleChange} /> Gift</label>
+          <label><input type="checkbox" name="text1" checked={product.text1} onChange={handleChange} /> Text1</label>
           <label><input type="checkbox" name="photo" checked={product.photo} onChange={handleChange} /> Photo</label>
           <label><input type="checkbox" name="luxury" checked={product.luxury} onChange={handleChange} /> Luxury</label>
+          <label><input type="checkbox" name="personalised-jewellary" checked={product.personalisedJewellary} onChange={handleChange} /> Personalised Jewellary</label>
+          <label><input type="checkbox" name="comingSoon" checked={product.comingSoon} onChange={handleChange} /> Coming Soon</label>
+          <label><input type="checkbox" name="wall-art" checked={product.wallart} onChange={handleChange} /> Wall Art</label>
         </div>
         <button className="btn" onClick={handleAddProduct}>Add Product</button>
       </div>
@@ -98,7 +105,6 @@ export default function Products() {
           </li>
         ))}
       </ul>
-    </div>
     </div>
   );
 }

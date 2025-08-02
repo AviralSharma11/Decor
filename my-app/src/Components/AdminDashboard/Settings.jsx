@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/AdminDashboard/Settings.css";
-import AdminSidebar from "../../AdminSidebar";
 
 export default function Settings() {
   const [form, setForm] = useState({
@@ -37,8 +36,7 @@ export default function Settings() {
   };
 
   return (
-     <div style={{ display: 'flex' }}>
-          <AdminSidebar />
+     
     <div className="settings-container">
       <h2>Admin Settings</h2>
       <form className="settings-form" onSubmit={handleSubmit}>
@@ -85,7 +83,6 @@ export default function Settings() {
         <button className="sbutton" type="submit">Save Settings</button>
         {status && <p className="status">{status}</p>}
       </form>
-    </div>
     </div>
   );
 }

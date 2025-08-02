@@ -640,5 +640,47 @@ app.delete('/api/products/:id', (req, res) => {
   });
 });
 
+app.get('/api/products/slug/:slug', (req, res) => {
+  const slug = decodeURIComponent(req.params.slug);
+
+  db.query('SELECT * FROM products WHERE slug = ?', [slug], (err, results) => {
+    if (err) {
+      console.error("Error fetching product by slug:", err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const parseToArray = (value) => {
+      if (!value) return [];
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        if (typeof value === 'string' && value.includes(',')) {
+          return value.split(',').map(s => s.trim());
+        }
+        return [value];
+      }
+    };
+
+    const product = {
+      ...results[0],
+      image: parseToArray(results[0].image),
+      type: parseToArray(results[0].type),
+      theme: parseToArray(results[0].theme),
+      giftingguide: parseToArray(results[0].giftingguide),
+      instruction: parseToArray(results[0].instruction),
+    };
+
+    res.json(product);
+  });
+});
+
+
+
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -120,7 +120,7 @@ function App() {
           <Route path="/style/transitional" element={<Transitional />} />
 
           {/* Product Pages */}
-          <Route path="/product/:productName" element={<ProductDetailPage />} />
+          <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/products" element={<ProductComponent addToCart={() => {}} />} />
 
           {/* Footer Links */}

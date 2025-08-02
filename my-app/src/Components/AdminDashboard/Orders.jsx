@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/AdminDashboard/Orders.css";
-import AdminSidebar from "../../AdminSidebar";
+
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -17,8 +17,6 @@ export default function Orders() {
   };
 
   return (
-     <div style={{ display: 'flex' }}>
-          <AdminSidebar />
     <div className="orders-container">
       <h2>Orders</h2>
       <button className="export-btn" onClick={downloadExcel}>
@@ -48,7 +46,6 @@ export default function Orders() {
           ))}
         </tbody>
       </table>
-    </div>
     </div>
   );
 }

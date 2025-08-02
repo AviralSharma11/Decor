@@ -7,9 +7,9 @@ import Footer from "./Footer";
 import LoginModal from "./LoginModal";
 
 const ProductDetailPage = () => {
-  const { productName } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
-  const formattedProductName = productName.replace(/-/g, " ").toLowerCase();
+  const cleanedSlug = slug.replace(/-+$/, '');
 
   const [product, setProduct] = useState(null);
   const [cart, setCart] = useState(() => {
@@ -33,28 +33,48 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedEmail) {
-      setUser({ email: storedEmail });
-    }
+  const storedEmail = localStorage.getItem("userEmail");
+  if (storedEmail) {
+    setUser({ email: storedEmail });
+  }
 
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/products/name/${formattedProductName}`);
-        const data = await res.json();
-        if (data) {
-          setProduct(data);
-          setSelectedImage(data.image[0]);
+ const fetchProduct = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/products/slug/${cleanedSlug}`);
+      const data = await response.json();
+      console.log("Fetched image data:", data.image);
+
+      // Ensure `image` is an array
+      let images = [];
+
+      // Extract and flatten image data safely
+      if (Array.isArray(data.image)) {
+        images = data.image.flat(); // flatten in case it's nested
+      } else if (typeof data.image === "string") {
+        try {
+          images = JSON.parse(data.image);
+          if (!Array.isArray(images)) {
+            images = [images];
+          }
+        } catch {
+          images = data.image.split(",").map((s) => s.trim());
         }
-      } catch (error) {
-        console.error("Failed to fetch product:", error);
-      } finally {
-        setLoading(false);
       }
-    };
 
-    fetchProduct();
-  }, [formattedProductName]);
+      setProduct({ ...data, image: images });
+      setSelectedImage(images[0]);
+
+    } catch (err) {
+      console.error("Error fetching product:", err);
+    } finally{
+      setLoading(false);
+    }
+  };
+
+  fetchProduct();
+  
+}, [cleanedSlug]);
+
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -196,15 +216,17 @@ const ProductDetailPage = () => {
         <div className="product-detail-container">
           <div className="product-image-gallery">
             <div className="thumbnail-container">
-              {product.image.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`Thumbnail ${index}`}
-                  className={`thumbnail ${selectedImage === img ? "active" : ""}`}
-                  onClick={() => setSelectedImage(img)}
-                />
-              ))}
+              {Array.isArray(product.image) && product.image.length > 0 &&
+                product.image.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`Thumbnail ${index}`}
+                    className={`thumbnail ${selectedImage === img ? "active" : ""}`}
+                    onClick={() => setSelectedImage(img)}
+                  />
+                ))
+              }
             </div>
             <div className="main-image-container">
               <img src={selectedImage} alt={product.name} className="main-image" />

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Styles/AdminDashboard/Users.css";
-import AdminSidebar from "../../AdminSidebar";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -17,8 +16,7 @@ export default function Users() {
   };
 
   return (
-     <div style={{ display: 'flex' }}>
-          <AdminSidebar />
+
     <div className="users-container">
       <h2>User List</h2>
       <button className="export-button" onClick={handleExport}>
@@ -46,7 +44,6 @@ export default function Users() {
           ))}
         </tbody>
       </table>
-    </div>
     </div>
   );
 }
