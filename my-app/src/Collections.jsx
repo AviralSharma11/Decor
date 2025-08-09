@@ -38,7 +38,7 @@ export default function Collections() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // ✅ Fetch products from backend
+  // Fetch products from backend
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())

@@ -49,7 +49,7 @@ const ProductComponent = ({ isAuthenticated, setIsLoginModalOpen, addToCart }) =
             id: product.id,
             name: product.name,
             image: product.image,
-            price: product.discountedPrice,
+            price: product.discountedPrice || product.price || product.originalPrice || 0,
           },
         }),
       });

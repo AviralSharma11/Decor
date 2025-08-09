@@ -31,6 +31,7 @@ const ProductDetailPage = () => {
   const [customText1, setCustomText1] = useState("");
   const [openSection, setOpenSection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [customisationAlert, setCustomisationAlert] = useState(false);
 
   useEffect(() => {
   const storedEmail = localStorage.getItem("userEmail");
@@ -86,68 +87,95 @@ const ProductDetailPage = () => {
     setOpenSection(openSection === index ? null : index);
   };
 
-  const addToCart = () => {
-    if (!isAuthenticated) {
-      setIsLoginModalOpen(true);
-      return;
-    }
+const addToCart = () => {
+  if (!isAuthenticated) {
+    setIsLoginModalOpen(true);
+    return;
+  }
 
-    const customProduct = {
-      ...product,
-      uploadedPhoto,
-      customText1,
-    };
+  if (!isCustomisationComplete()) {
+    handleCustomisationRequired();
+    return;
+  }
 
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.name === product.name);
-      const updatedCart = existingItem
-        ? prevCart.map((item) =>
-            item.name === product.name
-              ? { ...item, ...customProduct, quantity: item.quantity + 1 }
-              : item
-          )
-        : [...prevCart, { ...customProduct, quantity: 1 }];
+  const customProduct = {
+    ...product,
+    uploadedPhoto,
+    customText1,
+  };
 
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
+  setCart((prevCart) => {
+    const existingItem = prevCart.find((item) => item.name === product.name);
+    const updatedCart = existingItem
+      ? prevCart.map((item) =>
+          item.name === product.name
+            ? { ...item, ...customProduct, quantity: item.quantity + 1 }
+            : item
+        )
+      : [...prevCart, { ...customProduct, quantity: 1 }];
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    return updatedCart;
+  });
+};
+
+const proceedToCheckout = async () => {
+  if (!isCustomisationComplete()) {
+    handleCustomisationRequired();
+    return;
+  }
+
+  const customProduct = {
+    ...product,
+    uploadedPhoto,
+    customText1,
+  };
+
+  const orderData = {
+    email: user?.email,
+    fullName: user?.fullName || "Guest",
+    phone: user?.phone || "N/A",
+    productName: customProduct.name,
+    price: customProduct.discountedPrice,
+    customText1,
+    uploadedPhoto,
+  };
+
+  try {
+    await fetch("http://localhost:5000/api/save-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
     });
-  };
 
-  const proceedToCheckout = async () => {
-    const customProduct = {
-      ...product,
-      uploadedPhoto,
-      customText1,
-    };
+    navigate("/checkout", {
+      state: {
+        product: customProduct,
+        productPrice: customProduct.discountedPrice,
+        productName: customProduct.name,
+      },
+    });
+  } catch (error) {
+    console.error("Error saving order:", error);
+  }
+};
 
-    const orderData = {
-      email: user?.email,
-      fullName: user?.fullName || "Guest",
-      phone: user?.phone || "N/A",
-      productName: customProduct.name,
-      price: customProduct.discountedPrice,
-      customText1,
-      uploadedPhoto,
-    };
+  const isCustomisationComplete = () => {
+  if (!product.customisable) return true; // skip check if not customisable
 
-    try {
-      await fetch("http://localhost:5000/api/save-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
+  if (product.photo && !uploadedPhoto) return false;
+  if (product.text1 && !customText1.trim()) return false;
 
-      navigate("/checkout", {
-        state: {
-          product: customProduct,
-          productPrice: customProduct.discountedPrice,
-          productName: customProduct.name,
-        },
-      });
-    } catch (error) {
-      console.error("Error saving order:", error);
-    }
-  };
+  return true;
+};
+
+const handleCustomisationRequired = () => {
+  setCustomisationAlert(true);
+  setTimeout(() => {
+    setCustomisationAlert(false);
+    setIsCustomisedOpen(true); // open modal after showing alert
+  }, 1500); // show alert for 1.5s
+};
 
   const toggleCustomModal = () => {
     setIsCustomisedOpen(!isCustomisedOpen);
@@ -203,10 +231,102 @@ const ProductDetailPage = () => {
     },
   ];
 
+  // inside ProductDetailPage component (add above the return)
+const normalizeInstructions = (instr) => {
+  if (!instr && instr !== 0) return [];
+
+  // If it's already an array, flatten nested arrays
+  if (Array.isArray(instr)) {
+    // flatten to arbitrary depth
+    const flat = instr.flat ? instr.flat(Infinity) : instr.reduce((acc, v) => acc.concat(v), []);
+    // convert to strings and clean
+    return flat
+      .map(item => (item === null || item === undefined ? "" : String(item)))
+      .map(s => s.trim())
+      .filter(s => s && s.toLowerCase() !== "false");
+  }
+
+  // If it's not an array: try parsing JSON (some DB fields might be JSON strings)
+  if (typeof instr === "string") {
+    const trimmed = instr.trim();
+
+    // Try to parse JSON arrays safely
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return normalizeInstructions(parsed);
+    } catch (e) {
+      // ignore parse error; fall back to splitting the string
+    }
+
+    // Insert newline before number-dot patterns like "1.", "2." etc
+    const withNewlines = trimmed.replace(/(\d+\.)/g, "\n$1");
+    const parts = withNewlines.split("\n").map(p => p.trim()).filter(p => p && p.toLowerCase() !== "false");
+    return parts;
+  }
+
+  // For numbers or other primitive values
+  return [String(instr)].map(s => s.trim()).filter(Boolean);
+};
+
+ const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+    try {
+      const res = await fetch("http://localhost:5000/api/cart/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("userEmail"),
+          productId,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        const updated = cart.filter((item) => item.id !== productId);
+        setCart(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+      } else {
+        console.error(data.message);
+      }
+    } catch (err) {
+      console.error("Error removing from cart:", err);
+    }
+  };
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      const res = await fetch("http://localhost:5000/api/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("userEmail"),
+          productId,
+          quantity: newQuantity,
+        }),
+      });
+      if (res.ok) {
+        setCart((prev) =>
+          prev.map((item) =>
+            item.id === productId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+    }
+  };
+
   return (
     <>
       <div className="product-detail-page">
-        <Header cart={cart} user={user} />
+        <Header 
+          cart={cart}
+          onRemoveFromCart={removeFromCart}
+          updateQuantity={updateQuantity}
+          user={user}
+          products={product}
+        />
         <nav className="breadcrumb product-page">
           <Link to="/">Home</Link> &gt;
           <Link to="/collections">Collections</Link> &gt;
@@ -328,9 +448,11 @@ const ProductDetailPage = () => {
                     onChange={(e) => setCustomText1(e.target.value)}
                   />
                   <div className="instructions">
-                    {product.instruction.map((line, idx) => (
-                      <p key={idx}>{line}</p>
-                    ))}
+                    <ul>
+                      {normalizeInstructions(product.instruction).map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               )}
@@ -359,6 +481,12 @@ const ProductDetailPage = () => {
             window.location.reload();
           }}
         />
+      )}
+
+      {customisationAlert && (
+        <div className="popup-alert">
+          Please customise the product first
+        </div>
       )}
     </>
   );

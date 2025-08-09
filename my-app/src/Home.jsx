@@ -8,71 +8,88 @@ import Footer from "./Components/Footer";
 import "./Home.css";
 import LoginModal from "./Components/LoginModal";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState(() => {
-    try {
-      const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error("Failed to load cart from localStorage:", error);
-      return [];
-    }
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    message: "",
-  });
-
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [formData, setFormData] = useState({ fullName: "", email: "", message: "" });
   const [products, setProducts] = useState([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem("isAuthenticated") === "true";
-  });
 
-  //  Login handler
+  // Load authentication and user state from localStorage
+  useEffect(() => {
+    const auth = localStorage.getItem("isAuthenticated") === "true";
+    const savedUser = localStorage.getItem("user");
+    setIsAuthenticated(auth);
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncAuth = () => {
+      const auth = localStorage.getItem("isAuthenticated") === "true";
+      const savedUser = localStorage.getItem("user");
+      setIsAuthenticated(auth);
+      setUser(savedUser ? JSON.parse(savedUser) : null);
+    };
+
+  syncAuth();
+
+  // Listen for storage changes from other tabs or components
+  window.addEventListener("storage", syncAuth);
+
+  return () => {
+    window.removeEventListener("storage", syncAuth);
+  };
+}, []);
+
+
   const handleLogin = async (email) => {
-    setIsAuthenticated(true);
+    const userData = { email };
     localStorage.setItem("isAuthenticated", "true");
     localStorage.setItem("userEmail", email);
-    setUser({ email });
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+    setIsAuthenticated(true);
 
-    // Redirect if admin
-    if (email === "admin@example.com") {
+    if (email === "aviral0201sharma@gmail.com") {
       navigate("/admin-dashboard");
       return;
     }
 
-    // Fetch cart after login
     try {
       const response = await fetch(`http://localhost:5000/api/cart/${email}`);
       const cartData = await response.json();
 
       if (Array.isArray(cartData)) {
-        //  Parse image if it's a JSON string
         const fixedCart = cartData.map((item) => {
+          let parsedImage;
           try {
-            item.image = JSON.parse(item.image);
+            parsedImage = typeof item.image === "string" ? JSON.parse(item.image) : item.image;
           } catch {
-            item.image = [item.image]; // fallback
+            parsedImage = [item.image];
           }
-          return item;
+
+          return {
+            ...item,
+            image: parsedImage,
+            discountedPrice: parseFloat(item.discountedPrice),
+            quantity: item.quantity || 1,
+          };
         });
 
         setCart(fixedCart);
         localStorage.setItem("cart", JSON.stringify(fixedCart));
       } else {
-        console.warn("Invalid cart format", cartData);
         setCart([]);
       }
     } catch (error) {
@@ -82,7 +99,6 @@ function Home() {
     setIsLoginModalOpen(false);
   };
 
-  //  Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -96,35 +112,46 @@ function Home() {
     fetchProducts();
   }, []);
 
-  //  Sync cart to backend
   useEffect(() => {
     if (isAuthenticated && cart.length > 0) {
       const email = localStorage.getItem("userEmail");
+
       cart.forEach(async (product) => {
+        const parsedPrice = parseFloat(product.discountedPrice);
+        if (!product.id || !product.name || isNaN(parsedPrice)) {
+          console.warn("Skipping invalid product:", product);
+          return;
+        }
+
         const payload = {
           email,
           product: {
             id: product.id,
             name: product.name,
-            price: Number(product.price),
+            price: parsedPrice,
             quantity: product.quantity || 1,
-            image: product.image || "",
+            image: product.image || [],
           },
         };
+
         try {
-          await fetch("http://localhost:5000/api/cart", {
+          const res = await fetch("http://localhost:5000/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
+
+          const result = await res.json();
+          if (!res.ok) {
+            console.error("Cart sync failed:", result.message || result);
+          }
         } catch (err) {
-          console.error("Failed to save product to cart:", err);
+          console.error("Failed to sync product to cart:", err);
         }
       });
     }
   }, [cart, isAuthenticated]);
 
-  //  Cart handlers
   const addToCart = (product) => {
     if (!isAuthenticated) {
       setIsLoginModalOpen(true);
@@ -132,17 +159,14 @@ function Home() {
     }
 
     setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
-      let updated;
-      if (existing) {
-        updated = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        updated = [...prevCart, { ...product, quantity: 1 }];
-      }
-      localStorage.setItem("cart", JSON.stringify(updated));
-      return updated;
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      const updatedCart = existingItem
+        ? prevCart.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        : [...prevCart, { ...product, quantity: 1 }];
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      return updatedCart;
     });
   };
 
@@ -157,6 +181,7 @@ function Home() {
           productId,
         }),
       });
+
       const data = await res.json();
       if (res.ok) {
         const updated = cart.filter((item) => item.id !== productId);
@@ -194,7 +219,6 @@ function Home() {
     }
   };
 
-  //  Feedback form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -220,7 +244,6 @@ function Home() {
     }
   };
 
-  //  Parallax
   useEffect(() => {
     const handleScroll = () => {
       document.querySelectorAll(".parallax-text, .parallax-subtext").forEach((text) => {
@@ -235,7 +258,13 @@ function Home() {
 
   return (
     <div className="Home">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
+      <Header
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
+        updateQuantity={updateQuantity}
+        user={user}
+        products={products}
+      />
       <Showcase />
       <div className="parallax1">
         <div className="parallax-text">DISCOVER OUR COLLECTION</div>
@@ -251,7 +280,11 @@ function Home() {
       </div>
       <div className="parallax2"></div>
       <div className="content-section">
-        <BestSeller addToCart={addToCart} isAuthenticated={isAuthenticated} setIsLoginModalOpen={setIsLoginModalOpen} />
+        <BestSeller
+          addToCart={addToCart}
+          isAuthenticated={isAuthenticated}
+          setIsLoginModalOpen={setIsLoginModalOpen}
+        />
       </div>
       <div className="parallax3">
         <div className="feedback-form">
