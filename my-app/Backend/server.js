@@ -711,15 +711,55 @@ app.get("/api/products/featured", (req, res) => {
 
 app.get("/api/products/:category/:subcategory", (req, res) => {
   const { category, subcategory } = req.params;
+
+  // Map lowercase to original case
+  const subcategoryMap = {
+    // style
+      modern: "Modern",
+      vintage: "Vintage",
+      bohemian: "Bohemian",
+      traditional: "Traditional",
+      transitional: "Transitional",
+      earthy: "Earthy",
+      wood: "Wood",
+      acrylic: "Acrylic",
+      glass: "Glass",
+      resin: "Resin",
+      cotton: "Cotton",
+      metal: "Metal",
+      safari: "Safari",
+      modernminimalist: "ModernMinimalist",
+      wellness: "Wellness",
+      officeessential: "OfficeEssential",
+      styles: "style",
+      materials: "material",
+      themes: "theme",
+      trend: "trending",
+      coquette: "Coquette",
+      softgirlaesthetic: "SoftGirlAesthetic",
+      dopamine: "Dopamine",
+  };
+
+  const normalisedCategory = category.toLowerCase();
+  const normalisedSubcategory = (subcategory || "").toLowerCase();
+  const dbSubcategory = subcategoryMap[normalisedSubcategory];
+
+  if (!dbSubcategory) {
+    return res.status(400).json({ error: "Invalid subcategory" });
+  }
+
   let query;
   let values;
 
-  if (category === "material") {
+  if (normalisedCategory === "material") {
     query = "SELECT * FROM products WHERE material = ?";
-    values = [subcategory];
-  } else if (category === "style" || category === "theme" || category === "trending") {
-    // JSON column check
-    query = `SELECT * FROM products WHERE JSON_CONTAINS(${category}, '["${subcategory}"]')`;
+    values = [dbSubcategory];
+  } else if (
+    normalisedCategory === "style" ||
+    normalisedCategory === "theme" ||
+    normalisedCategory === "trending"
+  ) {
+    query = `SELECT * FROM products WHERE JSON_CONTAINS(${normalisedCategory}, '["${dbSubcategory}"]')`;
     values = [];
   } else {
     return res.status(400).json({ error: "Invalid category" });
@@ -733,6 +773,7 @@ app.get("/api/products/:category/:subcategory", (req, res) => {
     res.json(results);
   });
 });
+
 
 //customisable products filter only
 app.get('/api/products/customisable', async (req, res) => {

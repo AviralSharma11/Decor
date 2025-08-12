@@ -36,58 +36,33 @@ const subcategoriesData = {
 };
 
 // Map URL params to category keys
+// categoryMap — all keys lowercase
 const categoryMap = {
   modern: "style",
-  Modern: "style",
   vintage: "style",
-  Vintage: "style",
   bohemian: "style",
-  Bohemian: "style",
   traditional: "style",
-  Traditional: "style",
   transitional: "style",
-  Transitional: "style",
   earthy: "theme",
-  Earthy: "theme",
   wood: "material",
-  Wood: "material",
   acrylic: "material",
-  Acrylic: "material",
   glass: "material",
-  Glass: "material",
   resin: "material",
-  Resin: "material",
   cotton: "material",
-  Cotton: "material",
   metal: "material",
-  Metal: "material",
   safari: "theme",
-  Safari: "theme",
   modernminimalist: "theme",
-  ModernMinimalist: "theme",
-  Wellness: "theme",
   wellness: "theme",
   officeessential: "theme",
-  OfficeEssential: "theme",
   style: "style",
-  Style: "style",
   material: "material",
-  Material: "material",
   theme: "theme",
-  Theme: "theme",
   trending: "trending",
-  Trending: "trending",
   coquette: "trending",
-  Coquette: "trending",
-  SoftGirlAesthetic: "trending",
-  SoftGirlaesthetic: "trending",
-  Softgirlaesthetic: "trending",
-  softGirlaesthetic: "trending",
-  softGirlAesthetic: "trending",
   softgirlaesthetic: "trending",
-  Dopamine: "trending",
   dopamine: "trending",
 };
+
 
 export default function Subcategories() {
   const { category, subcategory } = useParams();
@@ -95,6 +70,7 @@ export default function Subcategories() {
     categoryMap[category?.toLowerCase()] ||
     categoryMap[subcategory?.toLowerCase()] ||
     null;
+
 
   const subcategories = mainCategoryKey
     ? subcategoriesData[mainCategoryKey] || []
