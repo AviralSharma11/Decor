@@ -2,15 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Home from './Home';
 import AdminDashboard from './AdminDashboard';
 import Collections from "./Collections";
-// import MaterialPage from "./Components/MaterialPage";
-// import Trending from "./Components/Collections/Trending";
-// import Themes from "./Components/Collections/Themes";  
-// import Style from "./Components/Collections/Style";
-// import Material from "./Components/Collections/Material";
 import Checkout from "./Components/Checkout";
-// import WoodMaterialPage from "./Components/Material/WoodMaterialPage";
-// import AcrylicMaterialPage from "./Components/Material/AcrylicMaterialPage";
-// import ResinsMaterialPage from "./Components/Material/ResinsMaterialPage";
 import ProductDetailPage from "./Components/ProductDetailPage";
 import ProductComponent from "./Components/ProductComponent";
 import CustomisedMaterialPage from "./Components/Collections/CustomisedMaterialPage";
@@ -35,19 +27,6 @@ import Luxury from "./Components/Footer/DirectLinks/Luxury";
 import PersonalisedJewellary from "./Components/Footer/DirectLinks/PersonalisedJewellary";
 import WallArt from "./Components/Footer/DirectLinks/WallArt";
 import FAQ from "./Components/Footer/FAQ";
-// import Coquette from "./Components/Trending/Coquette";
-// import Dopamine from "./Components/Trending/Dopamine";
-// import SoftGirlAesthetic from "./Components/Trending/SoftGirlAesthetic";
-// import Earthy from "./Components/Themes/Earthy";
-// import ModernMinimalist from "./Components/Themes/ModernMinimalist";
-// import Safari from "./Components/Themes/Safari";
-// import Wellness from "./Components/Themes/Wellness";
-// import OfficeEssential from "./Components/Themes/Wellness";
-// import Transitional from "./Components/Style/Transitional";
-// import Traditional from "./Components/Style/Traditional";
-// import Bohemian from "./Components/Style/Bohemian";
-// import Vintage from "./Components/Style/Vintage";
-// import Modern from "./Components/Style/Modern";
 import Users from "./Components/AdminDashboard/Users";
 import Orders from "./Components/AdminDashboard/Orders";
 import Settings from "./Components/AdminDashboard/Settings";
@@ -92,36 +71,8 @@ function App() {
           <Route path="/collections/diy" element={<DIYPage />} />
           <Route path="/collections/:category" element={<DynamicCategory />} />
           <Route path="/collections/:category/:subcategory" element={<DynamicSubcategoryPage />} />
-          {/* <Route path="/collections/trending" element={<Trending />} />
-          <Route path="/collections/themes" element={<Themes />} />
-          <Route path="/collections/style" element={<Style />} />
-          <Route path="/collections/material" element={<Material />} /> */}
           <Route path="/collections/customised-products" element={<CustomisedMaterialPage />} />
 
-          {/* Materials */}
-          {/* <Route path="/material/:materialType" element={<MaterialPage />} />
-          <Route path="/material/wood" element={<WoodMaterialPage />} />
-          <Route path="/material/acrylic" element={<AcrylicMaterialPage />} />
-          <Route path="/material/resins" element={<ResinsMaterialPage />} /> */}
-
-          {/* Trending Pages */}
-          {/* <Route path="/trending/dopamine" element={<Dopamine />} />
-          <Route path="/trending/coquette" element={<Coquette />} />
-          <Route path="/trending/soft-girl-aesthetic" element={<SoftGirlAesthetic />} /> */}
-
-          {/* Theme pages */}
-          {/* <Route path="/themes/earthy" element={<Earthy />} />
-          <Route path="/themes/modern-minimalist" element={<ModernMinimalist />} />
-          <Route path="/themes/office-essential" element={<OfficeEssential/>} />
-          <Route path="/themes/safari" element={<Safari />} />
-          <Route path="/themes/wellness" element={<Wellness />}/> */}
-
-          {/* Style pages */}
-          {/* <Route path="/style/bohemian" element={<Bohemian />} />
-          <Route path="/style/modern" element={<Modern />} />
-          <Route path="/style/traditional" element={<Traditional />} />
-          <Route path="/style/vintage" element={<Vintage />}/>
-          <Route path="/style/transitional" element={<Transitional />} /> */}
 
           {/* Product Pages */}
           <Route path="/product/:slug" element={<ProductDetailPage />} />
