@@ -1,36 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/ProductComponent.css";
 
-const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addToCart }) => {
+const ProductComponentDynamic = ({isAuthenticated, setIsLoginModalOpen, addToCart }) => {
+   const [products, setProducts] = useState([]);
   const [addedToCart, setAddedToCart] = useState({});
   const [currentImage, setCurrentImage] = useState({});
 
-  // Initialize images when products change
-React.useEffect(() => {
-  const imageMap = {};
+  React.useEffect(() => {
+    const imageMap = {};
+    
+    products.forEach(product => {
+      let firstImage = product.image;
   
-  products.forEach(product => {
-    let firstImage = product.image;
+      // If image is an array, take the first element
+      if (Array.isArray(firstImage)) {
+        firstImage = firstImage[0];
+      }
+  
+      // Only set if it's a string
+      if (typeof firstImage === 'string') {
+        imageMap[product.id] = firstImage.startsWith('/')
+          ? firstImage
+          : `/${firstImage}`; // optional: normalize path
+      }
+    });
+  
+    setCurrentImage(imageMap);
+  }, [products]);
 
-    // If image is an array, take the first element
-    if (Array.isArray(firstImage)) {
-      firstImage = firstImage[0];
-    }
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
+        setProducts(data);
 
-    // Only set if it's a string
-    if (typeof firstImage === 'string') {
-      imageMap[product.id] = firstImage.startsWith('/')
-        ? firstImage
-        : `/${firstImage}`; // optional: normalize path
-    }
-  });
+        // Initialize image states
+        const imageMap = {};
+        data.forEach(product => {
+          imageMap[product.id] = product.image[0];
+        });
+        setCurrentImage(imageMap);
+      } catch (err) {
+        console.error("Failed to load products:", err);
+      }
+    };
 
-  setCurrentImage(imageMap);
-}, [products]);
-
-
-
+    fetchProducts();
+  }, []);
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
@@ -149,4 +167,4 @@ React.useEffect(() => {
   );
 };
 
-export default ProductComponent;
+export default ProductComponentDynamic;

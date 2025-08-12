@@ -657,30 +657,30 @@ app.get('/api/products/slug/:slug', (req, res) => {
     }
 
     const parseToArray = (value) => {
-      if (!value) return [];
+    if (!value) return [];
 
-      try {
-        const parsed = JSON.parse(value);
-        return Array.isArray(parsed) ? parsed : [parsed];
-      } catch {
-        if (typeof value === 'string') {
-          // If it looks like [1. Add..., 2. Add...] but without quotes
-          let cleaned = value
-            .replace(/^\[|\]$/g, '') // remove surrounding brackets
-            .replace(/\r?\n|\r/g, ' ') // remove line breaks
-            .trim();
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      if (typeof value === 'string') {
+        // If it looks like [1. Add..., 2. Add...] but without quotes
+        let cleaned = value
+          .replace(/^\[|\]$/g, '') // remove surrounding brackets
+          .replace(/\r?\n|\r/g, ' ') // remove line breaks
+          .trim();
 
-          // Split on number-dot pattern OR commas
-          const parts = cleaned.split(/\s*\d+\.\s*/).filter(Boolean);
-          if (parts.length > 1) return parts.map(s => s.trim());
+        // Split on number-dot pattern OR commas
+        const parts = cleaned.split(/\s*\d+\.\s*/).filter(Boolean);
+        if (parts.length > 1) return parts.map(s => s.trim());
 
-          return cleaned.includes(',')
-            ? cleaned.split(',').map(s => s.trim())
-            : [cleaned];
-        }
-        return [value];
+        return cleaned.includes(',')
+          ? cleaned.split(',').map(s => s.trim())
+          : [cleaned];
       }
-    };
+      return [value];
+    }
+  };
 
 
     const product = {
@@ -707,101 +707,30 @@ app.get("/api/products/featured", (req, res) => {
   });
 });
 
-//getting products /categories or categories/subcategories
-app.get('/api/products/collections/:category/:subcategory?', (req, res) => {
+app.get("/api/products/:category/:subcategory", (req, res) => {
   const { category, subcategory } = req.params;
+  let query;
+  let values;
 
-  const categoryMap = {
-    material: 'material',
-    materials: 'material',
-    theme: 'theme',
-    themes: 'theme',
-    style: 'style',
-    styles: 'style',
-    giftingguide: 'giftingguide',
-    giftingguides: 'giftingguide',
-    trending: 'trending',
-    trends: 'trending',
-  };
-
-  const column = categoryMap[category.toLowerCase()];
-  if (!column) {
-    return res.status(400).json({ error: 'Invalid category' });
-  }
-
-  let query = '';
-  let params = [];
-
-  if (subcategory) {
-  const normalizedSub = subcategory.replace(/-/g, ' ').trim();
-
-  if (['theme', 'style', 'giftingguide', 'trending'].includes(column)) {
-    query = `
-      SELECT * FROM products 
-      WHERE (
-        LOWER(${column}) = LOWER(?) OR
-        (JSON_VALID(${column}) AND EXISTS (
-          SELECT 1 FROM JSON_TABLE(${column}, "$[*]" COLUMNS(val VARCHAR(255) PATH "$")) AS jt
-          WHERE LOWER(jt.val) = LOWER(?)
-        ))
-      )
-    `;
-    params = [normalizedSub, normalizedSub];
+  if (category === "material") {
+    query = "SELECT * FROM products WHERE material = ?";
+    values = [subcategory];
+  } else if (category === "style" || category === "theme" || category === "trending") {
+    // JSON column check
+    query = `SELECT * FROM products WHERE JSON_CONTAINS(${category}, '["${subcategory}"]')`;
+    values = [];
   } else {
-    query = `SELECT * FROM products WHERE LOWER(${column}) = LOWER(?)`;
-    params = [normalizedSub];
+    return res.status(400).json({ error: "Invalid category" });
   }
-} else {
-  if (['theme', 'style', 'giftingguide', 'trending'].includes(column)) {
-    query = `
-      SELECT * FROM products 
-      WHERE (
-        ${column} IS NOT NULL AND ${column} != ''
-      )
-    `;
-  } else {
-    query = `SELECT * FROM products WHERE ${column} IS NOT NULL AND ${column} != ''`;
-  }
-}
 
-
-  db.query(query, params, (err, results) => {
+  db.query(query, values, (err, results) => {
     if (err) {
-      console.error(`Error fetching products by category: ${category}, subcategory: ${subcategory}`);
-      console.error('Query:', query);
-      console.error('Params:', params);
-      console.error('Error:', err.message);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database query failed" });
     }
-
-    const parseToArray = (value) => {
-      if (!value) return [];
-      try {
-        const parsed = JSON.parse(value);
-        return Array.isArray(parsed) ? parsed : [parsed];
-      } catch {
-        if (typeof value === 'string' && value.includes(',')) {
-          return value.split(',').map(s => s.trim());
-        }
-        return [value];
-      }
-    };
-
-    const parsedResults = results.map(product => ({
-      ...product,
-      image: parseToArray(product.image),
-      type: parseToArray(product.type),
-      theme: parseToArray(product.theme),
-      style: parseToArray(product.style),
-      giftingguide: parseToArray(product.giftingguide),
-      trending: parseToArray(product.trending),
-      instruction: parseToArray(product.instruction),
-    }));
-
-    res.json(parsedResults);
+    res.json(results);
   });
 });
-
 
 
 const PORT = 5000;

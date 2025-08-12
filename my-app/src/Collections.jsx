@@ -42,9 +42,13 @@ export default function Collections() {
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => {
+        console.log("Fetched products:", data); // DEBUG
+        setProducts(data);
+      })
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -75,35 +79,60 @@ export default function Collections() {
           (item) => item !== value
         );
       }
+      console.log("Updated Filters:", updatedFilters); // DEBUG
       return updatedFilters;
     });
   };
 
+
   const applyFilters = () => {
     return products.filter((product) => {
-      // Type
+      // ---------- GET PRODUCT TYPE ----------
+      let types = [];
+      let rawType = product.type || product.category || product.subcategory || "";
+
+      if (Array.isArray(rawType)) {
+        types = rawType;
+      } else if (typeof rawType === "string") {
+        try {
+          const parsed = JSON.parse(rawType);
+          types = Array.isArray(parsed) ? parsed : [rawType];
+        } catch {
+          types = [rawType];
+        }
+      }
+
+      // ---------- TYPE FILTER ----------
       if (selectedFilters.Type.length > 0) {
-        const types = Array.isArray(product.type) ? product.type : JSON.parse(product.type || "[]");
         if (!types.some((type) => selectedFilters.Type.includes(type))) {
           return false;
         }
       }
 
-      // Price
+      // ---------- GET PRODUCT PRICE ----------
+      const price = Number(
+        product.discountedPrice ||
+        product.price ||
+        product.originalPrice ||
+        0
+      );
+
+      // ---------- PRICE FILTER ----------
       if (selectedFilters.Price.length > 0) {
         const priceMatches = selectedFilters.Price.some((range) => {
-          const price = product.discountedPrice;
           if (range === "Under ₹1,000") return price < 1000;
           if (range === "₹1,000 - ₹3,000") return price >= 1000 && price <= 3000;
           if (range === "Above ₹3,000") return price > 3000;
           return false;
         });
+
         if (!priceMatches) return false;
       }
 
-      return true;
+      return true; // Passed all filters
     });
-  };
+};
+
 
   const filteredProducts = applyFilters();
 

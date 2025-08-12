@@ -9,7 +9,7 @@ const Categories = () => {
     { name: "TRENDING", image: "/Images/bytrend.jpg", link: "/collections/trending" },
     { name: "BY STYLE", image: "/Images/bystyles.jpg", link: "/collections/style" },
     { name: "BY MATERIAL", image: "/Images/bymaterial.jpg", link: "/collections/material" },
-    { name: "BY THEMES", image: "/Images/bythemes.jpg", link: "/collections/themes" },
+    { name: "BY THEMES", image: "/Images/bythemes.jpg", link: "/collections/theme" },
   ];
 
   return (
