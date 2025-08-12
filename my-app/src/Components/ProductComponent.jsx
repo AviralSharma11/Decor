@@ -1,45 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../Styles/ProductComponent.css";
 
 const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addToCart }) => {
   const [addedToCart, setAddedToCart] = useState({});
   const [currentImage, setCurrentImage] = useState({});
+  const [showCustomisablePopup, setShowCustomisablePopup] = useState(false);
 
   // Initialize images when products change
-React.useEffect(() => {
-  const imageMap = {};
-  
-  products.forEach(product => {
-    let firstImage = product.image;
-
-    // If image is an array, take the first element
-    if (Array.isArray(firstImage)) {
-      firstImage = firstImage[0];
-    }
-
-    // Only set if it's a string
-    if (typeof firstImage === 'string') {
-      imageMap[product.id] = firstImage.startsWith('/')
-        ? firstImage
-        : `/${firstImage}`; // optional: normalize path
-    }
-  });
-
-  setCurrentImage(imageMap);
-}, [products]);
-
-
-
+  useEffect(() => {
+    const imageMap = {};
+    products.forEach((product) => {
+      let firstImage = product.image;
+      if (Array.isArray(firstImage)) firstImage = firstImage[0];
+      if (typeof firstImage === "string") {
+        imageMap[product.id] = firstImage.startsWith("/") ? firstImage : `/${firstImage}`;
+      }
+    });
+    setCurrentImage(imageMap);
+  }, [products]);
 
   const handleAddToCart = async (product) => {
+    // Prevent adding if customisable
+    if (product.customisable) {
+      setShowCustomisablePopup(true);
+      return;
+    }
+
     if (!isAuthenticated) {
       setIsLoginModalOpen(true);
       return;
     }
 
     addToCart(product);
-    setAddedToCart(prev => ({ ...prev, [product.id]: true }));
+    setAddedToCart((prev) => ({ ...prev, [product.id]: true }));
 
     const email = localStorage.getItem("userEmail");
 
@@ -58,20 +52,28 @@ React.useEffect(() => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`Failed to add to cart: ${response.statusText}`);
     } catch (err) {
       console.error("Failed to save cart:", err);
     }
 
     setTimeout(() => {
-      setAddedToCart(prev => ({ ...prev, [product.id]: false }));
+      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 3000);
   };
 
   return (
     <div className="product-container">
+      {/* Customisable Popup */}
+      {showCustomisablePopup && (
+        <div className="popup-overlay" onClick={() => setShowCustomisablePopup(false)}>
+          <div className="popup-box" onClick={(e) => e.stopPropagation()}>
+            <p>This is a customisable product. Please go to the product page and customise it before adding to cart.</p>
+            <button onClick={() => setShowCustomisablePopup(false)}>OK</button>
+          </div>
+        </div>
+      )}
+
       {[...products]
         .sort((a, b) => (a.comingSoon === b.comingSoon ? 0 : a.comingSoon ? 1 : -1))
         .map((product) => {

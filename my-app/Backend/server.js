@@ -35,6 +35,8 @@ db.connect((err) => {
     }
 });
 
+const promiseDb = db.promise();
+
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
@@ -731,6 +733,34 @@ app.get("/api/products/:category/:subcategory", (req, res) => {
     res.json(results);
   });
 });
+
+//customisable products filter only
+app.get('/api/products/customisable', async (req, res) => {
+  try {
+    const [rows] = await promiseDb.query(
+      "SELECT * FROM products WHERE customisable = TRUE"
+    );
+    res.json({ products: rows });
+  } catch (error) {
+    console.error("Error fetching customisable products:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//personalised jewellary
+app.get("/api/products/personalised", async (req, res) => {
+  try {
+    const [rows] = await db.promise().query(
+      "SELECT * FROM products WHERE personalisedJewellary = 1" // or TRUE depending on schema
+    );
+    res.json({ products: rows });
+  } catch (error) {
+    console.error("Error fetching personalised jewelry:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 
 const PORT = 5000;

@@ -117,7 +117,8 @@ const handleVerifyOtp = async (e) => {
     if (cleanedEmail === "aviral0201sharma@gmail.com") {
       navigate("/admin-dashboard");
     } else {
-      navigate("/"); // or navigate to the shop/home page
+      navigate("/"); // Navigate to home
+      window.location.reload(); // Force full page reload
     }
 
   } catch (err) {
@@ -127,29 +128,35 @@ const handleVerifyOtp = async (e) => {
 };
 
 
-  const handleLogout = async () => {
-  try {
-    // Save cart to DB before logout
-    for (const item of cart) {
-      await axios.post("http://localhost:5000/api/cart/update", {
-        email: userEmail,
-        productId: item.id,
-        quantity: item.quantity,
-      });
+const handleLogout = async () => {
+    try {
+      // Save cart to MySQL before logging out
+      for (const item of cart) {
+        await axios.post("http://localhost:5000/api/cart/update", {
+          email: userEmail,
+          productId: item.id,
+          quantity: item.quantity,
+        });
+      }
+
+      //  Clear user data from localStorage
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("token");
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("savedCart");
+
+      setUserEmail(null);
+      setCart([]); // Clear cart state
+
+      //  Short delay to let state updates propagate
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Redirect to home after logout
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Failed to save cart before logout:", err);
     }
-
-    // Clear storage and cart
-    localStorage.clear(); 
-    setUserEmail(null);
-    setCart([]);
-
-    await new Promise((res) => setTimeout(res, 100));
-    window.location.href = "/";
-  } catch (err) {
-    console.error("Failed to save cart before logout:", err);
-  }
-};
-
+  };
 
 const handleKeyPress = (e) => {
   if (e.key === "Enter") {

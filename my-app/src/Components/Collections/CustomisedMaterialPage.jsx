@@ -48,19 +48,20 @@ const CustomisedMaterialPage = () => {
     }
   }, [cart]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/products");
-        const data = await res.json();
-        setAllProducts(data.products || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/products/customisable");
+      const data = await res.json();
+      setAllProducts(data.products || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  fetchProducts();
+}, []);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,7 +71,7 @@ const CustomisedMaterialPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const CustomisableProducts = allProducts.filter(product => product.customisable === true);
+  const CustomisableProducts = allProducts; // already filtered by backend
 
   const handleFilterChange = (filterCategory, value, isChecked) => {
     setSelectedFilters((prevFilters) => {

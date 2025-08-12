@@ -62,9 +62,17 @@ const HERPage = () => {
       try {
         const res = await fetch("http://localhost:5000/api/products");
         const data = await res.json();
-        const herProducts = data.filter((product) =>
-          product.giftingguide?.toLowerCase().includes("her")
-        );
+        const herProducts = data.filter((product) => {
+          if (Array.isArray(product.giftingguide)) {
+            return product.giftingguide.some(
+              (item) => item.toLowerCase() === "her"
+            );
+          }
+          if (typeof product.giftingguide === "string") {
+            return product.giftingguide.toLowerCase().includes("her");
+          }
+          return false;
+        });
         setProducts(herProducts);
       } catch (err) {
         console.error("Failed to fetch products:", err);

@@ -37,18 +37,19 @@ const PersonalisedJewellary = () => {
    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     useEffect(() => {
-       const storedEmail = localStorage.getItem("userEmail");
-       if (storedEmail) setUser({ email: storedEmail });
-   
-       fetch("http://localhost:5000/api/products")
-         .then((res) => res.json())
-         .then((data) => {
-           const jewellaryOnly = data.filter((product) => product.personalisedJewellary === 1 || product.personalisedJewellary === true);
-           setAllProducts(jewellaryOnly);
-         })
-         .catch((err) => console.error("Failed to fetch products:", err));
-     }, []);
-  
+           const storedEmail = localStorage.getItem("userEmail");
+           if (storedEmail) setUser({ email: storedEmail });
+           
+      fetch("http://localhost:5000/api/products/personalised")
+        .then(res => res.json())
+        .then(data => {
+          setAllProducts(data.products || []); // assuming backend returns { products: [...] }
+        })
+        .catch(error => {
+          console.error("Error fetching personalised jewelry:", error);
+        });
+    }, []);
+
     useEffect(() => {
       const handleResize = () => {
         setIsMobile(window.innerWidth <= 768);

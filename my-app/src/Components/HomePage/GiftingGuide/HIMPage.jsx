@@ -61,9 +61,17 @@ const HIMPage = () => {
           try {
             const res = await fetch("http://localhost:5000/api/products");
             const data = await res.json();
-            const himProducts = data.filter((product) =>
-              product.giftingguide?.toLowerCase().includes("HIM")
-            );
+            const himProducts = data.filter((product) => {
+              if (Array.isArray(product.giftingguide)) {
+                return product.giftingguide.some(
+                  (item) => item.toLowerCase() === "him"
+                );
+              }
+              if (typeof product.giftingguide === "string") {
+                return product.giftingguide.toLowerCase().includes("him");
+              }
+              return false;
+            });
             setProducts(himProducts);
           } catch (err) {
             console.error("Failed to fetch products:", err);

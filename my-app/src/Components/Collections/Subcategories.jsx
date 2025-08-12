@@ -9,42 +9,90 @@ const subcategoriesData = {
   style: [
     { name: "Modern", image: "/Images/bystyles.jpg" },
     { name: "Vintage", image: "/Images/bytrend.jpg" },
-    { name: "Earthy", image: "/Images/bymaterial.jpg" }
+    { name: "Bohemian", image: "/Images/bymaterial.jpg" },
+    { name: "Traditional", image: "/Images/bythemes.jpg" },
+    { name: "Transitional", image: "/Images/bymaterial.jpg" },
   ],
   material: [
     { name: "Wood", image: "/Images/bystyles.jpg" },
     { name: "Acrylic", image: "/Images/bytrend.jpg" },
     { name: "Glass", image: "/Images/bymaterial.jpg" },
-    { name: "Resin", image: "/Images/bythemes.jpg" }
+    { name: "Resin", image: "/Images/bythemes.jpg" },
+    { name: "Metal", image: ""},
+    { name: "Cotton", image: ""}
   ],
   theme: [
-    { name: "Nature", image: "/Images/theme/nature.webp" },
-    { name: "Minimal", image: "/Images/theme/minimal.webp" },
-    { name: "Luxury", image: "/Images/theme/luxury.webp" }
+    { name: "Earthy", image: "/Images/theme/nature.webp" },
+    { name: "ModernMinialist", image: "/Images/theme/minimal.webp" },
+    { name: "OfficeEssential", image: "/Images/theme/luxury.webp" },
+    { name: "Safari", image:""},
+    { name: "Wellness", image: ""}
+  ],
+  trending: [
+    {name: "SoftGirlAesthetic", image: ""},
+    {name: "Dopamine", image: ""},
+    {name: "Coquette", image: ""}
   ]
 };
 
 // Map URL params to category keys
 const categoryMap = {
   modern: "style",
+  Modern: "style",
   vintage: "style",
-  earthy: "style",
+  Vintage: "style",
+  bohemian: "style",
+  Bohemian: "style",
+  traditional: "style",
+  Traditional: "style",
+  transitional: "style",
+  Transitional: "style",
+  earthy: "theme",
+  Earthy: "theme",
   wood: "material",
+  Wood: "material",
   acrylic: "material",
+  Acrylic: "material",
   glass: "material",
+  Glass: "material",
   resin: "material",
-  nature: "theme",
-  minimal: "theme",
-  luxury: "theme",
+  Resin: "material",
+  cotton: "material",
+  Cotton: "material",
+  metal: "material",
+  Metal: "material",
+  safari: "theme",
+  Safari: "theme",
+  modernminimalist: "theme",
+  ModernMinimalist: "theme",
+  Wellness: "theme",
+  wellness: "theme",
+  officeessential: "theme",
+  OfficeEssential: "theme",
   style: "style",
+  Style: "style",
   material: "material",
+  Material: "material",
   theme: "theme",
+  Theme: "theme",
+  trending: "trending",
+  Trending: "trending",
+  coquette: "trending",
+  Coquette: "trending",
+  SoftGirlAesthetic: "trending",
+  SoftGirlaesthetic: "trending",
+  Softgirlaesthetic: "trending",
+  softGirlaesthetic: "trending",
+  softGirlAesthetic: "trending",
+  softgirlaesthetic: "trending",
+  Dopamine: "trending",
+  dopamine: "trending",
 };
 
 export default function Subcategories() {
-  const { categoryType, subcategory } = useParams();
+  const { category, subcategory } = useParams();
   const mainCategoryKey =
-    categoryMap[categoryType?.toLowerCase()] ||
+    categoryMap[category?.toLowerCase()] ||
     categoryMap[subcategory?.toLowerCase()] ||
     null;
 
@@ -58,7 +106,7 @@ export default function Subcategories() {
       <nav className="breadcrumb">
         <Link to="/">Home</Link> &gt;
         <Link to="/collections">Collections</Link> &gt;
-        <strong>{mainCategoryKey?.toUpperCase()}</strong>
+        <strong>{mainCategoryKey}</strong>
       </nav>
 
       {/* Upper wave */}

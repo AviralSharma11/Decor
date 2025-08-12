@@ -61,9 +61,17 @@ const OfficePage = () => {
           try {
             const res = await fetch("http://localhost:5000/api/products");
             const data = await res.json();
-            const OfficeProducts = data.filter((product) =>
-              product.giftingguide?.toLowerCase().includes("Office")
-            );
+            const OfficeProducts = data.filter((product) => {
+              if (Array.isArray(product.giftingguide)) {
+                return product.giftingguide.some(
+                  (item) => item.toLowerCase() === "office"
+                );
+              }
+              if (typeof product.giftingguide === "string") {
+                return product.giftingguide.toLowerCase().includes("office");
+              }
+              return false;
+            });
             setProducts(OfficeProducts);
           } catch (err) {
             console.error("Failed to fetch products:", err);
