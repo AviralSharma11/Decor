@@ -1,0 +1,85 @@
+@@ .. @@
+ .collections{
+   background-color: #FFFDD0;
+ }
++
+ .product {
+   position: relative;
+   display: flex;
+   top:-10px;
+   margin-left: 10px;
+ }
+ 
+ /* Sidebar for desktop */
+ .sidebar {
+-  width: 20%;
++  position: fixed;
++  top: 124px;
++  left: 0;
++  width: 280px;
++  height: calc(100vh - 124px);
++  overflow-y: auto;
+   padding: 10px;
++  background-color: #FFFDD0;
++  border-right: 1px solid #ddd;
++  z-index: 100;
+ }
+ 
+ /* Product grid for desktop */
+ .contents {
++  margin-left: 300px;
+   padding: 10px;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 20px;
+ }
+ 
+ .mobile-controls{
+   display: flex;
+   justify-content: center;
+ }
+ 
+ .filter-btn {
+   background-color: rgb(100, 83, 59);
+   font-weight: 600;
+   color: #f3e5ca;
+   padding: 10px 15px;
+   font-size: 16px;
+   border: none;
+   cursor: pointer;
+   width: 10vw;
+   text-align: center;
+   margin: 20px 0 0 0;
+ }
+ 
+ .filter-btn:hover{
+   background-color: rgb(124, 97, 58);
+ }
+ 
+ /* Responsive layout for screens <= 768px */
+ @media (max-width: 768px) {
+   .product {
+     flex-direction: column;
+   }
+ 
+   /* Hide sidebar on mobile */
+   .sidebar {
+-    display: none;
++    position: static;
++    display: none;
++    width: auto;
++    height: auto;
+   }
+ 
+   /* Product grid for mobile */
+   .contents {
++    margin-left: 0;
+     order: 1; /* Move products above filters */
+   }
+ 
+   /* Style for the filter button on mobile */
+   .filter-btn{
+     margin: 10px;
+     width: 30vw;
+   }
+ }
