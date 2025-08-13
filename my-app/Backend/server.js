@@ -345,6 +345,14 @@ app.post('/api/join-us', (req, res) => {
 
     res.status(200).json({ message: 'Contact saved successfully' });
 });
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  console.error("\n❌ ERROR: Razorpay API keys are missing!\n");
+  console.error("Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.");
+  console.error("Example:");
+  console.error("RAZORPAY_KEY_ID=rzp_test_YourKeyID");
+  console.error("RAZORPAY_KEY_SECRET=YourKeySecret\n");
+  process.exit(1); // Stop the server if keys are missing
+}
 
 // Razorpay 
 const razorpay = new Razorpay({
