@@ -1,0 +1,114 @@
+@@ .. @@
+ /* Filter Modal */
+ .filter-modal {
+   position: fixed;
+   top: 0;
+   left: -100%; /* Initially hidden */
+   width: 300px;
+   height: 100%;
+   background: #f3f3f3;
+   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+   transition: right 0.3s ease-in-out;
+   z-index: 1000;
+ }
+ 
+ 
+ .filter-modal.open {
+   left: 0; /* Slide in */
+ }
+ 
+ .filter-modal-content {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+   padding: 20px;
+ }
+ 
+ .filter-body{
+   margin: 0px;
+ }
+ 
+ h3.filter{
+   font-weight: 500;
++  margin-top: 0;
++  margin-bottom: 20px;
+ }
+ 
+ .filter-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   font-size: 18px;
+   font-weight: 500;
+   margin-bottom: 0px;
+   margin-top: 10px;
+   padding-bottom: 5px;
++  cursor: pointer;
+ }
+ 
+ .filter-name{
+   font-weight: 400;
+ }
+ 
+ .close-btn {
+   background: none;
+   border: none;
+   font-size: 24px;
+   cursor: pointer;
+ }
+ 
+ .filter-body {
+   overflow-y: auto;
+   margin-top: 10px;
+ }
+ 
+ .filter-options {
+   margin-left: 10px;
++  margin-bottom: 15px;
+ }
+ 
+ .filter-option {
+   display: flex;
+   align-items: baseline;
+-  margin-bottom: 0px;
++  margin-bottom: 8px;
+ }
+ 
+ .filter-option input {
+   margin-right: 8px;
+ }
+ 
+ .modal-divider {
+   margin-right: 0px;
+   margin-left: 0px;
+   margin-bottom: 20px;
+   border-bottom: 1px solid #6f6f6f;
+ }
++
++/* Sidebar specific styling */
++.filter-component {
++  background-color: transparent;
++  padding: 0;
++}
++
++.filter-component .filter-section {
++  margin-bottom: 20px;
++  border-bottom: 1px solid #ddd;
++  padding-bottom: 15px;
++}
++
++.filter-component .filter-section:last-child {
++  border-bottom: none;
++}
++
++.filter-component .filter-header {
++  background-color: #f8f8f8;
++  padding: 10px;
++  border-radius: 4px;
++  margin-bottom: 10px;
++}
++
++.filter-component .filter-options {
++  margin-left: 0;
++  padding-left: 15px;
++}
