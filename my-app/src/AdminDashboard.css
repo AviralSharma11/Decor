@@ -26,3 +26,30 @@
   background-color: #FDF8F3; /* Subtle contrast background */
   color: #3E3E3E;
 }
+
+@media (max-width: 768px) {
+  .admin-body {
+    flex-direction: column; /* Stack vertically */
+  }
+
+  .admin-header {
+    font-size: 1.25rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .admin-main {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header {
+    font-size: 1.1rem;
+    padding: 0.6rem;
+  }
+
+  .admin-main {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+}

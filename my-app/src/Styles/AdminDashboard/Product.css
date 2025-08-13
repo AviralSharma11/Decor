@@ -73,12 +73,71 @@
   border: 1px solid #ddd;
 }
 
-.delete-btn {
-  background-color: #dc3545;
+.edit-btn{
+  background-color: #f1f0f0;
+  color: black;
   padding: 6px 12px;
   font-size: 0.9rem;
 }
 
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+
+.edit-btn:hover{
+  background-color: #ccc;
+}
+
 .delete-btn:hover {
   background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+
+  .textarea,
+  .checkbox-group {
+    grid-column: span 1;
+  }
+
+  .product-item {
+    flex-direction: column; /* Stack name and buttons vertically */
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    width: 100%; /* Full-width button on small screens */
+    text-align: center;
+  }
+
+  .product-item {
+    padding: 10px;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    width: 48%; /* Place side-by-side */
+  }
 }

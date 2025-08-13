@@ -345,14 +345,6 @@ app.post('/api/join-us', (req, res) => {
 
     res.status(200).json({ message: 'Contact saved successfully' });
 });
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-  console.error("\n❌ ERROR: Razorpay API keys are missing!\n");
-  console.error("Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.");
-  console.error("Example:");
-  console.error("RAZORPAY_KEY_ID=rzp_test_YourKeyID");
-  console.error("RAZORPAY_KEY_SECRET=YourKeySecret\n");
-  process.exit(1); // Stop the server if keys are missing
-}
 
 // Razorpay 
 const razorpay = new Razorpay({
@@ -643,7 +635,50 @@ app.get('/api/products', (req, res) => {
   });
 });
 
+//Update products
+const ensureJsonArray = (value) => {
+  if (Array.isArray(value)) return JSON.stringify(value);
+  try {
+    const parsed = JSON.parse(value);
+    return JSON.stringify(parsed);
+  } catch {
+    return JSON.stringify([]);
+  }
+};
 
+app.put('/api/products/:id', (req, res) => {
+  const id = req.params.id;
+  const p = req.body;
+
+  const query = `
+    UPDATE products
+    SET 
+      name = ?, rating = ?, reviews = ?, originalPrice = ?, discountedPrice = ?, image = ?, 
+      material = ?, style = ?, trending = ?, customisable = ?, giftingguide = ?, type = ?, 
+      theme = ?, gift = ?, text1 = ?, photo = ?, size = ?, luxury = ?, description = ?, 
+      personalisedJewellary = ?, comingSoon = ?, instruction = ?, wallart = ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [
+    p.name, p.rating, p.reviews, p.originalPrice, p.discountedPrice, ensureJsonArray(p.image),
+    p.material, p.style, p.trending, p.customisable, ensureJsonArray(p.giftingguide),
+    ensureJsonArray(p.type), ensureJsonArray(p.theme), p.gift, p.text1,
+    p.photo, p.size, p.luxury, p.description, p.personalisedJewellary, p.comingSoon,
+    ensureJsonArray(p.instruction), p.wallart, id
+  ], (err, result) => {
+    if (err) {
+      console.error('Error updating product:', err.sqlMessage);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json({ message: 'Product updated successfully!' });
+  });
+});
 
 // Delete product
 app.delete('/api/products/:id', (req, res) => {

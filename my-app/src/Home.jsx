@@ -8,6 +8,7 @@ import Footer from "./Components/Footer";
 import "./Home.css";
 import LoginModal from "./Components/LoginModal";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [products , setProducts] = useState({});
@@ -20,7 +21,7 @@ function Home() {
         return [];
     }
 });
-
+const navigate = useNavigate();
 const [user, setUser] = useState(() => {
   const savedUser = localStorage.getItem("user");
   return savedUser ? JSON.parse(savedUser) : null;
@@ -314,6 +315,12 @@ const [user, setUser] = useState(() => {
         isAuthenticated={isAuthenticated} 
         setIsLoginModalOpen={setIsLoginModalOpen} 
       />
+       <button 
+        className="collections-btn" 
+        onClick={() => navigate("/collections")}
+      >
+       Discover Our Collections
+      </button>
       </div>
       <div className="parallax3">
       <div className="feedback-form">

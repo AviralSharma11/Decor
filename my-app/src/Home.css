@@ -50,7 +50,7 @@
     text-align: center;
     letter-spacing: 0.1em;
     margin-bottom: 1rem;
-    text-shadow: 5px 5px 8px rgba(0, 0, 0, 1);
+    text-shadow: 5px 5px 3px rgba(0, 0, 0, 1);
     margin-top: 27vh;
   }
   
@@ -58,9 +58,9 @@
     text-align: center;
     color: white;
     font-size: 1.5rem;
-    font-family: 'Lora', serif; /* complementary serif font */
+    font-family: Arial, Helvetica, sans-serif;
     letter-spacing: 0.05em;
-    text-shadow: 4px 4px 7px rgba(0, 0, 0, 2);
+    text-shadow: 4px 4px 2px rgba(0, 0, 0, 2);
     font-weight: 400;
   }
   
@@ -92,7 +92,29 @@
     font-size: 1.5rem;
     margin-right: 10px;
   }
+  
+  .content-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
+  .collections-btn {
+    padding: 0.7rem 1.5rem;
+    max-width: 25rem;
+    background-color: #cea277;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin: 1rem;
+}
+
+.collections-btn:hover {
+   background-color: #a7724a;
+}
 
   .feedback-form {
     background: url('../public/Images/feedback_bg_500x622.png') no-repeat center center;
