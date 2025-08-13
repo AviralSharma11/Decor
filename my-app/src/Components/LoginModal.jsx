@@ -114,7 +114,7 @@ const handleVerifyOtp = async (e) => {
     onClose();
 
     // Redirect without reload
-    if (cleanedEmail === "aviral0201sharma@gmail.com") {
+    if (cleanedEmail === "oceanwaez@gmail.com") {
       navigate("/admin-dashboard");
     } else {
       navigate("/"); // Navigate to home

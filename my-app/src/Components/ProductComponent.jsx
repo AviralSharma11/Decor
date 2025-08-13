@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../Styles/ProductComponent.css";
 
 const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addToCart }) => {
   const [addedToCart, setAddedToCart] = useState({});
   const [currentImage, setCurrentImage] = useState({});
   const [showCustomisablePopup, setShowCustomisablePopup] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+  const navigate = useNavigate();
+  const handleOkClick = () => {
+    if (selectedProduct) {
+      setShowCustomisablePopup(false);
+      navigate(
+        `/product/${selectedProduct.name}`.toLowerCase().replace(/\s+/g, "-"),
+        { state: { product: selectedProduct } }
+      );
+    }
+  };
 
   // Initialize images when products change
   useEffect(() => {
@@ -20,9 +31,10 @@ const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addT
     setCurrentImage(imageMap);
   }, [products]);
 
-  const handleAddToCart = async (product) => {
+const handleAddToCart = async (product) => {
     // Prevent adding if customisable
     if (product.customisable) {
+      setSelectedProduct(product);
       setShowCustomisablePopup(true);
       return;
     }
@@ -69,7 +81,7 @@ const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addT
         <div className="popup-overlay" onClick={() => setShowCustomisablePopup(false)}>
           <div className="popup-box" onClick={(e) => e.stopPropagation()}>
             <p>This is a customisable product. Please go to the product page and customise it before adding to cart.</p>
-            <button onClick={() => setShowCustomisablePopup(false)}>OK</button>
+            <button onClick={handleOkClick}>OK</button>
           </div>
         </div>
       )}

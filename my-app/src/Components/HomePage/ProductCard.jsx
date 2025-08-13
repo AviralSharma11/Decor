@@ -1,11 +1,23 @@
 import React , {useState , useEffect} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../Styles/HomePage/ProductCard.css";
 
 const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
   const [products, setProducts] = useState([]);
   const [addedToCart, setAddedToCart] = useState({});
+  const [showCustomisablePopup, setShowCustomisablePopup] = useState(false);
   const [currentImage, setCurrentImage] = useState({});
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const navigate = useNavigate();
+  const handleOkClick = () => {
+    if (selectedProduct) {
+      setShowCustomisablePopup(false);
+      navigate(
+        `/product/${selectedProduct.name}`.toLowerCase().replace(/\s+/g, "-"),
+        { state: { product: selectedProduct } }
+      );
+    }
+  };
 
    useEffect(() => {
     const fetchFeatured = async () => {
@@ -30,10 +42,17 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
     fetchFeatured();
   }, []);
 
-  const handleAddToCart = async (product) => {
+ const handleAddToCart = async (product) => {
+    // Prevent adding if customisable
+    if (product.customisable) {
+      setSelectedProduct(product);
+      setShowCustomisablePopup(true);
+      return;
+    }
+
     if (!isAuthenticated) {
-        setIsLoginModalOpen(true);
-        return;
+      setIsLoginModalOpen(true);
+      return;
     }
 
     addToCart(product);
@@ -42,35 +61,41 @@ const ProductCard = ({ addToCart,  isAuthenticated, setIsLoginModalOpen}) => {
     const email = localStorage.getItem("userEmail");
 
     try {
-        const response = await fetch("http://localhost:5000/api/cart", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email,
-                product: {
-                    id: product.id,
-                    name: product.name,
-                    image: product.image,
-                    price: product.discountedPrice, // Use discounted price for cart
-                },
-            }),
-        });
+      const response = await fetch("http://localhost:5000/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          product: {
+            id: product.id,
+            name: product.name,
+            image: product.image,
+            price: product.discountedPrice || product.price || product.originalPrice || 0,
+          },
+        }),
+      });
 
-        if (!response.ok) {
-            throw new Error(`Failed to add to cart: ${response.statusText}`);
-        }
+      if (!response.ok) throw new Error(`Failed to add to cart: ${response.statusText}`);
     } catch (err) {
-        console.error("Failed to save cart:", err);
+      console.error("Failed to save cart:", err);
     }
 
     setTimeout(() => {
-        setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
+      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 3000);
-};
-
+  };
 
   return (
     <div className="product-container">
+      {showCustomisablePopup && (
+        <div className="popup-overlay" onClick={() => setShowCustomisablePopup(false)}>
+          <div className="popup-box" onClick={(e) => e.stopPropagation()}>
+            <p>This is a customisable product. Please go to the product page and customise it before adding to cart.</p>
+            <button onClick={handleOkClick}>OK</button>
+          </div>
+        </div>
+      )}
+
        {products.map((product) => (
         <div key={product.id} className="product-card">
            <Link

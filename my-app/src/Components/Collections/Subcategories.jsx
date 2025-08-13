@@ -7,31 +7,30 @@ import "../../Styles/Collection/Categories.css"; // Reuse same styling
 // Subcategory data
 const subcategoriesData = {
   style: [
-    { name: "Modern", image: "/Images/bystyles.jpg" },
-    { name: "Vintage", image: "/Images/bytrend.jpg" },
-    { name: "Bohemian", image: "/Images/bymaterial.jpg" },
-    { name: "Traditional", image: "/Images/bythemes.jpg" },
-    { name: "Transitional", image: "/Images/bymaterial.jpg" },
+    { name: "Modern", image: "/Images/Style/Modern.jpeg" },
+    { name: "Vintage", image: "/Images/Style/Vintage.jpeg" },
+    { name: "Bohemian", image: "/Images/Style/Bohemian.jpeg" },
+    { name: "Traditional", image: "/Images/Style/Traditional.jpeg" },
+    { name: "Transitional", image: "/Images/Style/Transitional.jpeg" },
   ],
   material: [
-    { name: "Wood", image: "/Images/bystyles.jpg" },
-    { name: "Acrylic", image: "/Images/bytrend.jpg" },
-    { name: "Glass", image: "/Images/bymaterial.jpg" },
-    { name: "Resin", image: "/Images/bythemes.jpg" },
-    { name: "Metal", image: ""},
-    { name: "Cotton", image: ""}
+    { name: "Wood", image: "/Images/Material/Wood.jpeg" },
+    { name: "Acrylic", image: "/Images/Material/Acrylic.jpeg" },
+    { name: "Glass", image: "/Images/Material/Glass.jpeg" },
+    { name: "Resin", image: "/Images/Material/Resin.jpeg" },
+    { name: "Metal", image: "/Images/Material/Metal.jpeg"},
   ],
   theme: [
-    { name: "Earthy", image: "/Images/theme/nature.webp" },
-    { name: "ModernMinialist", image: "/Images/theme/minimal.webp" },
-    { name: "OfficeEssential", image: "/Images/theme/luxury.webp" },
-    { name: "Safari", image:""},
-    { name: "Wellness", image: ""}
+    { name: "Earthy", image: "/Images/Theme/Earthy.jpeg" },
+    { name: "ModernMinimilast", image: "/Images/Theme/ModernMinimalist.jpeg" },
+    { name: "OfficeEssentials", image: "/Images/Theme/OfficeEssential.jpeg" },
+    { name: "Safari", image:"/Images/Theme/Safari.jpeg"},
+    { name: "Wellness", image: "/Images/Theme/Wellness.jpeg"}
   ],
   trending: [
-    {name: "SoftGirlAesthetic", image: ""},
-    {name: "Dopamine", image: ""},
-    {name: "Coquette", image: ""}
+    {name: "SoftGirlAesthetic", image: "/Images/Trending/SoftGirlAesthetic.jpeg"},
+    {name: "Dopamine", image: "/Images/Trending/Dopamine.jpeg"},
+    {name: "Coquette", image: "/Images/Trending/Coquette.jpeg"}
   ]
 };
 

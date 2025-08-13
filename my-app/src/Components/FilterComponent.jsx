@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import "../Styles/FilterComponent.css";
 
 const FilterComponent = ({ filters, selectedFilters, onFilterChange }) => {
-  const [expandedFilters, setExpandedFilters] = useState({}); // To track expanded/collapsed filters
+  const [expandedFilters, setExpandedFilters] = useState(() => {
+    const initialState = {};
+    filters.forEach(filter => {
+      initialState[filter.label] = true; // open all by default
+    });
+    return initialState;
+  });
+
 
   const toggleFilter = (filterLabel) => {
     setExpandedFilters((prev) => ({

@@ -72,7 +72,7 @@
   position: absolute;
   left:0;
   right:0;
-  bottom: 40px;
+  bottom: 50px;
   z-index: 2;
   transform: rotate(180deg);
 }
@@ -115,6 +115,11 @@
   }
 }
 
+@media (min-width: 1325px) and (max-width: 1800px){
+  .slider-wave2{
+    bottom: 60px;
+  }
+}
 
 @media (min-width: 911px) and (max-width: 994px){
   .slider-wave2{
