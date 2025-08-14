@@ -13,9 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-
+const feedbackRoutes = require("./routes/feedback.js");
 const FILE_NAME = 'ContactData.xlsx';
-const FILE_NAME1 = 'Feedbacks.xlsx';
 const FILE_NAME2 = 'Sell On OceanWays.xlsx';
 
 // MySQL Database Connection
@@ -278,38 +277,24 @@ app.post('/api/contact', (req, res) => {
     res.status(200).json({ message: 'Contact saved successfully' });
 });
 
-app.post('/api/feedback', (req, res) => {
-  const { fullName, email, message } = req.body;
+// POST feedback
+app.post("/api/feedback", (req, res) => {
+  const { user_id, name, email, rating, message } = req.body;
 
-  if (!fullName || !email || !message) {
-      return res.status(400).json({ error: 'All fields are required' });
+  if (!name || !email || !rating || !message) {
+    return res.status(400).json({ error: "All fields are required" });
   }
 
-  let workbook;
-  if (fs.existsSync(FILE_NAME1)) {
-      workbook = xlsx.readFile(FILE_NAME1);
-  } else {
-      workbook = xlsx.utils.book_new();
-  }
-
-  let worksheet;
-  if (workbook.SheetNames.includes('Feedbacks')) {
-      worksheet = workbook.Sheets['Feedbacks'];
-  } else {
-      worksheet = xlsx.utils.aoa_to_sheet([['Full Name', 'Email', 'Message']]);
-      xlsx.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
-  }
-
-  const data = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
-  data.push([fullName, email, message]);
-  const newWorksheet = xlsx.utils.aoa_to_sheet(data);
-
-  workbook.Sheets['Feedbacks'] = newWorksheet;
-
-  xlsx.writeFile(workbook, FILE_NAME1);
-
-  res.status(200).json({ message: 'Contact saved successfully' });
+  const sql = `INSERT INTO feedback (user_id, name, email, rating, message) VALUES (?, ?, ?, ?, ?)`;
+  db.query(sql, [user_id || null, name, email, rating, message], (err, result) => {
+    if (err) {
+      console.error("Error saving feedback:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json({ success: true, message: "Feedback submitted successfully" });
+  });
 });
+
 
 app.post('/api/join-us', (req, res) => {
     const { fullName, email, contact, subject, message } = req.body;
@@ -844,8 +829,8 @@ app.get("/api/products/personalised", async (req, res) => {
   }
 });
 
-
-
+// Fetch Feedback
+app.use("/api/feedback", feedbackRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

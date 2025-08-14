@@ -1,0 +1,96 @@
+.feedback-container {
+  padding: 50px 20px;
+  text-align: center;
+  color: white;
+  max-height: 100vh;
+}
+
+.feedback-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 3px 0.5px #333;
+}
+
+.feedback-subtitle {
+  font-size: 0.9rem;
+  color: #ddd;
+  margin-bottom: 30px;
+}
+
+/* Card container */
+.feedback-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.feedback-card {
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border-radius: 20px;
+  padding: 15px;
+  text-align: center;
+  backdrop-filter: blur(0px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  width: 100%;
+  transition: all 0.3s ease;
+  box-sizing: border-box; /* Prevent padding from overflowing */
+}
+
+
+.feedback-card:hover {
+  transform: translateY(-5px);
+}
+
+.feedback-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.feedback-text {
+  font-size: 0.9rem;
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+.feedback-stars {
+  color: #ffbb33;
+  font-size: 1.2rem;
+}
+
+/* Mobile view: keep 2 columns, shrink size */
+@media (max-width: 768px) {
+  .feedback-card {
+    width: 100%;
+    padding: 12px;
+    border-radius: 15px;
+  }
+  .feedback_name{
+    font-size: 1rem;
+  }
+
+  .feedback-text {
+    font-size: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .feedback-stars {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .feedback-card {
+    padding: 10px;
+  }
+
+  .feedback-text {
+    font-size: 0.5rem;
+  }
+
+  .feedback-heading {
+    font-size: 1.3rem;
+  }
+}

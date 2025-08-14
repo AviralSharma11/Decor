@@ -34,6 +34,7 @@ import Products from "./Components/AdminDashboard/Products";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import DynamicSubcategoryPage from "./Components/DynamicSubcategoryPage";
 import DynamicCategory from "./Components/DynamicCategoryPage";
+import FeedbackForm from "./Components/HomePage/FeedbackForm";
 
 function App() {
   return (
@@ -100,6 +101,9 @@ function App() {
 
           {/* Checkout */}
           <Route path="/checkout" element={<Checkout />} />
+
+          {/* FeedBack Form */}
+          <Route path="/feedback" element={<FeedbackForm />} />
 
           {/* Redirect invalid routes to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />

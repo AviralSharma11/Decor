@@ -1,10 +1,11 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../Styles/Checkout.css";
 
 const Checkout = () => {
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+  const [localities, setLocalities] = useState([]);
   const [formFields, setFormFields] = useState({
     firstName: "",
     lastName: "",
@@ -12,9 +13,10 @@ const Checkout = () => {
     city: "",
     state: "",
     pinCode: "",
-    phone: "", 
+    phone: "",
+    locality: "",
   });
-  
+
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
@@ -23,22 +25,18 @@ const Checkout = () => {
     script.async = true;
     script.onload = () => setRazorpayLoaded(true);
     document.body.appendChild(script);
-  }, []); 
-  
+  }, []);
+
+  // Validate form
   useEffect(() => {
-    const allFieldsFilled = Object.values(formFields).every((value) => value.trim() !== "");
+    const allFieldsFilled = Object.values(formFields).every(
+      (value) => value.trim() !== ""
+    );
     const validPin = /^[1-9][0-9]{5}$/.test(formFields.pinCode);
     const validPhone = /^[6-9]\d{9}$/.test(formFields.phone);
-  
-    console.log("Fields:", formFields);
-    console.log("All fields filled:", allFieldsFilled);
-    console.log("Valid PIN:", validPin);
-    console.log("Valid phone:", validPhone);
-  
+
     setIsFormValid(allFieldsFilled && validPin && validPhone);
   }, [formFields]);
-  
-  
 
   const handleBillingAddressChange = (e) => {
     setBillingSameAsShipping(e.target.value === "same");
@@ -51,32 +49,70 @@ const Checkout = () => {
   const location = useLocation();
   const { productPrice, productName } = location.state || {};
 
+  // Pincode API integration
+  useEffect(() => {
+    const fetchPincodeDetails = async () => {
+      if (formFields.pinCode.length === 6 && /^[1-9][0-9]{5}$/.test(formFields.pinCode)) {
+        try {
+          const response = await fetch(
+            `https://api.postalpincode.in/pincode/${formFields.pinCode}`
+          );
+          const data = await response.json();
+
+          if (data[0].Status === "Success") {
+            const postOffices = data[0].PostOffice;
+            setLocalities(postOffices);
+
+            if (postOffices.length === 1) {
+              setFormFields((prev) => ({
+                ...prev,
+                locality: postOffices[0].Name,
+                city: postOffices[0].District,
+                state: postOffices[0].State,
+              }));
+            } else {
+              setFormFields((prev) => ({
+                ...prev,
+                locality: "",
+                city: "",
+                state: "",
+              }));
+            }
+          } else {
+            setLocalities([]);
+            setFormFields((prev) => ({
+              ...prev,
+              locality: "",
+              city: "",
+              state: "",
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching pincode:", error);
+        }
+      }
+    };
+
+    fetchPincodeDetails();
+  }, [formFields.pinCode]);
 
   const handlePayment = async () => {
-    console.log("handlePayment called");
     try {
       const response = await fetch("http://localhost:5000/api/razorpay-key");
-      console.log("api response", response)
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
       const data = await response.json();
-  
-      if (!data.key) {
-        throw new Error("Razorpay key not received from backend");
-      }
+      if (!data.key) throw new Error("Razorpay key not received from backend");
+
       const fullName = `${formFields.firstName} ${formFields.lastName}`;
       const email = localStorage.getItem("userEmail") || "aviral@example.com";
-  
+
       const options = {
         key: data.key,
-        amount: productPrice * 100, // in paise
+        amount: productPrice * 100,
         currency: "INR",
         name: "OceanWays",
         description: productName,
-        // image: "https://your-logo-url.com/logo.png",
         handler: function (response) {
           alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
         },
@@ -85,144 +121,126 @@ const Checkout = () => {
           email: email,
           contact: formFields.phone,
         },
-        theme: {
-          color: "#3399cc",
-        },
+        theme: { color: "#3399cc" },
       };
-      
-  
+
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
       console.error("Error fetching Razorpay key:", error);
     }
   };
-  
+
   const validPin = /^[1-9][0-9]{5}$/.test(formFields.pinCode);
   const validPhone = /^[6-9]\d{9}$/.test(formFields.phone);
-
 
   return (
     <div className="checkout-container">
       <h1 className="page-title">Checkout</h1>
-      {/* Delivery Section */}
       <div className="format">
         <div className="section delivery">
           <h2>Delivery</h2>
           <form>
             <label>
-              Country/Region
-              <span className="compulsory">*</span>
+              Country/Region <span className="compulsory">*</span>
               <select>
                 <option value="India">India</option>
               </select>
             </label>
             <div className="form-row">
               <label>
-                First Name
-                <span className="compulsory">*</span>
-                <input type="text" name="firstName" placeholder="First name"  value={formFields.firstName}  onChange={handleChange} />
+                First Name <span className="compulsory">*</span>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formFields.firstName}
+                  onChange={handleChange}
+                />
               </label>
               <label>
-                Last Name
-                <span className="compulsory">*</span>
-                <input type="text" name="lastName" placeholder="Last name" value={formFields.lastName}  onChange={handleChange}/>
+                Last Name <span className="compulsory">*</span>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formFields.lastName}
+                  onChange={handleChange}
+                />
               </label>
             </div>
             <label>
-              Address
-              <span className="compulsory">*</span>
-              <input type="text" name="address" placeholder="Address" value={formFields.address}   onChange={handleChange}/>
-            </label>
-            <label>
-              Apartment, suite, etc. (Optional)
-              <input type="text" placeholder="Apartment, suite, etc." />
+              Address <span className="compulsory">*</span>
+              <input
+                type="text"
+                name="address"
+                value={formFields.address}
+                onChange={handleChange}
+              />
             </label>
             <div className="form-row">
               <label>
-                City
-                <span className="compulsory">*</span>
-                <input type="text" name="city" placeholder="City" value={formFields.city}  onChange={handleChange} />
-              </label>
-              <label>
-                State
-                <span className="compulsory">*</span>
-                <select name="state" value={formFields.state} onChange={handleChange} required>
-                  <option value="">Select State/UT</option>
-                  <option value="Andhra Pradesh">Andhra Pradesh</option>
-                  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                  <option value="Assam">Assam</option>
-                  <option value="Bihar">Bihar</option>
-                  <option value="Chhattisgarh">Chhattisgarh</option>
-                  <option value="Goa">Goa</option>
-                  <option value="Gujarat">Gujarat</option>
-                  <option value="Haryana">Haryana</option>
-                  <option value="Himachal Pradesh">Himachal Pradesh</option>
-                  <option value="Jharkhand">Jharkhand</option>
-                  <option value="Karnataka">Karnataka</option>
-                  <option value="Kerala">Kerala</option>
-                  <option value="Madhya Pradesh">Madhya Pradesh</option>
-                  <option value="Maharashtra">Maharashtra</option>
-                  <option value="Manipur">Manipur</option>
-                  <option value="Meghalaya">Meghalaya</option>
-                  <option value="Mizoram">Mizoram</option>
-                  <option value="Nagaland">Nagaland</option>
-                  <option value="Odisha">Odisha</option>
-                  <option value="Punjab">Punjab</option>
-                  <option value="Rajasthan">Rajasthan</option>
-                  <option value="Sikkim">Sikkim</option>
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Telangana">Telangana</option>
-                  <option value="Tripura">Tripura</option>
-                  <option value="Uttar Pradesh">Uttar Pradesh</option>
-                  <option value="Uttarakhand">Uttarakhand</option>
-                  <option value="West Bengal">West Bengal</option>
-                  <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                  <option value="Chandigarh">Chandigarh</option>
-                  <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
-                  <option value="Lakshadweep">Lakshadweep</option>
-                  <option value="Delhi">Delhi</option>
-                  <option value="Puducherry">Puducherry</option>
-                  <option value="Ladakh">Ladakh</option>
-                  <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                </select>
-              </label>
-              <label>
-                PIN Code
-                <span className="compulsory">*</span>
+                PIN Code <span className="compulsory">*</span>
                 <input
                   type="text"
                   name="pinCode"
-                  placeholder="PIN code"
                   value={formFields.pinCode}
-                  className={!validPin ? "invalid-input" : ""}
                   onChange={handleChange}
+                  className={!validPin ? "invalid-input" : ""}
                 />
                 {!validPin && formFields.pinCode.length > 0 && (
                   <div className="error-message">INVALID</div>
                 )}
               </label>
-
+              {localities.length > 0 && (
+                <label>
+                  Locality <span className="compulsory">*</span>
+                  <select
+                    name="locality"
+                    value={formFields.locality}
+                    onChange={(e) => {
+                      const selected = localities.find(
+                        (loc) => loc.Name === e.target.value
+                      );
+                      setFormFields((prev) => ({
+                        ...prev,
+                        locality: e.target.value,
+                        city: selected?.District || "",
+                        state: selected?.State || "",
+                      }));
+                    }}
+                  >
+                    <option value="">Select Locality</option>
+                    {localities.map((loc, index) => (
+                      <option key={index} value={loc.Name}>
+                        {loc.Name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
             </div>
-           <label>
-              Phone
-              <span className="compulsory">*</span>
+            <div className="form-row">
+              <label>
+                City <span className="compulsory">*</span>
+                <input type="text" name="city" value={formFields.city} readOnly />
+              </label>
+              <label>
+                State <span className="compulsory">*</span>
+                <input type="text" name="state" value={formFields.state} readOnly />
+              </label>
+            </div>
+            <label>
+              Phone <span className="compulsory">*</span>
               <input
                 type="text"
                 name="phone"
-                placeholder="Phone"
                 value={formFields.phone}
-                className={!validPhone ? "invalid-input" : ""}
                 onChange={handleChange}
+                className={!validPhone ? "invalid-input" : ""}
               />
               {!validPhone && formFields.phone.length > 0 && (
                 <div className="error-message">INVALID</div>
               )}
             </label>
-
-            {/* <label>
-              <input type="checkbox" /> Save this information for next time
-            </label> */}
           </form>
         </div>
 
@@ -237,22 +255,9 @@ const Checkout = () => {
             </label>
             <div className="payment-description">
               <p>
-                After clicking “Pay now,” you will be redirected to Razorpay
-                Secure to complete your purchase securely.
+                After clicking “Pay now,” you will be redirected to Razorpay Secure to complete your purchase securely.
               </p>
             </div>
-            {/* <label>
-              <input type="radio" name="payment" />
-              Credit Cards, Debit Cards
-            </label>
-            <label>
-              <input type="radio" name="payment" />
-              Simpl PayLater & Pay in 3 Installments | 0% Interest
-            </label>
-            <label>
-              <input type="radio" name="payment" />
-              CRED Pay (Rewards on UPI, Cards, etc.)
-            </label> */}
           </div>
 
           {/* Billing Address */}
@@ -281,9 +286,9 @@ const Checkout = () => {
               <div className="billing-details">
                 <label>
                   Billing Address
-                  <input 
-                    type="text" 
-                    placeholder="Billing Address" 
+                  <input
+                    type="text"
+                    placeholder="Billing Address"
                     name="billingAddress"
                     value={formFields.billingAddress}
                     onChange={handleChange}
@@ -291,31 +296,24 @@ const Checkout = () => {
                 </label>
               </div>
             )}
-
           </div>
         </div>
       </div>
 
-      {/* Pay Now Button */}
       <button
-  className="pay-now"
-  onClick={() => {
-    console.log("razorpayLoaded:", razorpayLoaded);
-    console.log("isFormValid:", isFormValid);
-    if (!razorpayLoaded || !isFormValid) {
-      alert("Can't proceed: Razorpay not loaded or form invalid.");
-      return;
-    }
-    handlePayment();
-  }}
->
-  {razorpayLoaded ? "Pay now" : "Loading Payment..."}
-</button>
-
-
+        className="pay-now"
+        onClick={() => {
+          if (!razorpayLoaded || !isFormValid) {
+            alert("Can't proceed: Razorpay not loaded or form invalid.");
+            return;
+          }
+          handlePayment();
+        }}
+      >
+        {razorpayLoaded ? "Pay now" : "Loading Payment..."}
+      </button>
     </div>
   );
 };
 
 export default Checkout;
-//check this
