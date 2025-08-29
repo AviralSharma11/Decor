@@ -6,14 +6,14 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/orders")
+    fetch("http://72.60.97.97:5000/api/orders")
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error("Error fetching orders:", err));
   }, []);
 
   const downloadExcel = () => {
-    window.open("http://localhost:5000/api/orders/export", "_blank");
+    window.open("http://72.60.97.97:5000/api/orders/export", "_blank");
   };
 
   return (

@@ -40,7 +40,7 @@ export default function DynamicCategoryPage() {
 
   // Fetch products from backend
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("http://72.60.97.97:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched products:", data); // DEBUG
@@ -167,7 +167,7 @@ export default function DynamicCategoryPage() {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/cart/remove", {
+      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +196,7 @@ export default function DynamicCategoryPage() {
     if (newQuantity < 1) return;
 
     try {
-      await fetch("http://localhost:5000/api/cart/update", {
+      await fetch("http://72.60.97.97:5000/api/cart/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

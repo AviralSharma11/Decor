@@ -56,7 +56,7 @@ const FriendsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch("http://72.60.97.97:5000/api/products");
         const data = await res.json();
         const friendsProducts = data.filter(product => product.giftingguide?.includes("Friends"));
         setProducts(friendsProducts);
@@ -123,7 +123,7 @@ const FriendsPage = () => {
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
     try {
-      const res = await fetch('http://localhost:5000/api/cart/remove', {
+      const res = await fetch('http://72.60.97.97:5000/api/cart/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -147,7 +147,7 @@ const FriendsPage = () => {
     if (newQty < 1) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/cart/update", {
+      const res = await fetch("http://72.60.97.97:5000/api/cart/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

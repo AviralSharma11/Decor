@@ -60,7 +60,7 @@ const HERPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch("http://72.60.97.97:5000/api/products");
         const data = await res.json();
         const herProducts = data.filter((product) => {
           if (Array.isArray(product.giftingguide)) {

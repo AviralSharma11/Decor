@@ -44,7 +44,7 @@ const Gifts = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("http://72.60.97.97:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         const giftOnly = data.filter((product) => product.gift === 1 || product.gift === true);
@@ -136,7 +136,7 @@ const Gifts = () => {
     if (!isAuthenticated) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/cart/remove", {
+      const res = await fetch("http://72.60.97.97:5000/api/cart/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId }),
@@ -158,7 +158,7 @@ const Gifts = () => {
     if (newQuantity < 1) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/cart/update", {
+      const res = await fetch("http://72.60.97.97:5000/api/cart/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId, quantity: newQuantity }),

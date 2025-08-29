@@ -6,13 +6,13 @@ export default function Users() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/users")
+    axios.get("http://72.60.97.97:5000/api/users")
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Failed to fetch users:", err));
   }, []);
 
   const handleExport = () => {
-    window.open("http://localhost:5000/api/users/export", "_blank");
+    window.open("http://72.60.97.97:5000/api/users/export", "_blank");
   };
 
   return (

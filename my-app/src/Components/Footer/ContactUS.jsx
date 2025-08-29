@@ -14,7 +14,7 @@ export default function ContactUS() {
   useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products");
+      const response = await fetch("http://72.60.97.97:5000/api/products");
       const data = await response.json();
       if (response.ok) {
         setProducts(data);
@@ -45,7 +45,7 @@ export default function ContactUS() {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
+      const response = await fetch("http://72.60.97.97:5000/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export default function ContactUS() {
           if (!isAuthenticated) return;
         
           try {
-            const response = await fetch('http://localhost:5000/api/cart/remove', {
+            const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export default function ContactUS() {
           if (newQuantity < 1) return; // Prevent setting quantity to less than 1
         
           try {
-            const response = await fetch('http://localhost:5000/api/cart/update', {
+            const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

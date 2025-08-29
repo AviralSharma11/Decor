@@ -39,7 +39,7 @@ const Luxury = () => {
     const storedEmail = localStorage.getItem("userEmail");
     if (storedEmail) setUser({ email: storedEmail });
 
-    fetch("http://localhost:5000/api/products")
+    fetch("http://72.60.97.97:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
         const luxuryOnly = data.filter((product) => product.luxury === 1 || product.luxury === true);
@@ -116,7 +116,7 @@ const Luxury = () => {
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
     try {
-      const res = await fetch("http://localhost:5000/api/cart/remove", {
+      const res = await fetch("http://72.60.97.97:5000/api/cart/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId }),
@@ -136,7 +136,7 @@ const Luxury = () => {
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      const res = await fetch("http://localhost:5000/api/cart/update", {
+      const res = await fetch("http://72.60.97.97:5000/api/cart/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId, quantity: newQuantity }),

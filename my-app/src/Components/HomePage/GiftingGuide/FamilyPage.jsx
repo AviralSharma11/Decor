@@ -61,7 +61,7 @@ const FamilyPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch("http://72.60.97.97:5000/api/products");
         const data = await res.json();
         const familyProducts = data.filter(product =>
           product.giftingguide?.includes("Family")
@@ -154,7 +154,7 @@ const FamilyPage = () => {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/cart/remove", {
+      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -184,7 +184,7 @@ const FamilyPage = () => {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/cart/update", {
+      const response = await fetch("http://72.60.97.97:5000/api/cart/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -40,7 +40,7 @@ const PersonalisedJewellary = () => {
            const storedEmail = localStorage.getItem("userEmail");
            if (storedEmail) setUser({ email: storedEmail });
            
-      fetch("http://localhost:5000/api/products/personalised")
+      fetch("http://72.60.97.97:5000/api/products/personalised")
         .then(res => res.json())
         .then(data => {
           setAllProducts(data.products || []); // assuming backend returns { products: [...] }
@@ -151,7 +151,7 @@ const PersonalisedJewellary = () => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
+      const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +184,7 @@ const PersonalisedJewellary = () => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch('http://localhost:5000/api/cart/update', {
+      const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

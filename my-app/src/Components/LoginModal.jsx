@@ -44,7 +44,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/send-email-otp", { email: cleanedEmail });
+      await axios.post("http://72.60.97.97:5000/api/send-email-otp", { email: cleanedEmail });
       setLoading(false);
       setOtpSent(true);
       setResendTimer(30);
@@ -67,7 +67,7 @@ const handleVerifyOtp = async (e) => {
   setError("");
 
   try {
-    const response = await axios.post("http://localhost:5000/api/verify-email-otp", {
+    const response = await axios.post("http://72.60.97.97:5000/api/verify-email-otp", {
       email: cleanedEmail,
       otp,
     });
@@ -89,7 +89,7 @@ const handleVerifyOtp = async (e) => {
     setCart([]);
 
     // Fetch cart data from backend
-    const cartResponse = await axios.get(`http://localhost:5000/api/cart/${cleanedEmail}`);
+    const cartResponse = await axios.get(`http://72.60.97.97:5000/api/cart/${cleanedEmail}`);
     const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
     console.log("Cart fetch response:", cartResponse.data);
 
@@ -132,7 +132,7 @@ const handleLogout = async () => {
     try {
       // Save cart to MySQL before logging out
       for (const item of cart) {
-        await axios.post("http://localhost:5000/api/cart/update", {
+        await axios.post("http://72.60.97.97:5000/api/cart/update", {
           email: userEmail,
           productId: item.id,
           quantity: item.quantity,
