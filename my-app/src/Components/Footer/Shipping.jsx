@@ -3,6 +3,7 @@ import "../../Styles/Footer/FooterLinks.css";
 import Header from "../Header";
 import Footer from "../Footer";
 import "../../Styles/Footer/Shipping.css";
+import LoginModal from "../LoginModal";
 import SocialMediaBadges from "../SocialMediaBadges";
 
 export default function Shipping(){
@@ -24,13 +25,26 @@ export default function Shipping(){
         const savedCart = localStorage.getItem("cart");
         return savedCart ? JSON.parse(savedCart) : [];
       });
+                const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
+                const [isAuthenticated, setIsAuthenticated] = useState(() => {
+                  return localStorage.getItem("isAuthenticated") === "true"; // Check login status
+                });
+            
+                  const [user, setUser] = useState(() => {
+                    const savedUser = localStorage.getItem("user");
+                    return savedUser ? JSON.parse(savedUser) : null;
+                  });
 
         const [products, setProducts] = useState([]);
     
-      useEffect(() => {
-        localStorage.setItem("cart", JSON.stringify(cart));
-      }, [cart]);
+              useEffect(() => {
+                const storedEmail = localStorage.getItem("userEmail");
+                if (storedEmail) {
+                  setUser({ email: storedEmail });
+                }
+              }, []);
     
+
 
         useEffect(() => {
           const fetchProducts = async () => {
@@ -130,6 +144,18 @@ const updateQuantity = async (productId, newQuantity) => {
             <p>In case of any queries and doubts, we are happy if you write to us at <span style={{fontWeight:600}}>support@oceanways.in</span></p>
          </div>
          <SocialMediaBadges />
+         {isLoginModalOpen && (
+              <LoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLogin={() => {
+                  setIsAuthenticated(true);
+                  localStorage.setItem("isAuthenticated", "true");
+                  setIsLoginModalOpen(false); // Close modal after login
+                  window.location.reload();
+                }}
+              />
+            )}
          <Footer />   
         </div>
     );
