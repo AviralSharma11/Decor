@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Styles/HomePage/TopFeedbacks.css";
+import { API_BASE_URL } from "../../api/config";
 
 export default function TopFeedbacks() {
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/feedback/top")
+    axios.get(`${API_BASE_URL}/feedback/top`)
       .then(res => setFeedbacks(res.data))
       .catch(err => console.error(err));
   }, []);

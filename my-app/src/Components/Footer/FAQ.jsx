@@ -5,6 +5,7 @@ import Footer from "../Footer";
 import LoginModal from "../LoginModal";
 import SocialMediaBadges from "../SocialMediaBadges";
 import Header from "../Header";
+import { API_BASE_URL } from "../../api/config";
 
 export default function FAQ() {
   const [cart, setCart] = useState(() => {
@@ -36,7 +37,7 @@ export default function FAQ() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://72.60.97.97:5000/api/products");
+        const response = await fetch(`${API_BASE_URL}/products`);
         const data = await response.json();
         if (response.ok) {
           setProducts(data);
@@ -55,7 +56,7 @@ export default function FAQ() {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +88,7 @@ export default function FAQ() {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

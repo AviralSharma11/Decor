@@ -9,6 +9,7 @@ import FilterComponent from "../../FilterComponent";
 import FilterComponent2 from "../../FilterComponent2";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
+import { API_BASE_URL } from "../../../api/config";
 
 const WallArt = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -40,7 +41,7 @@ const WallArt = () => {
        const storedEmail = localStorage.getItem("userEmail");
        if (storedEmail) setUser({ email: storedEmail });
    
-       fetch("http://72.60.97.97:5000/api/products")
+       fetch(`${API_BASE_URL}/products`)
          .then((res) => res.json())
          .then((data) => {
            const wallartOnly = data.filter((product) => product.wallart === 1 || product.wallart === true);
@@ -149,7 +150,7 @@ const WallArt = () => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -182,7 +183,7 @@ const WallArt = () => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

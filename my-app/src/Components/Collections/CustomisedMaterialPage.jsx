@@ -9,6 +9,7 @@ import FilterComponent from "../FilterComponent";
 import FilterComponent2 from "../FilterComponent2";
 import SocialMediaBadges from "../SocialMediaBadges";
 import LoginModal from "../LoginModal";
+import { API_BASE_URL } from "../../api/config";
 
 const CustomisedMaterialPage = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -51,7 +52,7 @@ const CustomisedMaterialPage = () => {
 useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://72.60.97.97:5000/api/products/customisable");
+      const res = await fetch(`${API_BASE_URL}/products/customisable`);
       const data = await res.json();
       setAllProducts(data.products || []);
     } catch (error) {
@@ -142,7 +143,7 @@ useEffect(() => {
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: localStorage.getItem('userEmail'), productId }),
@@ -166,7 +167,7 @@ useEffect(() => {
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

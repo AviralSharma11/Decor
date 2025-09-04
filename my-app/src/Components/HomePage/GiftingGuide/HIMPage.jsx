@@ -9,6 +9,7 @@ import FilterComponent from "../../FilterComponent";
 import FilterComponent2 from "../../FilterComponent2";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
+import { API_BASE_URL } from "../../../api/config";
 
 const HIMPage = () => {
   const [products, setProducts] = useState([]);
@@ -59,7 +60,7 @@ const HIMPage = () => {
       useEffect(() => {
         const fetchProducts = async () => {
           try {
-            const res = await fetch("http://72.60.97.97:5000/api/products");
+            const res = await fetch(`${API_BASE_URL}/products`);
             const data = await res.json();
             const himProducts = data.filter((product) => {
               if (Array.isArray(product.giftingguide)) {
@@ -157,7 +158,7 @@ const HIMPage = () => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ const HIMPage = () => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

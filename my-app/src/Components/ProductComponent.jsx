@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/ProductComponent.css";
+import { API_BASE_URL } from "../api/config";
 
 const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addToCart }) => {
   const [addedToCart, setAddedToCart] = useState({});
@@ -50,7 +51,7 @@ const handleAddToCart = async (product) => {
     const email = localStorage.getItem("userEmail");
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart", {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

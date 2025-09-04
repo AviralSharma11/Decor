@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Styles/Modal.css";
+import { API_BASE_URL } from "../api/config";
 
 const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
@@ -44,7 +45,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
     setLoading(true);
     try {
-      await axios.post("http://72.60.97.97:5000/api/send-email-otp", { email: cleanedEmail });
+      await axios.post(`${API_BASE_URL}/send-email-otp`, { email: cleanedEmail });
       setLoading(false);
       setOtpSent(true);
       setResendTimer(30);
@@ -67,7 +68,7 @@ const handleVerifyOtp = async (e) => {
   setError("");
 
   try {
-    const response = await axios.post("http://72.60.97.97:5000/api/verify-email-otp", {
+    const response = await axios.post(`${API_BASE_URL}/verify-email-otp`, {
       email: cleanedEmail,
       otp,
     });
@@ -89,7 +90,7 @@ const handleVerifyOtp = async (e) => {
     setCart([]);
 
     // Fetch cart data from backend
-    const cartResponse = await axios.get(`http://72.60.97.97:5000/api/cart/${cleanedEmail}`);
+    const cartResponse = await axios.get(`${API_BASE_URL}/cart/${cleanedEmail}`);
     const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
     console.log("Cart fetch response:", cartResponse.data);
 
@@ -132,7 +133,7 @@ const handleLogout = async () => {
     try {
       // Save cart to MySQL before logging out
       for (const item of cart) {
-        await axios.post("http://72.60.97.97:5000/api/cart/update", {
+        await axios.post(`${API_BASE_URL}/cart/update`, {
           email: userEmail,
           productId: item.id,
           quantity: item.quantity,

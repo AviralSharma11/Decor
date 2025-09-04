@@ -4,6 +4,7 @@ import Header from "../../Header";
 import LoginModal from "../../LoginModal";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import Footer from "../../Footer";
+import { API_BASE_URL } from "../../../api/config";
 
 export default function Careers() {
   const [cart, setCart] = useState(() => {
@@ -31,7 +32,7 @@ export default function Careers() {
 
   // ✅ Fetch products from backend
   useEffect(() => {
-    fetch("http://72.60.97.97:5000/api/products")
+    fetch(`${API_BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error("Failed to load products:", err));
@@ -41,7 +42,7 @@ export default function Careers() {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export default function Careers() {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

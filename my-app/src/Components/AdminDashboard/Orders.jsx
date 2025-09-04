@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/AdminDashboard/Orders.css";
+import { API_BASE_URL } from "../../api/config";
 
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("http://72.60.97.97:5000/api/orders")
+    fetch(`${API_BASE_URL}/orders`)
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error("Error fetching orders:", err));
   }, []);
 
   const downloadExcel = () => {
-    window.open("http://72.60.97.97:5000/api/orders/export", "_blank");
+    window.open(`${API_BASE_URL}/orders/export`, "_blank");
   };
 
   return (

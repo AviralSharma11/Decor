@@ -4,6 +4,7 @@ import Footer from "../../Footer";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import Header from "../../Header";
 import LoginModal from "../../LoginModal";
+import { API_BASE_URL } from "../../../api/config";
 
 const Blogs = () => {
   const [products, setProducts] = useState([]);
@@ -31,7 +32,7 @@ const Blogs = () => {
 
   useEffect(() => {
     // Fetch products from backend
-    fetch("http://72.60.97.97:5000/api/products")
+    fetch(`${API_BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching products:", err));
@@ -41,7 +42,7 @@ const Blogs = () => {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -71,7 +72,7 @@ const Blogs = () => {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -5,6 +5,7 @@ import Footer from '../../Footer';
 import SocialMediaBadges from '../../SocialMediaBadges';
 import LoginModal from '../../LoginModal';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../../../api/config';
 
 const SellOnOceanWays = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ const SellOnOceanWays = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://72.60.97.97:5000/api/products')
+    fetch(`${API_BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error('Failed to fetch products:', err));
@@ -33,7 +34,7 @@ const SellOnOceanWays = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/join-us", {
+      const response = await fetch(`${API_BASE_URL}/join-us`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ const SellOnOceanWays = () => {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -133,7 +134,7 @@ const SellOnOceanWays = () => {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -5,6 +5,7 @@ import Footer from "../Footer";
 import "../../Styles/Footer/Shipping.css";
 import LoginModal from "../LoginModal";
 import SocialMediaBadges from "../SocialMediaBadges";
+import { API_BASE_URL } from "../../api/config";
 
 export default function Shipping(){
     const shippingInfo = [
@@ -49,7 +50,7 @@ export default function Shipping(){
         useEffect(() => {
           const fetchProducts = async () => {
             try {
-              const response = await fetch("http://72.60.97.97:5000/api/products");
+              const response = await fetch(`${API_BASE_URL}/products`);
               const data = await response.json();
               if (response.ok) {
                 setProducts(data);
@@ -69,7 +70,7 @@ const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,7 +100,7 @@ const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

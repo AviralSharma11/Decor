@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/AdminDashboard/Settings.css";
+import { API_BASE_URL } from "../../api/config";
 
 export default function Settings() {
   const [form, setForm] = useState({
@@ -12,7 +13,7 @@ export default function Settings() {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    fetch("http://72.60.97.97:5000/api/settings")
+    fetch(`${API_BASE_URL}/settings`)
       .then((res) => res.json())
       .then((data) => setForm(data))
       .catch((err) => console.error(err));
@@ -25,7 +26,7 @@ export default function Settings() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://72.60.97.97:5000/api/settings", {
+    fetch(`${API_BASE_URL}/settings`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

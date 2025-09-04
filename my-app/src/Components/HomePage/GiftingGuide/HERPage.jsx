@@ -9,6 +9,7 @@ import FilterComponent from "../../FilterComponent";
 import FilterComponent2 from "../../FilterComponent2";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
+import { API_BASE_URL } from "../../../api/config";
 
 const HERPage = () => {
   const [products, setProducts] = useState([]);
@@ -60,7 +61,7 @@ const HERPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://72.60.97.97:5000/api/products");
+        const res = await fetch(`${API_BASE_URL}/products`);
         const data = await res.json();
         const herProducts = data.filter((product) => {
           if (Array.isArray(product.giftingguide)) {

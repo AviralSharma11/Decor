@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Styles/AdminDashboard/Users.css";
+import { API_BASE_URL } from "../../api/config";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get("http://72.60.97.97:5000/api/users")
+    axios.get(`${API_BASE_URL}/users`)
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Failed to fetch users:", err));
   }, []);
 
   const handleExport = () => {
-    window.open("http://72.60.97.97:5000/api/users/export", "_blank");
+    window.open(`${API_BASE_URL}/users/export`, "_blank");
   };
 
   return (

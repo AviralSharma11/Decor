@@ -5,6 +5,7 @@ import Header from "./Header";
 import SocialMediaBadges from "./SocialMediaBadges";
 import Footer from "./Footer";
 import LoginModal from "./LoginModal";
+import { API_BASE_URL } from "../api/config";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -41,7 +42,7 @@ const ProductDetailPage = () => {
 
  const fetchProduct = async () => {
     try {
-      const response = await fetch(`http://72.60.97.97:5000/api/products/slug/${cleanedSlug}`);
+      const response = await fetch(`${API_BASE_URL}/products/slug/${cleanedSlug}`);
       const data = await response.json();
       console.log("Fetched image data:", data.image);
 
@@ -142,7 +143,7 @@ const proceedToCheckout = async () => {
   };
 
   try {
-    await fetch("http://72.60.97.97:5000/api/save-order", {
+    await fetch(`${API_BASE_URL}/save-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
@@ -271,7 +272,7 @@ const normalizeInstructions = (instr) => {
  const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
     try {
-      const res = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const res = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -296,7 +297,7 @@ const normalizeInstructions = (instr) => {
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      const res = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const res = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

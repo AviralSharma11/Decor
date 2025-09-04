@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../Styles/Checkout.css";
+import { API_BASE_URL } from "../api/config";
 
 const Checkout = () => {
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
@@ -98,7 +99,7 @@ const Checkout = () => {
 
   const handlePayment = async () => {
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/razorpay-key");
+      const response = await fetch(`${API_BASE_URL}/razorpay-key`);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../Styles/AdminDashboard/Product.css';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/config';
 
 const initialProduct = {
   name: '',
@@ -38,7 +39,7 @@ export default function Products() {
   }, []);
 
   const fetchProducts = async () => {
-    const res = await axios.get('/api/products');
+    const res = await axios.get(`${API_BASE_URL}/products`);
     setProducts(res.data);
   };
 
@@ -97,9 +98,9 @@ const handleAddOrUpdateProduct = async () => {
     };
 
     if (editingId) {
-      await axios.put(`/api/products/${editingId}`, payload);
+      await axios.put(`${API_BASE_URL}/products/${editingId}`, payload);
     } else {
-      await axios.post('/api/products', payload);
+      await axios.post(`${API_BASE_URL}/products`, payload);
     }
 
     await fetchProducts();
@@ -115,7 +116,7 @@ const handleAddOrUpdateProduct = async () => {
 
 const handleDelete = async (id) => {
   try {
-    await axios.delete(`/api/products/${id}`);
+    await axios.delete(`${API_BASE_URL}/products/${id}`);
     await fetchProducts();
   } catch (err) {
     console.error("Error deleting product:", err.response?.data || err.message);

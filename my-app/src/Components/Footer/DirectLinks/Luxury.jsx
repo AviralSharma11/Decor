@@ -9,6 +9,7 @@ import FilterComponent from "../../FilterComponent";
 import FilterComponent2 from "../../FilterComponent2";
 import SocialMediaBadges from "../../SocialMediaBadges";
 import LoginModal from "../../LoginModal";
+import { API_BASE_URL } from "../../../api/config";
 
 const Luxury = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -39,7 +40,7 @@ const Luxury = () => {
     const storedEmail = localStorage.getItem("userEmail");
     if (storedEmail) setUser({ email: storedEmail });
 
-    fetch("http://72.60.97.97:5000/api/products")
+    fetch(`${API_BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => {
         const luxuryOnly = data.filter((product) => product.luxury === 1 || product.luxury === true);
@@ -116,7 +117,7 @@ const Luxury = () => {
   const removeFromCart = async (productId) => {
     if (!isAuthenticated) return;
     try {
-      const res = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const res = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId }),
@@ -136,7 +137,7 @@ const Luxury = () => {
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      const res = await fetch("http://72.60.97.97:5000/api/cart/update", {
+      const res = await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: localStorage.getItem("userEmail"), productId, quantity: newQuantity }),

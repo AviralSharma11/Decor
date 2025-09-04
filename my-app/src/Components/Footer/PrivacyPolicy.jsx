@@ -4,6 +4,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import LoginModal from "../LoginModal";
 import SocialMediaBadges from "../SocialMediaBadges";
+import { API_BASE_URL } from "../../api/config";
 
 const PrivacyPolicy = () => {
       const [cart, setCart] = useState(() => {
@@ -33,7 +34,7 @@ const PrivacyPolicy = () => {
               useEffect(() => {
                 const fetchProducts = async () => {
                   try {
-                    const response = await fetch("http://72.60.97.97:5000/api/products");
+                    const response = await fetch(`${API_BASE_URL}/products`);
                     const data = await response.json();
                     if (response.ok) {
                       setProducts(data);
@@ -52,7 +53,7 @@ const PrivacyPolicy = () => {
               if (!isAuthenticated) return;
             
               try {
-                const response = await fetch('http://72.60.97.97:5000/api/cart/remove', {
+                const response = await fetch(`${API_BASE_URL}/cart/remove`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ const PrivacyPolicy = () => {
               if (newQuantity < 1) return; // Prevent setting quantity to less than 1
             
               try {
-                const response = await fetch('http://72.60.97.97:5000/api/cart/update', {
+                const response = await fetch(`${API_BASE_URL}/cart/update`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',

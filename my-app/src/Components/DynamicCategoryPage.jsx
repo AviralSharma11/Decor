@@ -9,6 +9,7 @@ import ProductComponent from "./ProductComponent";
 import { filters as initialFilters } from "../List/filter";
 import "../Collections.css";
 import LoginModal from "./LoginModal";
+import { API_BASE_URL } from "../api/config";
 
 export default function DynamicCategoryPage() {
   const [filters] = useState(initialFilters);
@@ -40,7 +41,7 @@ export default function DynamicCategoryPage() {
 
   // Fetch products from backend
   useEffect(() => {
-    fetch("http://72.60.97.97:5000/api/products")
+    fetch(`${API_BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched products:", data); // DEBUG
@@ -167,7 +168,7 @@ export default function DynamicCategoryPage() {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetch("http://72.60.97.97:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +197,7 @@ export default function DynamicCategoryPage() {
     if (newQuantity < 1) return;
 
     try {
-      await fetch("http://72.60.97.97:5000/api/cart/update", {
+      await fetch(`${API_BASE_URL}/cart/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
