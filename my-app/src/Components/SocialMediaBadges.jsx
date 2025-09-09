@@ -5,7 +5,7 @@ const SocialMediaBadges = () => {
   return (
     <div className="social-media-badges">
       <a
-        href="https://wa.me/qr/IMOVSX4SDTJ5M1 " // Replace with your WhatsApp link
+        href="https://wa.me/917509202484 " // Replace with your WhatsApp link
         target="_blank"
         rel="noopener noreferrer"
         className="badge whatsapp-badge"
@@ -15,7 +15,7 @@ const SocialMediaBadges = () => {
         </svg>
       </a>
       <a
-        href="https://www.instagram.com/aviralsharma.7/" // Replace with your Instagram link
+        href="https://www.instagram.com/oceanways.in/" // Replace with your Instagram link
         target="_blank"
         rel="noopener noreferrer"
         className="badge instagram-badge"

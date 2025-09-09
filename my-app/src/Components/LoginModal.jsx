@@ -92,8 +92,9 @@ const handleVerifyOtp = async (e) => {
     // Fetch cart data from backend
     const cartResponse = await axios.get(`${API_BASE_URL}/cart/${cleanedEmail}`);
     const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
-    console.log("Cart fetch response:", cartResponse.data);
 
+
+    console.log("Fetched cart data:", cartData);
 
     if (cartData.length > 0) {
       const updatedCart = cartData.map((item) => ({
@@ -105,8 +106,10 @@ const handleVerifyOtp = async (e) => {
       localStorage.setItem("savedCart", JSON.stringify(updatedCart));
       console.log("New cart loaded and saved:", updatedCart);
     } else {
+      setCart([]); // explicitly clear cart
       console.log("Cart is empty for new user.");
     }
+
 
     if (typeof onLogin === "function") {
       onLogin();

@@ -9,6 +9,7 @@ import "./Home.css";
 import LoginModal from "./Components/LoginModal";
 import { useNavigate } from "react-router-dom";
 import TopFeedbacks from "./Components/HomePage/TopFeedbacks";
+import { API_BASE_URL } from "./api/config";
 
 function Home() {
   const [products , setProducts] = useState({});
@@ -39,7 +40,7 @@ const [user, setUser] = useState(() => {
     localStorage.setItem("userEmail", email);
   
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/${email}`);
+        const response = await fetch(`${API_BASE_URL}/api/cart/${email}`);
         if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
         
         const cartData = await response.json();
@@ -86,13 +87,18 @@ const [user, setUser] = useState(() => {
             price: Number(product.price),
             quantity: product.quantity || 1,
             image: product.image || "",
+            customData: {
+              customText: product.customText || "",
+              customImage: product.customImage || ""
+            }
           },
         };
+
   
         console.log("Sending product to server:", JSON.stringify(payload, null, 2));
   
         try {
-          const res = await fetch(`${process.env.REACT_APP_API_URL}/api/cart`, {
+          const res = await fetch(`${API_BASE_URL}/api/cart`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -139,14 +145,15 @@ const [user, setUser] = useState(() => {
     if (!isAuthenticated) return;
   
     try {
-      const response = await fetch("http://localhost:5000/api/cart/remove", {
+      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'), // Assuming email is stored in localStorage
+          email: localStorage.getItem('userEmail'),
           productId,
+          customData: cart.find(item => item.id === productId)?.customData || {}
         }),
       });
   
@@ -172,7 +179,7 @@ const [user, setUser] = useState(() => {
     if (newQuantity < 1) return; // Prevent setting quantity to less than 1
   
     try {
-      const response = await fetch("http://localhost:5000/api/cart/update", {
+      const response = await fetch(`${API_BASE_URL}/cart/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +188,9 @@ const [user, setUser] = useState(() => {
           email: localStorage.getItem('userEmail'),
           productId,
           quantity: newQuantity,
+          customData: cart.find(item => item.id === productId)?.customData || {}
         }),
+
       });
   
       if (!response.ok) {
@@ -205,7 +214,7 @@ const [user, setUser] = useState(() => {
    useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API_BASE_URL}/products`);
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
         const data = await res.json();
         setProducts(data);

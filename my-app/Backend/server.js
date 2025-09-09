@@ -127,30 +127,35 @@ app.post("/api/verify-email-otp", (req, res) => {
 
 //  Add items to cart
 app.post("/api/cart", (req, res) => {
-    const { email, product } = req.body;
+    const { email, product, customText, customImage } = req.body;
 
     console.log(`Received request to add to cart. Email: ${email}, Product:`, product);
 
     if (!email || !product || !product.id) {
-        console.error("Invalid request data");
         return res.status(400).json({ message: "Email and product details are required" });
     }
 
     const { id, name, price, image: imageArray } = product;
-
     if (price == null) {
-        console.error("Product price is missing");
         return res.status(400).json({ message: "Product price is required" });
     }
 
-    const image = Array.isArray(imageArray) ? imageArray[0] : ""; // ✅ Use the actual image URL
+    // Store images in JSON
+    const images = JSON.stringify(Array.isArray(imageArray) ? imageArray : [imageArray]);
+
+    // Store customization in JSON if provided
+    const customData = JSON.stringify({
+        text: customText || null,
+        image: customImage || null // should be a URL/path for admin to download
+    });
+
     const quantity = 1;
 
     db.query(
-        `INSERT INTO cart (user_email, product_id, product_name, product_image, quantity, price)
-         VALUES (?, ?, ?, ?, ?, ?)
+        `INSERT INTO cart (user_email, product_id, product_name, product_image, custom_data, quantity, price)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
-        [email, id, name, image, quantity, price],
+        [email, id, name, images, customData, quantity, price],
         (err, result) => {
             if (err) {
                 console.error("Database error while adding to cart:", err);
@@ -163,7 +168,6 @@ app.post("/api/cart", (req, res) => {
     );
 });
 
-
 //  Fetch cart items
 app.get("/api/cart/:email", (req, res) => {
     const email = req.params.email;
@@ -175,7 +179,7 @@ app.get("/api/cart/:email", (req, res) => {
     console.log(`Fetching cart for user: ${email}`);
 
     db.query(
-        "SELECT product_id AS id, product_name AS name, product_image AS image, quantity, price FROM cart WHERE user_email = ?",
+        "SELECT product_id AS id, product_name AS name, product_image, custom_data, quantity, price FROM cart WHERE user_email = ?",
         [email],
         (err, results) => {
             if (err) {
@@ -183,20 +187,26 @@ app.get("/api/cart/:email", (req, res) => {
                 return res.status(500).json({ message: "Database error" });
             }
 
-              results.forEach(item => {
+            results.forEach(item => {
+                // Parse product images
                 try {
-                  item.image = JSON.parse(item.image);
-                  if (!Array.isArray(item.image)) {
-                    item.image = [item.image];
-                  }
+                    item.image = JSON.parse(item.product_image);
                 } catch (e) {
-                  item.image = [item.image]; // fallback for malformed data
+                    item.image = [item.product_image];
                 }
-              });
 
+                // Parse customization
+                try {
+                    item.customData = JSON.parse(item.custom_data);
+                } catch (e) {
+                    item.customData = null;
+                }
+
+                delete item.product_image;
+                delete item.custom_data;
+            });
 
             console.log("Cart data retrieved:", results);
-
             res.json(results);
         }
     );
@@ -204,15 +214,15 @@ app.get("/api/cart/:email", (req, res) => {
 
 // Remove item from cart
 app.post("/api/cart/remove", (req, res) => {
-    const { email, productId } = req.body;
+    const { email, productId, customData } = req.body;
 
     if (!email || !productId) {
         return res.status(400).json({ message: "Email and productId are required" });
     }
 
     db.query(
-        "DELETE FROM cart WHERE user_email = ? AND product_id = ?",
-        [email, productId],
+        "DELETE FROM cart WHERE user_email = ? AND product_id = ? AND custom_data = ?",
+        [email, productId, JSON.stringify(customData || {})],
         (err, result) => {
             if (err) {
                 console.error("Database error:", err);
@@ -225,15 +235,15 @@ app.post("/api/cart/remove", (req, res) => {
 });
 
 app.post("/api/cart/update", (req, res) => {
-    const { email, productId, quantity } = req.body;
+    const { email, productId, quantity, customData } = req.body;
 
     if (!email || !productId || quantity === undefined) {
         return res.status(400).json({ message: "Email, productId, and quantity are required" });
     }
 
     db.query(
-        "UPDATE cart SET quantity = ? WHERE user_email = ? AND product_id = ?",
-        [quantity, email, productId],
+        "UPDATE cart SET quantity = ? WHERE user_email = ? AND product_id = ? AND custom_data = ?",
+        [quantity, email, productId, JSON.stringify(customData || {})],
         (err, result) => {
             if (err) {
                 console.error("Database error:", err);

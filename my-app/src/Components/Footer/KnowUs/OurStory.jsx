@@ -110,8 +110,8 @@ const OurStory = () => {
       />
       <div className="blog-coming-soon">
         <div className="blog-content">
-          <h1>Our Blog is Coming Soon</h1>
-          <p>We’re working on something amazing. Stay tuned!</p>
+          <h1>In Progress</h1>
+          <p>Stay tuned!</p>
           <img
             src="/Images/ComingSoon.png"
             alt="Coming Soon"

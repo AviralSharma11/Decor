@@ -33,47 +33,56 @@ const ProductComponent = ({ products, isAuthenticated, setIsLoginModalOpen, addT
   }, [products]);
 
 const handleAddToCart = async (product) => {
-    // Prevent adding if customisable
-    if (product.customisable) {
-      setSelectedProduct(product);
-      setShowCustomisablePopup(true);
-      return;
-    }
+  // If product is customisable, open popup instead of direct add
+  if (product.customisable) {
+    setSelectedProduct(product);
+    setShowCustomisablePopup(true);
+    return;
+  }
 
-    if (!isAuthenticated) {
-      setIsLoginModalOpen(true);
-      return;
-    }
+  if (!isAuthenticated) {
+    setIsLoginModalOpen(true);
+    return;
+  }
 
-    addToCart(product);
-    setAddedToCart((prev) => ({ ...prev, [product.id]: true }));
+  addToCart(product);
+  setAddedToCart((prev) => ({ ...prev, [product.id]: true }));
 
-    const email = localStorage.getItem("userEmail");
+  const email = localStorage.getItem("userEmail");
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          product: {
-            id: product.id,
-            name: product.name,
-            image: product.image,
-            price: product.discountedPrice || product.price || product.originalPrice || 0,
-          },
-        }),
-      });
+  try {
+    const response = await fetch(`${API_BASE_URL}/cart`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        product: {
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          price:
+            product.discountedPrice ||
+            product.price ||
+            product.originalPrice ||
+            0,
+          customData: {
+            customText: product.customText || "",
+            customImage: product.customImage || ""
+          }
+        },
+      }),
+    });
 
-      if (!response.ok) throw new Error(`Failed to add to cart: ${response.statusText}`);
-    } catch (err) {
-      console.error("Failed to save cart:", err);
-    }
+    if (!response.ok) throw new Error(`Failed to add to cart: ${response.statusText}`);
+  } catch (err) {
+    console.error("Failed to save cart:", err);
+  }
 
-    setTimeout(() => {
-      setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
-    }, 3000);
-  };
+  setTimeout(() => {
+    setAddedToCart((prev) => ({ ...prev, [product.id]: false }));
+  }, 3000);
+};
+
 
   return (
     <div className="product-container">
