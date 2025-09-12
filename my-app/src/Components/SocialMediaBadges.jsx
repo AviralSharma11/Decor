@@ -5,7 +5,7 @@ const SocialMediaBadges = () => {
   return (
     <div className="social-media-badges">
       <a
-        href="https://wa.me/917509202484 " // Replace with your WhatsApp link
+        href="https://wa.me/917509202484" // Replace with your WhatsApp link
         target="_blank"
         rel="noopener noreferrer"
         className="badge whatsapp-badge"

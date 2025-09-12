@@ -52,7 +52,7 @@ const Footer = () => {
                 </div>
                 <div className="icons whatsapp">
                 <a
-                  href="https://wa.me/qr/IMOVSX4SDTJ5M1 " // Replace with your WhatsApp link
+                  href="https://wa.me/917509202484" // Replace with your WhatsApp link
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{color: "#333"}}> 
