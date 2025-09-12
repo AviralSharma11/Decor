@@ -203,16 +203,41 @@ const handleCustomisationRequired = () => {
     document.body.style.overflowY = !isCustomisedOpen ? "hidden" : "auto";
   };
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedPhoto(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+const handlePhotoUpload = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const maxSize = 800; //  limit max width/height
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height && width > maxSize) {
+        height *= maxSize / width;
+        width = maxSize;
+      } else if (height > maxSize) {
+        width *= maxSize / height;
+        height = maxSize;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // compress to JPEG (0.7 quality)
+      const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+      setUploadedPhoto(compressedBase64);
+    };
+    img.src = event.target.result;
   };
+  reader.readAsDataURL(file);
+};
+
 
   const handleResetCustomisation = () => {
     setUploadedPhoto(null);
