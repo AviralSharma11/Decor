@@ -40,42 +40,33 @@ const ProductDetailPage = () => {
     setUser({ email: storedEmail });
   }
 
- const fetchProduct = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/products/slug/${cleanedSlug}`);
-      const data = await response.json();
-      console.log("Fetched image data:", data.image);
+const fetchProduct = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/slug/${cleanedSlug}`);
+    const data = await response.json();
 
-      // Ensure `image` is an array
-     let images = [];
-      if (Array.isArray(data.image)) {
-        images = data.image.flat();
-      } else if (typeof data.image === "string") {
-        try {
-          images = JSON.parse(data.image);
-          if (!Array.isArray(images)) {
-            images = [images];
-          }
-        } catch {
-          images = data.image.split(",").map((s) => s.trim());
-        }
+    let images = [];
+    if (Array.isArray(data.image)) {
+      images = data.image.flat();
+    } else if (typeof data.image === "string") {
+      try {
+        images = JSON.parse(data.image);
+        if (!Array.isArray(images)) images = [images];
+      } catch {
+        images = data.image.split(",").map((s) => s.trim());
       }
-
-      // 🔹 filter out empty strings
-      images = images.filter((img) => img && img.trim() !== "");
-
-      setProduct({ ...data, image: images });
-      setSelectedImage(images[0] || "/placeholder.png"); // fallback
-
-      setProduct({ ...data, image: images });
-      setSelectedImage(images[0]);
-
-    } catch (err) {
-      console.error("Error fetching product:", err);
-    } finally{
-      setLoading(false);
     }
-  };
+    images = images.filter((img) => img && img.trim() !== "");
+
+    setProduct({ ...data, image: images });
+    setSelectedImage(images[0] || "/placeholder.png"); // ✅ safe fallback
+  } catch (err) {
+    console.error("Error fetching product:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   fetchProduct();
   

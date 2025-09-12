@@ -412,9 +412,10 @@
       left: 0px;
       padding: 10px 0;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      height: 80vh;
+      height: 70vh;
       width: 70vw;
       text-align: left;
+      z-index: 1000;
     }
 
     .nav-links{
@@ -427,7 +428,6 @@
 
     .nav.open .hamburgerContent {
       display: flex; /* Show the links when the menu is open */
-      
     }
 
     .hamburger {
@@ -478,32 +478,28 @@
 }
 
 button {
-  background: none;
+  margin-left: 6px;
   border: none;
-  font-size: 20px;
+  background: transparent;
+  font-size: 18px;
   cursor: pointer;
+  color: #555;
 }
 
-.suggestions, .products {
-  margin-top: 10px;
+.products {
+  margin-top: 12px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.title {
+.products .title {
   font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.suggestion {
-  padding: 8px;
-  cursor: pointer;
   font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
 }
 
-.suggestion:hover {
-  background-color: #f1f1f1;
-}
-
-.product-item {
+.product-items {
   display: flex;
   align-items: center;
   padding: 8px;
@@ -511,14 +507,15 @@ button {
   color: inherit;
 }
 
-.product-item:hover {
+.product-items:hover {
   background-color: #f1f1f1;
 }
 
-.product-item img {
+.product-items img {
   width: 40px;
   height: 40px;
   object-fit: cover;
+  border: 1px solid #eee;
   margin-right: 10px;
 }
 
@@ -609,3 +606,6 @@ p.product-name {
     left: 40%;
   }
 }
+
+
+

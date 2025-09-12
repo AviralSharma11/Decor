@@ -117,6 +117,7 @@ const Header = ({ cart, onRemoveFromCart, updateQuantity, user, products }) => {
                 <li><Link to="/collections/customised-products">Customisable</Link></li>
                 <li><Link to="/collections/material/wood">Wood</Link></li>
                 <li><Link to="/collections/material/acrylic">Acrylic</Link></li>
+                <li><Link to="/orders">Orders</Link></li>
                 {user?.email === "oceanwaez@gmail.com" && (
                   <li><Link to="/admin-dashboard">Dashboard</Link></li>
                 )}
@@ -266,38 +267,50 @@ const Header = ({ cart, onRemoveFromCart, updateQuantity, user, products }) => {
             placeholder="Search for products..."
             className="search-here"
           />
+
           {searchTerm && (
-            <button className="clear-btn" onClick={() => setSearchTerm("")}>clear</button>
+            <button className="clear-btn" onClick={() => setSearchTerm("")}>
+              clear
+            </button>
           )}
+
           <button onClick={toggleSearch}>×</button>
 
+          {/* Show products if found */}
           {filteredProducts.length > 0 && (
             <div className="products">
               <div className="title">PRODUCTS</div>
-              {filteredProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="product-item"
-                >
-                  <img
-                    src={
-                      product.photo
-                        ? `data:image/jpeg;base64,${product.photo}`
-                        : product.image?.[0] || "/fallback.png"
-                    }
-                    alt={product.name}
-                  />
-                  <div>
-                    <p className="product-name">{product.name}</p>
-                    <p className="product-price">₹{formatPrice(product.price)}</p>
-                  </div>
-                </Link>
-              ))}
+              {filteredProducts.map((product) => {
+                const productUrl = `/product/${product.name
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")}`;
+
+                const imgSrc =
+                  Array.isArray(product.image) && product.image.length > 0
+                    ? product.image[0]
+                    : "/fallback.jpg"; // ✅ fallback image
+
+                const price =
+                  product.discountedPrice ||
+                  product.price ||
+                  product.originalPrice ||
+                  0;
+
+                return (
+                  <Link key={product.id} to={productUrl} className="product-items">
+                    <img src={imgSrc} alt={product.name} />
+                    <div>
+                      <p className="product-name">{product.name}</p>
+                      <p className="product-price">₹{formatPrice(price)}</p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
       )}
+
     </>
   );
 };

@@ -426,126 +426,156 @@ app.post("/api/create-order", async (req, res) => {
 
 // Save Order 
 app.post("/api/save-order", (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    address,
-    city,
-    state,
-    pinCode,
-    country,
-    amount,
-    paymentStatus,
-    paymentId,
-  } = req.body;
+  const { email, cartItems, amount, paymentStatus, paymentId, address } = req.body;
 
-  const query = `
+  if (!cartItems || cartItems.length === 0) {
+    return res.status(400).json({ message: "Cart is empty" });
+  }
+
+  // Prepare products JSON safely
+  let productsJson;
+  try {
+    productsJson = JSON.stringify(
+      cartItems.map(item => ({
+        product_id: item.id,
+        product_name: item.name,
+        quantity: Number(item.quantity) || 1,
+        price: Number(item.price) || 0,
+        custom_text: item.custom_text || null,
+        photo: item.photo || null
+      }))
+    );
+  } catch (err) {
+    console.error("Error serializing products:", err);
+    return res.status(400).json({ message: "Invalid products format" });
+  }
+
+  const insertOrder = `
     INSERT INTO orders 
-    (first_name, last_name, email, phone, address, city, state, pin_code, country, amount, payment_status, payment_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (first_name, last_name, email, phone, address, city, state, pin_code, country, amount, payment_status, payment_id, products)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
-    query,
+    insertOrder,
     [
-      firstName,
-      lastName,
+      address.first_name,
+      address.last_name,
       email,
-      phone,
-      address,
-      city,
-      state,
-      pinCode,
-      country,
-      amount,
+      address.phone,
+      address.address,
+      address.city,
+      address.state,
+      address.pin_code,
+      address.country,
+      Number(amount) || 0,
       paymentStatus,
       paymentId,
+      productsJson
     ],
     (err, result) => {
       if (err) {
-        console.error("Error saving order:", err);
-        res.status(500).json({ error: "Failed to save order" });
-      } else {
-        res.status(200).json({ message: "Order saved successfully" });
+        console.error("Order insert failed:", err);
+        return res.status(500).json({ message: "Failed to save order" });
       }
+
+      // Clear cart after placing order
+      db.query("DELETE FROM cart WHERE user_email = ?", [email], (err2) => {
+        if (err2) {
+          console.error("Failed to clear cart:", err2);
+          return res.status(500).json({ message: "Order saved but cart not cleared" });
+        }
+
+        res.json({ message: "Order placed successfully", orderId: result.insertId });
+      });
     }
   );
 });
 
+
+
 // Get
-app.get("/api/get-orders", (req, res) => {
-  db.query("SELECT * FROM orders", (err, results) => {
+app.get("/api/orders/:email", (req, res) => {
+  const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  const query = `SELECT * FROM orders WHERE email = ? ORDER BY id DESC`;
+
+  db.query(query, [email], (err, results) => {
     if (err) {
-      console.error("Error fetching orders:", err);
-      res.status(500).json({ error: "Failed to fetch orders" });
-    } else {
-      res.status(200).json(results);
+      console.error("Database error fetching orders:", err);
+      return res.status(500).json({ message: "Failed to fetch orders" });
     }
+
+    if (results.length === 0) {
+      return res.json([]);
+    }
+
+    // Fetch all product images
+    db.query("SELECT id, image FROM products", (err2, productRows) => {
+      if (err2) {
+        console.error("Failed to fetch product images:", err2);
+        return res.status(500).json({ message: "Failed to fetch orders" });
+      }
+
+      // Create productId → image lookup
+      const productMap = {};
+      productRows.forEach(pr => {
+        try {
+          // if stored as JSON array ["img1.webp", "img2.webp"]
+          const parsed = JSON.parse(pr.image);
+          productMap[pr.id] = Array.isArray(parsed) ? parsed[0] : pr.image;
+        } catch {
+          productMap[pr.id] = pr.image;
+        }
+      });
+
+      // Build orders with products
+      const orders = results.map(order => {
+        let products = [];
+
+        try {
+          const parsed = typeof order.products === "string" 
+            ? JSON.parse(order.products) 
+            : order.products;
+          products = Array.isArray(parsed) ? parsed : [];
+        } catch {
+          products = [];
+        }
+
+        // Attach product image
+        products = products.map(p => ({
+          ...p,
+          image: productMap[p.product_id] || null,
+        }));
+
+        return {
+          id: order.id,
+          first_name: order.first_name,
+          last_name: order.last_name,
+          email: order.email,
+          phone: order.phone,
+          address: order.address,
+          city: order.city,
+          state: order.state,
+          pin_code: order.pin_code,
+          country: order.country,
+          amount: Number(order.amount) || 0,
+          payment_status: order.payment_status,
+          payment_id: order.payment_id,
+          created_at: order.created_at || null,
+          products,
+        };
+      });
+
+      res.json(orders);
+    });
   });
 });
 
-const FILE_PATH = path.join(__dirname, "orders.xlsx");
-
-// Ensure file exists or create new workbook
-const ensureWorkbook = () => {
-  if (!fs.existsSync(FILE_PATH)) {
-    const wb = xlsx.utils.book_new();
-    const ws = xlsx.utils.aoa_to_sheet([
-      [
-        "Email",
-        "Full Name",
-        "Phone",
-        "Product Name",
-        "Price",
-        "Custom Text",
-        "Photo (Base64)",
-        "Date",
-      ],
-    ]);
-    xlsx.utils.book_append_sheet(wb, ws, "Orders");
-    xlsx.writeFile(wb, FILE_PATH);
-  }
-};
-
-
-app.post("/api/save-order", (req, res) => {
-  ensureWorkbook();
-
-  const {
-    email,
-    fullName,
-    phone,
-    productName,
-    price,
-    customText1,
-    uploadedPhoto,
-  } = req.body;
-
-  const wb = xlsx.readFile(FILE_PATH);
-  const ws = wb.Sheets["Orders"];
-
-  const data = xlsx.utils.sheet_to_json(ws, { header: 1 });
-
-  data.push([
-    email,
-    fullName,
-    phone,
-    productName,
-    price,
-    customText1,
-    uploadedPhoto,
-    new Date().toLocaleString(),
-  ]);
-
-  const newWs = xlsx.utils.aoa_to_sheet(data);
-  wb.Sheets["Orders"] = newWs;
-
-  xlsx.writeFile(wb, FILE_PATH);
-
-  res.status(200).json({ message: "Order saved successfully to Excel." });
-});
 
 //Admin Dashboard
 // API: Get all users
@@ -590,21 +620,70 @@ app.get("/api/users/export", async (req, res) => {
 
 // GET all orders
 app.get("/api/orders", (req, res) => {
-  const query = "SELECT * FROM orders";
+  const query = "SELECT * FROM orders ORDER BY id DESC";
+
   db.query(query, (err, results) => {
     if (err) {
-      console.error("Error fetching orders:", err);
-      return res.status(500).json({ error: "Internal server error" });
+      console.error("Error fetching all orders:", err);
+      return res.status(500).json({ message: "Failed to fetch orders" });
     }
-    res.json(results); // <--- return just the array, not { orders: results }
+
+    const orders = results.map(order => {
+      let products = [];
+
+      try {
+        if (typeof order.products === "string") {
+          // Case: stored as string (TEXT or VARCHAR)
+          products = JSON.parse(order.products || "[]");
+        } else if (Array.isArray(order.products)) {
+          // Case: MySQL JSON column (already parsed by MySQL driver)
+          products = order.products;
+        } else {
+          products = [];
+        }
+      } catch (e) {
+        console.error("Error parsing products for order:", order.id, e);
+        products = [];
+      }
+
+      return {
+        id: order.id,
+        user_email: order.user_email || order.email, // handles both column names
+        amount: Number(order.amount) || 0,
+        payment_status: order.payment_status,
+        created_at: order.created_at,
+        products,
+      };
+    });
+
+    res.json(orders);
   });
 });
+
+app.delete("/api/orders/:id", (req, res) => {
+  const orderId = req.params.id;
+
+  const query = "DELETE FROM orders WHERE id = ?";
+  db.query(query, [orderId], (err, result) => {
+    if (err) {
+      console.error("Error deleting order:", err);
+      return res.status(500).json({ message: "Failed to delete order" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json({ message: "Order deleted successfully" });
+  });
+});
+
 
 
 // Export to Excel
 app.get("/api/orders/export", async (req, res) => {
   const query = `
-    SELECT o.id, o.user_email, p.name AS product, o.quantity, o.total, o.order_date
+    SELECT o.id, o.first_name, o.last_name, o.user_email, p.name AS product, o.quantity, o.total, o.order_date
     FROM orders o
     JOIN products p ON o.product_id = p.id
     ORDER BY o.order_date DESC
@@ -621,6 +700,8 @@ app.get("/api/orders/export", async (req, res) => {
 
     worksheet.columns = [
       { header: "ID", key: "id", width: 10 },
+      { header: "First Name", key: "first_name", width: 20},
+      { header: "Last Name", key: "last_name", width: 20},
       { header: "User Email", key: "user_email", width: 30 },
       { header: "Product", key: "product", width: 25 },
       { header: "Quantity", key: "quantity", width: 10 },

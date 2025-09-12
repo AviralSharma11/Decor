@@ -2,7 +2,6 @@
 .orders-container {
   height: 100vh;
   padding: 20px;
-  width: 100vw;
   font-family: Arial, sans-serif;
   background-color: #f9f4ee;
 }
@@ -37,3 +36,16 @@
 .orders-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.orders-table td:last-child {
+  font-weight: 600;
+}
+
+.orders-table td:last-child {
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
