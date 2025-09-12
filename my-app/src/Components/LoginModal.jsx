@@ -75,40 +75,29 @@ const handleVerifyOtp = async (e) => {
 
     console.log("OTP verified, response:", response.data);
 
-    // Set session state
-    localStorage.setItem("userEmail", cleanedEmail);
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("isAuthenticated", "true");
-    setUserEmail(cleanedEmail);
+   // After OTP verification
+localStorage.setItem("userEmail", cleanedEmail);
+localStorage.setItem("token", response.data.token);
+localStorage.setItem("isAuthenticated", "true");
 
-    // Clear inputs and reset OTP state
-    setOtpSent(false);
-    setEmail("");
-    setOtp("");
+// DO NOT use savedCart from previous user
+localStorage.removeItem("savedCart");
+setCart([]);
 
-    localStorage.removeItem("savedCart");
-    setCart([]);
+// Always fetch fresh cart from DB for this user
+const cartResponse = await axios.get(`${API_BASE_URL}/cart/${cleanedEmail}`);
+const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
 
-    // Fetch cart data from backend
-    const cartResponse = await axios.get(`${API_BASE_URL}/cart/${cleanedEmail}`);
-    const cartData = Array.isArray(cartResponse.data) ? cartResponse.data : [];
-
-
-    console.log("Fetched cart data:", cartData);
-
-    if (cartData.length > 0) {
-      const updatedCart = cartData.map((item) => ({
-        ...item,
-        image: Array.isArray(item.image) ? item.image[0] : item.image || "",
-      }));
-
-      setCart(updatedCart);
-      localStorage.setItem("savedCart", JSON.stringify(updatedCart));
-      console.log("New cart loaded and saved:", updatedCart);
-    } else {
-      setCart([]); // explicitly clear cart
-      console.log("Cart is empty for new user.");
-    }
+if (cartData.length > 0) {
+  const updatedCart = cartData.map((item) => ({
+    ...item,
+    image: Array.isArray(item.image) ? item.image[0] : item.image || "",
+  }));
+  setCart(updatedCart);
+  localStorage.setItem("savedCart", JSON.stringify(updatedCart));
+} else {
+  setCart([]);
+}
 
 
     if (typeof onLogin === "function") {
@@ -133,34 +122,32 @@ const handleVerifyOtp = async (e) => {
 
 
 const handleLogout = async () => {
-    try {
-      // Save cart to MySQL before logging out
-      for (const item of cart) {
-        await axios.post(`${API_BASE_URL}/cart/update`, {
-          email: userEmail,
-          productId: item.id,
-          quantity: item.quantity,
-        });
-      }
-
-      //  Clear user data from localStorage
-      localStorage.removeItem("userEmail");
-      localStorage.removeItem("token");
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("savedCart");
-
-      setUserEmail(null);
-      setCart([]); // Clear cart state
-
-      //  Short delay to let state updates propagate
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Redirect to home after logout
-      window.location.href = "/";
-    } catch (err) {
-      console.error("Failed to save cart before logout:", err);
+  try {
+    // Save cart for this user before logging out
+    for (const item of cart) {
+      await axios.post(`${API_BASE_URL}/cart/update`, {
+        email: userEmail,
+        productId: item.id,
+        quantity: item.quantity,
+      });
     }
-  };
+
+    // Clear ALL user-specific data
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("token");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("savedCart");
+
+    setUserEmail(null);
+    setCart([]); // empty UI cart
+
+    // Redirect
+    window.location.href = "/";
+  } catch (err) {
+    console.error("Failed to save cart before logout:", err);
+  }
+};
+
 
 const handleKeyPress = (e) => {
   if (e.key === "Enter") {

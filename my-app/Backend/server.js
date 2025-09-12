@@ -125,104 +125,157 @@ app.post("/api/verify-email-otp", (req, res) => {
     );
 });
 
-//  Add items to cart
+// Add item to cart
 app.post("/api/cart", (req, res) => {
-    const { email, product, customText, customImage } = req.body;
+  const {
+    email,
+    product,
+    productId,
+    productName,
+    price,
+    discountedPrice,
+    customText1,
+    uploadedPhoto,
+    image // may come from frontend
+  } = req.body;
 
-    console.log(`Received request to add to cart. Email: ${email}, Product:`, product);
+  if (!email || !productId) {
+    return res.status(400).json({ message: "Email and productId are required" });
+  }
 
-    if (!email || !product || !product.id) {
-        return res.status(400).json({ message: "Email and product details are required" });
+  const finalPrice = Number(discountedPrice || price || 0);
+
+  // If no image provided, fetch from products table
+  const getProductQuery = "SELECT image FROM products WHERE id = ?";
+
+  db.query(getProductQuery, [productId], (err, productResult) => {
+    if (err) {
+      console.error("DB error:", err);
+      return res.status(500).json({ message: "Database error fetching product" });
     }
 
-    const { id, name, price, image: imageArray } = product;
-    if (price == null) {
-        return res.status(400).json({ message: "Product price is required" });
+    // Parse image from DB (fallback if req.body.image is missing)
+    let imageArray = [];
+    try {
+      if (image) {
+        imageArray = Array.isArray(image) ? image : [image];
+      } else if (productResult.length > 0) {
+        const dbImage = productResult[0].image;
+        imageArray = JSON.parse(dbImage || "[]");
+        if (!Array.isArray(imageArray)) imageArray = [imageArray];
+      }
+    } catch {
+      imageArray = [];
     }
 
-    // Store images in JSON
-    const images = JSON.stringify(Array.isArray(imageArray) ? imageArray : [imageArray]);
+    const p = product || {
+      id: productId,
+      name: productName,
+      price: finalPrice,
+      image: imageArray,
+      customText1,
+      uploadedPhoto
+    };
 
-    // Store customization in JSON if provided
-    const customData = JSON.stringify({
-        text: customText || null,
-        image: customImage || null // should be a URL/path for admin to download
-    });
-
+    const storedImage = JSON.stringify(imageArray); // store as JSON
     const quantity = 1;
+    const textJson = p.customText1 ? JSON.stringify({ customText1: p.customText1 }) : null;
+    const photoBuffer = p.uploadedPhoto ? Buffer.from(p.uploadedPhoto, "base64") : null;
 
     db.query(
-        `INSERT INTO cart (user_email, product_id, product_name, product_image, custom_data, quantity, price)
-         VALUES (?, ?, ?, ?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
-        [email, id, name, images, customData, quantity, price],
-        (err, result) => {
-            if (err) {
-                console.error("Database error while adding to cart:", err);
-                return res.status(500).json({ message: "Failed to add product to cart" });
-            }
-
-            console.log(`Added product ${id} to ${email}'s cart`);
-            res.json({ message: "Product added to cart" });
+      `INSERT INTO cart 
+        (user_email, product_id, product_name, product_image, quantity, price, custom_text, photo)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
+      [email, p.id, p.name, storedImage, quantity, p.price, textJson, photoBuffer],
+      (err, result) => {
+        if (err) {
+          console.error("DB insert error:", err);
+          return res.status(500).json({ message: "Failed to add product to cart" });
         }
+        res.json({ message: "Product added/updated in cart" });
+      }
     );
+  });
 });
 
-//  Fetch cart items
+
+// Fetch cart items
 app.get("/api/cart/:email", (req, res) => {
-    const email = req.params.email;
+  const email = req.params.email;
 
-    if (!email) {
-        return res.status(400).json({ message: "Email is required" });
-    }
+  if (!email) return res.status(400).json({ message: "Email is required" });
 
-    console.log(`Fetching cart for user: ${email}`);
+  console.log(`Fetching cart for user: ${email}`);
 
-    db.query(
-        "SELECT product_id AS id, product_name AS name, product_image, custom_data, quantity, price FROM cart WHERE user_email = ?",
-        [email],
-        (err, results) => {
-            if (err) {
-                console.error("Database error:", err);
-                return res.status(500).json({ message: "Database error" });
-            }
+  db.query(
+    `SELECT 
+        c.product_id AS id,
+        c.product_name AS name,
+        c.product_image AS image,
+        c.quantity,
+        c.price, 
+        p.image AS product_image,
+        p.originalPrice,
+        p.discountedPrice,
+        c.custom_text,
+        c.photo
+    FROM cart c
+    JOIN products p ON c.product_id = p.id
+    WHERE c.user_email = ?`,
+    [email],
+    (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-            results.forEach(item => {
-                // Parse product images
-                try {
-                    item.image = JSON.parse(item.product_image);
+      results.forEach(item => {
+        item.price = parseFloat(item.price);
+        item.originalPrice = parseFloat(item.originalPrice) || 0;
+        item.discountedPrice = parseFloat(item.discountedPrice) || item.price;
+
+        try {
+                  item.image = JSON.parse(item.image);
+                  if (!Array.isArray(item.image)) {
+                    item.image = [item.image];
+                  }
                 } catch (e) {
-                    item.image = [item.product_image];
+                  item.image = [item.image]; // fallback for malformed data
                 }
 
-                // Parse customization
-                try {
-                    item.customData = JSON.parse(item.custom_data);
-                } catch (e) {
-                    item.customData = null;
-                }
-
-                delete item.product_image;
-                delete item.custom_data;
-            });
-
-            console.log("Cart data retrieved:", results);
-            res.json(results);
+        // Parse custom_text
+        if (item.custom_text) {
+          try {
+            item.custom_text = JSON.parse(item.custom_text);
+          } catch {}
         }
-    );
+
+        // Convert photo blob to base64
+        if (item.photo) {
+          item.photo = item.photo.toString("base64");
+        }
+      });
+
+      console.log("Cart data retrieved (final):", results);
+      res.json(results);
+    }
+  );
 });
+
+
 
 // Remove item from cart
 app.post("/api/cart/remove", (req, res) => {
-    const { email, productId, customData } = req.body;
+    const { email, productId } = req.body;
 
     if (!email || !productId) {
         return res.status(400).json({ message: "Email and productId are required" });
     }
 
     db.query(
-        "DELETE FROM cart WHERE user_email = ? AND product_id = ? AND custom_data = ?",
-        [email, productId, JSON.stringify(customData || {})],
+        "DELETE FROM cart WHERE user_email = ? AND product_id = ?",
+        [email, productId],
         (err, result) => {
             if (err) {
                 console.error("Database error:", err);
@@ -235,15 +288,15 @@ app.post("/api/cart/remove", (req, res) => {
 });
 
 app.post("/api/cart/update", (req, res) => {
-    const { email, productId, quantity, customData } = req.body;
+    const { email, productId, quantity } = req.body;
 
     if (!email || !productId || quantity === undefined) {
         return res.status(400).json({ message: "Email, productId, and quantity are required" });
     }
 
     db.query(
-        "UPDATE cart SET quantity = ? WHERE user_email = ? AND product_id = ? AND custom_data = ?",
-        [quantity, email, productId, JSON.stringify(customData || {})],
+        "UPDATE cart SET quantity = ? WHERE user_email = ? AND product_id = ?",
+        [quantity, email, productId],
         (err, result) => {
             if (err) {
                 console.error("Database error:", err);
@@ -315,7 +368,7 @@ app.post('/api/join-us', (req, res) => {
 
     let workbook;
     if (fs.existsSync(FILE_NAME2)) {
-   
+
         workbook = xlsx.readFile(FILE_NAME2);
     } else {
 
@@ -844,3 +897,4 @@ app.use("/api/feedback", feedbackRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

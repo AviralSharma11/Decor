@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import "../../../Styles/MaterialPage.css"; 
+import "../../../Styles/MaterialPage.css";
 import ProductComponent from "../../ProductComponent";
 import { filters as initialFilters } from "../../../List/filter";
 import Header from "../../Header";
@@ -36,6 +36,7 @@ const Luxury = () => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // 🔹 Fetch luxury products on mount
   useEffect(() => {
     const storedEmail = localStorage.getItem("userEmail");
     if (storedEmail) setUser({ email: storedEmail });
@@ -49,16 +50,34 @@ const Luxury = () => {
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
 
+  // 🔹 Handle screen resize
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (cart.length > 0) localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  // 🔹 Refresh cart from backend
+  const refreshCart = useCallback(async () => {
+    if (!user?.email) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/${user.email}`);
+      const data = await res.json();
+      setCart(data);
+      localStorage.setItem("cart", JSON.stringify(data));
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+    }
+  }, [user?.email]);
 
+  // 🔹 Load cart whenever user changes
+  useEffect(() => {
+    if (user?.email) {
+      refreshCart();
+    }
+  }, [user, refreshCart]);
+
+  // ---------------- FILTER LOGIC ----------------
   const handleFilterChange = (category, value, isChecked) => {
     setSelectedFilters((prev) => {
       const updated = { ...prev };
@@ -97,99 +116,77 @@ const Luxury = () => {
     setFiltersKey((prevKey) => prevKey + 1);
   };
 
-    const addToCart = (product) => {
+  // ---------------- CART LOGIC ----------------
+const addToCart = async (product) => {
       if (!isAuthenticated) {
-        setIsLoginModalOpen(true); // Open login modal
+        setIsLoginModalOpen(true);
         return;
       }
-      setCart((prevCart) => {
-        const existingItem = prevCart.find((item) => item.id === product.id);
-        let updatedCart;
-    
-        if (existingItem) {
-          updatedCart = prevCart.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-          );
-        } else {
-          updatedCart = [...prevCart, { ...product, quantity: 1 }];
-        }
-    
-        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-        return updatedCart;
-      });
-    };
-    
-  
-    const removeFromCart = async (productId) => {
-      if (!isAuthenticated) return;
-    
+
+      const payload = {
+        email: user.email || localStorage.getItem("userEmail"),
+        productId: product.id,   // ✅ backend expects this
+        productName: product.name,
+        price: product.price || product.originalPrice || 0,
+        discountedPrice: product.discountedPrice || null,
+        image: product.image || null,  // array or string
+        customText1: product.customText1 || null, // null for non-customizable
+        uploadedPhoto: product.uploadedPhoto || null, // null for non-customizable
+      };
+
       try {
-        const response = await fetch(`${API_BASE_URL}/cart/remove`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: localStorage.getItem('userEmail'),
-            productId,
-            customData: cart.find(item => item.id === productId)?.customData || {}
-          }),
+        const response = await fetch(`${API_BASE_URL}/cart`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
-    
+
         const data = await response.json();
-    
-        if (response.ok) {
-          setCart((prevCart) => {
-            const updatedCart = prevCart.filter((item) => item.id !== productId);
-            localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
-            return updatedCart;
-          });
-          console.log(data.message);
-        } else {
-          console.error('Failed to remove from cart:', data.message);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-    
-  
-    const updateQuantity = async (productId, newQuantity) => {
-      if (newQuantity < 1) return; // Prevent setting quantity to less than 1
-    
-      try {
-        const response = await fetch(`${API_BASE_URL}/cart/update`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: localStorage.getItem('userEmail'),
-            productId,
-            quantity: newQuantity,
-            customData: cart.find(item => item.id === productId)?.customData || {}
-          }),
-  
-        });
-    
-        if (!response.ok) {
-          throw new Error(`Failed to update quantity: ${response.statusText}`);
-        }
-    
-        const data = await response.json();
-        console.log(data.message);
-    
-        // Update cart state if successful
-        setCart((prevCart) => 
-          prevCart.map((item) =>
-            item.id === productId ? { ...item, quantity: newQuantity } : item
-          )
-        );
-      } catch (error) {
-        console.error("Error updating quantity:", error);
+
+        if (!response.ok) throw new Error(data.message);
+
+        console.log("✅ Added to cart:", data.message);
+        await refreshCart();
+      } catch (err) {
+        console.error("❌ Failed to add product:", err.message);
       }
     };
 
+  const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/remove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, productId }),
+      });
+
+      if (!res.ok) throw new Error("Failed to remove from cart");
+
+      await refreshCart();
+    } catch (err) {
+      console.error(" Error removing from cart:", err);
+    }
+  };
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, productId, quantity: newQuantity }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update quantity");
+
+      await refreshCart();
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+    }
+  };
+
+  // ---------------- UI ----------------
   return (
     <div className="material-page">
       <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={allProducts} />

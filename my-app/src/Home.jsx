@@ -12,239 +12,167 @@ import TopFeedbacks from "./Components/HomePage/TopFeedbacks";
 import { API_BASE_URL } from "./api/config";
 
 function Home() {
-  const [products , setProducts] = useState({});
-  const [cart, setCart] = useState(() => {
-    try {
-        const savedCart = localStorage.getItem("cart");
-        return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-        console.error("Failed to load cart from localStorage:", error);
-        return [];
-    }
-});
-const navigate = useNavigate();
-const [user, setUser] = useState(() => {
-  const savedUser = localStorage.getItem("user");
-  return savedUser ? JSON.parse(savedUser) : null;
-});
-
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem("isAuthenticated") === "true";
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [user, setUser] = useState(() => {
+    const savedEmail = localStorage.getItem("userEmail");
+    return savedEmail ? { email: savedEmail } : null;
   });
 
-  //  Fetch cart from MySQL on login and sync state + localStorage
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );
+
+  const navigate = useNavigate();
+
+  // Fetch cart on mount or when user changes
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`${API_BASE_URL}/cart/${user.email}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch cart");
+          return res.json();
+        })
+        .then((data) => {
+          setCart(data);
+          localStorage.setItem("cart", JSON.stringify(data));
+        })
+        .catch((err) => console.error("Fetch cart error:", err));
+    }
+  }, [user]);
+
+  // Login handler
   const handleLogin = async (email) => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", "true");
     localStorage.setItem("userEmail", email);
-  
+    setUser({ email });
+
     try {
-        const response = await fetch(`${API_BASE_URL}/api/cart/${email}`);
-        if (!response.ok) throw new Error(`Failed to fetch cart: ${response.statusText}`);
-        
-        const cartData = await response.json();
-  
-        if (Array.isArray(cartData) && cartData.length > 0) {
-            console.log("Fetched cart data:", cartData);
-            setCart([...cartData]);
-            localStorage.setItem("savedCart", JSON.stringify(cartData));
-        } else {
-            console.warn("Empty or invalid cart data:", cartData);
-            setCart([]);
-        }
-
-        // Set user state after successful login
-        setUser({ email });
-    } catch (error) {
-        console.error("Failed to fetch cart:", error.message);
-        alert("Failed to fetch cart data. Please try again.");
+      const res = await fetch(`${API_BASE_URL}/cart/${email}`);
+      const data = await res.json();
+      setCart(Array.isArray(data) ? data : []);
+      localStorage.setItem("cart", JSON.stringify(data));
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
     }
-    
+
     setIsLoginModalOpen(false);
-    window.location.reload();
   };
-  
-  
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("userEmail");
-    if (storedEmail) {
-      setUser({ email: storedEmail });
-    }
-  }, []);
-  
-  // Save cart to MySQL when it updates
-  useEffect(() => {
-    if (isAuthenticated && cart.length > 0) {
-      const email = localStorage.getItem("userEmail");
-  
-      cart.forEach(async (product) => {
-        const payload = {
-          email,
-          product: {
-            id: product.id,
-            name: product.name,
-            price: Number(product.price),
-            quantity: product.quantity || 1,
-            image: product.image || "",
-            customData: {
-              customText: product.customText || "",
-              customImage: product.customImage || ""
-            }
-          },
-        };
 
-  
-        console.log("Sending product to server:", JSON.stringify(payload, null, 2));
-  
-        try {
-          const res = await fetch(`${API_BASE_URL}/api/cart`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-  
-          if (!res.ok) {
-            const data = await res.json();
-            console.error(`Failed to add product: ${data.message}`);
-          } else {
-            console.log("Product added to cart successfully");
-          }
-        } catch (err) {
-          console.error("Failed to save product to cart:", err);
-        }
-      });
-    }
-  }, [cart, isAuthenticated]);
-  
+  // Add to cart
+const addToCart = async (product) => {
+  if (!isAuthenticated) {
+    setIsLoginModalOpen(true);
+    return;
+  }
 
-  const addToCart = (product) => {
-    if (!isAuthenticated) {
-      setIsLoginModalOpen(true); // Open login modal
+  const payload = {
+    email: localStorage.getItem("userEmail"),
+    product: {
+      productId: product.id, // or product.productId depending on DB schema
+      productName: product.name,
+      price: Number(product.discountedPrice || product.price),
+      quantity: 1,
+      image: product.image || "",
+      custom_text: product.custom_text || "",
+      photo: product.photo || "", 
+    },
+  };
+
+  console.log("Final cart payload being sent:", payload);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/cart`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.error("Failed to add product:", data.message);
       return;
     }
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      let updatedCart;
-  
-      if (existingItem) {
-        updatedCart = prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity: 1 }];
-      }
-  
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-      return updatedCart;
-    });
-  };
-  
 
-  const removeFromCart = async (productId) => {
-    if (!isAuthenticated) return;
-  
+    // Refresh cart from backend
+    const updatedCart = await fetch(`${API_BASE_URL}/cart/${payload.email}`).then(r => r.json());
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+  }
+};
+
+
+  // Remove from cart
+  const removeFromCart = async (productId, customData = {}) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/remove`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: localStorage.getItem('userEmail'),
-          productId,
-          customData: cart.find(item => item.id === productId)?.customData || {}
-        }),
+      const res = await fetch(`${API_BASE_URL}/cart/remove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, productId, customData }),
       });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        setCart((prevCart) => {
-          const updatedCart = prevCart.filter((item) => item.id !== productId);
-          localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
-          return updatedCart;
-        });
-        console.log(data.message);
-      } else {
-        console.error('Failed to remove from cart:', data.message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+
+      if (!res.ok) throw new Error("Failed to remove");
+
+      setCart((prev) => {
+        const updated = prev.filter((item) => item.id !== productId);
+        localStorage.setItem("cart", JSON.stringify(updated));
+        return updated;
+      });
+    } catch (err) {
+      console.error("Remove cart error:", err);
     }
   };
-  
 
-  const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return; // Prevent setting quantity to less than 1
-  
+  // Update quantity
+  const updateQuantity = async (productId, newQuantity, customData = {}) => {
+    if (newQuantity < 1) return;
+
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const res = await fetch(`${API_BASE_URL}/cart/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: localStorage.getItem('userEmail'),
+          email: user.email,
           productId,
           quantity: newQuantity,
-          customData: cart.find(item => item.id === productId)?.customData || {}
+          customData,
         }),
-
       });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to update quantity: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log(data.message);
-  
-      // Update cart state if successful
-      setCart((prevCart) => 
-        prevCart.map((item) =>
+
+      if (!res.ok) throw new Error("Failed to update quantity");
+
+      setCart((prev) =>
+        prev.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item
         )
       );
-    } catch (error) {
-      console.error("Error updating quantity:", error);
+    } catch (err) {
+      console.error("Update quantity error:", err);
     }
   };
 
-   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/products`);
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
-  
-
+  // Fetch products
   useEffect(() => {
-    const handleScroll = () => {
-      const texts = document.querySelectorAll(".parallax-text, .parallax-subtext");
-      texts.forEach((text) => {
-        const textPosition = text.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
-        if (textPosition < screenHeight * 0.8) {
-          text.classList.add("show");
-        }
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    fetch(`${API_BASE_URL}/products`)
+      .then((res) => res.json())
+      .then(setProducts)
+      .catch((err) => console.error("Fetch products error:", err));
   }, []);
 
   return (
     <div className="Home">
-      <Header cart={cart} onRemoveFromCart={removeFromCart} updateQuantity={updateQuantity} user={user} products={products}/>
+      <Header
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
+        updateQuantity={updateQuantity}
+        user={user}
+        products={products}
+      />
       <Showcase />
       <div className="parallax1">
         <div className="parallax-text">DISCOVER OUR COLLECTION</div>
@@ -260,22 +188,22 @@ const [user, setUser] = useState(() => {
       </div>
       <div className="parallax2"></div>
       <div className="content-section">
-      <BestSeller 
-        addToCart={addToCart} 
-        isAuthenticated={isAuthenticated} 
-        setIsLoginModalOpen={setIsLoginModalOpen} 
-      />
-       <button 
-        className="collections-btn" 
-        onClick={() => navigate("/collections")}
-      >
-       Discover Our Collections
-      </button>
+        <BestSeller
+          addToCart={addToCart}
+          isAuthenticated={isAuthenticated}
+          setIsLoginModalOpen={setIsLoginModalOpen}
+        />
+        <button
+          className="collections-btn"
+          onClick={() => navigate("/collections")}
+        >
+          Discover Our Collections
+        </button>
       </div>
       <div className="parallax3">
         <TopFeedbacks />
-        <button 
-          className="collections-btn" 
+        <button
+          className="collections-btn"
           onClick={() => navigate("/feedback")}
         >
           Share Your Experience
@@ -283,14 +211,13 @@ const [user, setUser] = useState(() => {
       </div>
       <div className="content-section">
         <SocialMediaBadges />
-        
       </div>
 
       {isLoginModalOpen && (
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-          onLogin={handleLogin} // Pass `handleLogin` correctly
+          onLogin={handleLogin}
         />
       )}
       <Footer />

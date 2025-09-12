@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import "../Styles/ProductDetailPage.css";
 import Header from "./Header";
@@ -47,11 +47,9 @@ const ProductDetailPage = () => {
       console.log("Fetched image data:", data.image);
 
       // Ensure `image` is an array
-      let images = [];
-
-      // Extract and flatten image data safely
+     let images = [];
       if (Array.isArray(data.image)) {
-        images = data.image.flat(); // flatten in case it's nested
+        images = data.image.flat();
       } else if (typeof data.image === "string") {
         try {
           images = JSON.parse(data.image);
@@ -62,6 +60,12 @@ const ProductDetailPage = () => {
           images = data.image.split(",").map((s) => s.trim());
         }
       }
+
+      // 🔹 filter out empty strings
+      images = images.filter((img) => img && img.trim() !== "");
+
+      setProduct({ ...data, image: images });
+      setSelectedImage(images[0] || "/placeholder.png"); // fallback
 
       setProduct({ ...data, image: images });
       setSelectedImage(images[0]);
@@ -77,6 +81,26 @@ const ProductDetailPage = () => {
   
 }, [cleanedSlug]);
 
+  // 🔹 Refresh cart from backend
+  const refreshCart = useCallback(async () => {
+    if (!user?.email) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/${user.email}`);
+      const data = await res.json();
+      setCart(data);
+      localStorage.setItem("cart", JSON.stringify(data));
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+    }
+  }, [user?.email]);
+
+  // 🔹 Load cart whenever user changes
+  useEffect(() => {
+    if (user?.email) {
+      refreshCart();
+    }
+  }, [user, refreshCart]);
+  
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -88,99 +112,42 @@ const ProductDetailPage = () => {
     setOpenSection(openSection === index ? null : index);
   };
 
-   // Add product to cart
-     const addToCart = (product) => {
-       if (!isAuthenticated) {
-         setIsLoginModalOpen(true); // Open login modal
-         return;
-       }
-       setCart((prevCart) => {
-         const existingItem = prevCart.find((item) => item.id === product.id);
-         let updatedCart;
-     
-         if (existingItem) {
-           updatedCart = prevCart.map((item) =>
-             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-           );
-         } else {
-           updatedCart = [...prevCart, { ...product, quantity: 1 }];
-         }
-     
-         localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save to localStorage
-         return updatedCart;
-       });
-     };
-     
-   
-     const removeFromCart = async (productId) => {
-       if (!isAuthenticated) return;
-     
-       try {
-         const response = await fetch(`${API_BASE_URL}/cart/remove`, {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json',
-           },
-           body: JSON.stringify({
-             email: localStorage.getItem('userEmail'),
-             productId,
-             customData: cart.find(item => item.id === productId)?.customData || {}
-           }),
-         });
-     
-         const data = await response.json();
-     
-         if (response.ok) {
-           setCart((prevCart) => {
-             const updatedCart = prevCart.filter((item) => item.id !== productId);
-             localStorage.setItem('cart', JSON.stringify(updatedCart)); // Save updated cart
-             return updatedCart;
-           });
-           console.log(data.message);
-         } else {
-           console.error('Failed to remove from cart:', data.message);
-         }
-       } catch (error) {
-         console.error('Error:', error);
-       }
-     };
-     
-   
-     const updateQuantity = async (productId, newQuantity) => {
-       if (newQuantity < 1) return; // Prevent setting quantity to less than 1
-     
-       try {
-         const response = await fetch(`${API_BASE_URL}/cart/update`, {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json',
-           },
-           body: JSON.stringify({
-             email: localStorage.getItem('userEmail'),
-             productId,
-             quantity: newQuantity,
-             customData: cart.find(item => item.id === productId)?.customData || {}
-           }),
-   
-         });
-     
-         if (!response.ok) {
-           throw new Error(`Failed to update quantity: ${response.statusText}`);
-         }
-     
-         const data = await response.json();
-         console.log(data.message);
-     
-         // Update cart state if successful
-         setCart((prevCart) => 
-           prevCart.map((item) =>
-             item.id === productId ? { ...item, quantity: newQuantity } : item
-           )
-         );
-       } catch (error) {
-         console.error("Error updating quantity:", error);
-       }
-     };
+const addToCart = async () => {
+  if (!isAuthenticated) {
+    setIsLoginModalOpen(true);
+    return;
+  }
+
+  if (!isCustomisationComplete()) {
+    handleCustomisationRequired();
+    return;
+  }
+
+  const customProduct = {
+    productId: product.id,
+    productName: product.name,
+    price: Number(product.discountedPrice),
+    customText1,
+    uploadedPhoto,
+    email: user.email,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/cart`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(customProduct),
+    });
+
+    if (res.ok) {
+      await refreshCart();
+    } else {
+      console.error("Failed to add product to cart");
+    }
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+  }
+};
 
 const proceedToCheckout = async () => {
   if (!isCustomisationComplete()) {
@@ -199,7 +166,7 @@ const proceedToCheckout = async () => {
     fullName: user?.fullName || "Guest",
     phone: user?.phone || "N/A",
     productName: customProduct.name,
-    price: customProduct.discountedPrice,
+    price: Number(customProduct.discountedPrice),
     customText1,
     uploadedPhoto,
   };
@@ -214,7 +181,7 @@ const proceedToCheckout = async () => {
     navigate("/checkout", {
       state: {
         product: customProduct,
-        productPrice: customProduct.discountedPrice,
+        productPrice: Number(customProduct.discountedPrice),
         productName: customProduct.name,
       },
     });
@@ -331,6 +298,54 @@ const normalizeInstructions = (instr) => {
   return [String(instr)].map(s => s.trim()).filter(Boolean);
 };
 
+ const removeFromCart = async (productId) => {
+    if (!isAuthenticated) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/remove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("userEmail"),
+          productId,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        const updated = cart.filter((item) => item.id !== productId);
+        setCart(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+      } else {
+        console.error(data.message);
+      }
+    } catch (err) {
+      console.error("Error removing from cart:", err);
+    }
+  };
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: localStorage.getItem("userEmail"),
+          productId,
+          quantity: newQuantity,
+        }),
+      });
+      if (res.ok) {
+        setCart((prev) =>
+          prev.map((item) =>
+            item.id === productId ? { ...item, quantity: newQuantity } : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+    }
+  };
 
   return (
     <>
